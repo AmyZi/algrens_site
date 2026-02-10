@@ -26,16 +26,18 @@ jobs:
       run: npm run build
       env:
         NEXT_PUBLIC_WP_API_URL: ${{ secrets.WP_API_URL }}
-    
+
+
     - name: Deploy to cPanel
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        # CHANGE: We are deploying the whole project root (minus exclusions)
         local-dir: ./ 
         server-dir: /nextjs-app/
+        # ADD THIS LINE: It tells the action to ignore your .gitignore rules
+        git-ftp-args: --force 
         exclude: |
           **/.git*
           **/.git*/**
@@ -43,4 +45,3 @@ jobs:
           **/src/**
           .env*
           README.md
-          .gitignore
