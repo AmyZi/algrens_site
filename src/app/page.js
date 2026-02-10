@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import GaragePreview from '@/components/GaragePreview';
+import GaragePreview from '../components/GaragePreview';
 
 // Note: If you want to keep metadata, you must move it to a separate layout.js 
 // or keep this page as a Server Component and move this UI to a Client Component.
@@ -37,10 +37,10 @@ export default function HomePage({ vehicles = [] }) {
           <Row>
             <Col lg={7}>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                <h1 className="display-2 fw-bold mb-4">Kvalitetsbilar för<br/>Varje Behov</h1>
+                <h1 className="display-2 fw-bold mb-4">Husbilar & Fritidsbilar<br/>i Borås</h1>
                 <p className="lead fs-4 mb-5" style={{ opacity: 0.9 }}>
-                  Upptäck vårt noggrant utvalda sortiment av premium husbilar. 
-                  25 års erfarenhet och professionell service.
+                  Handplockat urval av husbilar och fritidsfordon. 
+                  Erfaren husbilshandlare med över 25 års branscherfarenhet i Västra Götaland.
                 </p>
                 <div className="d-flex gap-3">
                   <Link href="/bilar" className="btn btn-lg px-5 py-3 fw-bold" style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0' }}>SE VÅRA BILAR</Link>
@@ -137,7 +137,7 @@ export default function HomePage({ vehicles = [] }) {
       <div id="garage-preview-container">
         <GaragePreview />
       </div>
-
+      
       {/* 6. CONTACT */}
       <section className="py-5" style={{ backgroundColor: '#000', color: '#fff' }}>
         <Container>

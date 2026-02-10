@@ -5,6 +5,7 @@ import { Container, Row, Col, Modal } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
+
 const GarageContent = () => {
   const [activeZone, setActiveZone] = useState('entrance');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -31,7 +32,7 @@ const GarageContent = () => {
     `${wpBaseUrl}/wp-content/uploads/2026/garage/Showroom-9.jpeg`,
   ], [wpBaseUrl]);
 
-  // 3. Define Zones Data (WITHOUT refs - fix ref access warning)
+  // 3. Define Zones Data
   const zonesData = useMemo(() => [
     {
       id: 'entrance',
