@@ -6,7 +6,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'ahlgrens.eu',
         port: '',
         pathname: '/web/wp-content/uploads/**',
