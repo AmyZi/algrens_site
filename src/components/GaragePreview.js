@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export default function GaragePreview() {
-  const wpBaseUrl = 'http://localhost/web';
+  const wpBaseUrl = 'https:///ahlgrens.eu/web';
 
   const previewZones = [
     { 
