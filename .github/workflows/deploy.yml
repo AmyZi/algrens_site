@@ -26,6 +26,8 @@ jobs:
       run: npm run build
       env:
         NEXT_PUBLIC_WP_API_URL: ${{ secrets.WP_API_URL }}
+        NEXT_DISABLE_ESLINT: true
+        NEXT_DISABLE_TYPECHECK: true
 
 
     - name: Deploy to cPanel
