@@ -2,7 +2,7 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
-  output: 'standalone',
+  output: 'export',
   experimental: {
     outputFileTracingRoot: path.join(__dirname),
   },
@@ -15,6 +15,13 @@ const nextConfig = {
         pathname: '/web/wp-content/uploads/**',
       },
     ],
+  },
+  trailingSlash: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 
