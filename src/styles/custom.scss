@@ -1,0 +1,52 @@
+// Custom Bootstrap Variables
+$custom-colors: (
+  "cream": #F5F1E8,
+  "sage": #A8B5A0,
+  "dusty-rose":  #d1879a,
+  "slate": #4A5759,
+  "taupe": #8B7E74,
+  "charcoal": #2C2C2C,
+  "vibrant-yellow": #FFD700,
+);
+
+// CSS Custom Properties
+:root {
+  --bs-cream: #F5F1E8;
+  --bs-sage: #A8B5A0;
+  --bs-dusty-rose: #D4A5A5;
+  --bs-slate: #4A5759;
+  --bs-taupe: #8B7E74;
+  --bs-charcoal: #2C2C2C;
+  
+  // Duplicates for compatibility
+  --cream: #F5F1E8;
+  --sage: #A8B5A0;
+  --dusty-rose: #D4A5A5;
+  --slate: #4A5759;
+  --taupe: #8B7E74;
+  --charcoal: #2C2C2C;
+}
+
+// Global Styles
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Card hover effects
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+}
