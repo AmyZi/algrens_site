@@ -40,12 +40,35 @@ jobs:
         protocol: ftp
         local-dir: ./ 
         server-dir: /nextjs-app/
-        # ADD THIS LINE: It tells the action to ignore your .gitignore rules
-        git-ftp-args: --force 
+        local-dir: ./out/
+        server-dir: /algrens.eu/web/
         exclude: |
           **/.git*
           **/.git*/**
           **/node_modules/**
-          **/src/**
+          web/**
           .env*
           README.md
+          wp-admin/**
+          wp-content/**
+          wp-includes/**
+          wp-activate.php
+          wp-blog-header.php
+          wp-comments-post.php
+          wp-config.php
+          wp-config-sample.php
+          wp-cron.php
+          wp-links-opml.php
+          wp-load.php
+          wp-login.php
+          wp-mail.php
+          wp-settings.php
+          wp-signup.php
+          wp-trackback.php
+          xmlrpc.php
+          index.php
+          license.txt
+          readme.html
+          llms.txt
+          wp-cli.phar
+          wp-cli.yml
