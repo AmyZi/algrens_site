@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export default function GaragePreview() {
-  const wpBaseUrl = 'https://www.ahlgrens.eu/web';
+  const wpBaseUrl = process.env.NEXT_PUBLIC_WP_API_URL?.replace('/wp-json/wp/v2', '') || '';
 
   const previewZones = [
     { 
