@@ -3,9 +3,6 @@ const nextConfig = {
   /* config options here */
   reactCompiler: true,
   output: 'export',
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname),
-  },
   images: {
     remotePatterns: [
       {
