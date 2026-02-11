@@ -15,7 +15,7 @@ export const metadata = {
   openGraph: {
     title: 'Ahlgrens Automotive | Premium Husbilar i Borås',
     description: 'Handplockade husbilar från Europas bästa tillverkare. 25 års erfarenhet, fullständig service.',
-    url: 'https://yourdomain.com',
+    url: 'https://ahlgrens.eu',
     siteName: 'Ahlgrens Husbilar',
     locale: 'sv_SE',
     type: 'website',
