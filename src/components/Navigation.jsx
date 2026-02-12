@@ -27,7 +27,7 @@ export default function Navigation() {
 
   const navLinks = [
     { path: '/', label: 'HEM' },
-    { path: '/bilar', label: 'VÅRA BILAR' },
+    // { path: '/bilar', label: 'VÅRA BILAR' },
     { path: '/marken', label: 'MÄRKEN' },
     { path: '/om-oss', label: 'OM OSS' },
   ];
@@ -81,7 +81,7 @@ export default function Navigation() {
               </Nav.Link>
             ))}
 
-            {/* Figma Style Slanted Kontakt Button */}
+            {/* Kontakt Button */}
             <Nav.Link as={Link} href="/kontakt" className="p-0 ms-lg-4">
               <Button 
                 style={{ 
