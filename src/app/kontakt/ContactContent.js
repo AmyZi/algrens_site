@@ -19,7 +19,9 @@ const ContactContent = () => {
     const formData = new FormData(form);
 
 
-    const WP_FORM_ID = '172'; 
+    formData.append('_wpcf7', '172'); 
+    formData.append('_wpcf7_unit_tag', 'wpcf7-f172-p1-o1');
+    formData.append('_wpcf7_locale', 'sv_SE'); 
     const endpoint = `https://www.ahlgrens.eu/web/index.php?rest_route=/contact-form-7/v1/contact-forms/172/feedback`;
 
     try {
