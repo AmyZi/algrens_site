@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { motion } from 'framer-motion';
 
 const ContactContent = () => {
   const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
@@ -47,11 +48,67 @@ const ContactContent = () => {
 
   return (
     <div style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', padding: '60px 0' }}>
+     <section 
+        style={{
+          backgroundColor: '#000',
+          color: 'white',
+          // Responsive padding: 80px on desktop, 40px on mobile
+          padding: 'calc(40px + 2vw) 0', 
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <Container>
+          <Row>
+            <Col lg={8}>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }} 
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h1 
+                  className="fw-black mb-3" 
+                  style={{ 
+                    // Responsive font size: Smaller on mobile, max 4.5rem on desktop
+                    fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', 
+                    letterSpacing: '-0.04em', 
+                    lineHeight: '0.9',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  HÖR AV <br />
+                  <span style={{ 
+                    WebkitTextStroke: '1px #FFD700', 
+                    WebkitTextFillColor: 'transparent' 
+                  }}>
+                    DIG IDAG
+                  </span>
+                </h1>
+                
+                <p 
+                  className="fw-medium text-white mb-0" 
+                  style={{ 
+                    maxWidth: '500px',
+                    // Smaller text on mobile
+                    fontSize: 'clamp(1rem, 2vw, 1.25rem)', 
+                    opacity: 0.8 
+                  }}
+                >
+                  Oavsett om du vill köpa, sälja eller serva din husbil finns vi här för att hjälpa dig.
+                </p>
+
+                <div style={{ 
+                  width: '30px', 
+                  height: '2px', 
+                  backgroundColor: '#FFD700', 
+                  marginTop: '15px' 
+                }}></div>
+              </motion.div>
+            </Col>
+          </Row>
+        </Container>
+      </section>
       <Container>
-        <h1 className="fw-bold mb-5" style={{ fontSize: '2.2rem', color: '#0F172A', letterSpacing: '-0.02em' }}>
-          Contact Us
-        </h1>
-        
         <Row className="g-5">
           <Col lg={6}>
             <div className="bg-white p-5 rounded-4 h-100 shadow-sm border border-light">
