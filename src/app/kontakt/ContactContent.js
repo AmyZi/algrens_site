@@ -19,7 +19,7 @@ const ContactContent = () => {
     const formData = new FormData(form);
 
 
-    const WP_FORM_ID = '8aabf00'; 
+    const WP_FORM_ID = '172'; 
     const endpoint = `https://ahlgrens.eu/web/wp-json/contact-form-7/v1/contact-forms/${WP_FORM_ID}/feedback`;
 
     try {
