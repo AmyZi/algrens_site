@@ -20,7 +20,7 @@ const ContactContent = () => {
 
 
     const WP_FORM_ID = '172'; 
-    const endpoint = `https://www.ahlgrens.eu/web/wp-json/contact-form-7/v1/contact-forms/${WP_FORM_ID}/feedback`;
+    const endpoint = `https://www.ahlgrens.eu/web/index.php?rest_route=/contact-form-7/v1/contact-forms/172/feedback`;
 
     try {
       const response = await fetch(endpoint, {
