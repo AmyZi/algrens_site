@@ -9,8 +9,6 @@ import { motion } from 'framer-motion';
 export default function BrandsContent({ wpBaseUrl, brands }) {
   return (
     <div className="brands-page" style={{ backgroundColor: '#FFFFFF', color: '#000' }}>
-      
-      {/* 1. FIGMA HERO: High Contrast & Outlined Text */}
       <section 
         style={{
           backgroundColor: '#000',
@@ -49,7 +47,7 @@ export default function BrandsContent({ wpBaseUrl, brands }) {
         </Container>
       </section>
 
-      {/* 2. BRAND GRID: Sharp Corners & Minimalist Borders */}
+      {/* 2. BRAND GRID*/}
       <section className="py-5" style={{ marginTop: '-40px' }}>
         <Container>
           <Row className="g-0 shadow-sm" style={{ border: '1px solid #000' }}>
@@ -91,7 +89,7 @@ export default function BrandsContent({ wpBaseUrl, brands }) {
         </Container>
       </section>
 
-      {/* 3. TYPES SECTION: Industrial Layout */}
+      {/* 3. TYPES SECTION */}
       <section className="py-5 bg-white">
         <Container className="py-5">
           <div className="mb-5">
