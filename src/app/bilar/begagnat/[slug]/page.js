@@ -1,4 +1,4 @@
-import CarDetailView from 'src/components/CarDetailView';
+import CarDetailView from '@/components/CarDetailView';
 import { notFound } from 'next/navigation';
 
 async function getCar(slug) {
