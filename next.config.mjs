@@ -14,8 +14,6 @@ const nextConfig = {
     ],
   },
   trailingSlash: true,
-  basePath: '/algrens_site',
-  assetPrefix: '/algrens_site',
   eslint: {
     ignoreDuringBuilds: true,
   },
