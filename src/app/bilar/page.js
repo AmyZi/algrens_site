@@ -1,42 +1,63 @@
-import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import CarDetailView from '@/components/CarDetailView';
+import SimilarVehicles from '@/components/SimilarVehicles';
 
-async function getCars() {
-  const res = await fetch('https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?_embed&per_page=100', {
-    next: { revalidate: 60 }
-  });
-  return res.json();
+// Fetch a single car
+async function getCar(slug) {
+  try {
+    const res = await fetch(`https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`, { 
+      next: { revalidate: 3600 } 
+    });
+    if (!res.ok) return null;
+    const cars = await res.json();
+    return cars?.[0] || null;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return null;
+  }
 }
 
-export default async function BilarList() {
-  const cars = await getCars();
+// Fetch similar cars
+async function getRelatedCars(categoryId, currentId) {
+  if (!categoryId) return [];
+  try {
+    const res = await fetch(`https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?categories=${categoryId}&exclude=${currentId}&per_page=3&_embed`, { 
+      next: { revalidate: 3600 } 
+    });
+    const cars = await res.json();
+    return Array.isArray(cars) ? cars : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const car = await getCar(slug);
+  if (!car) return { title: 'Bil ej hittad' };
+  return {
+    title: `${car.title?.rendered} | Ahlgrens Bilar`,
+    description: `Se pris och detaljer för ${car.title?.rendered}. Vi erbjuder finansiering och inbyte.`,
+  };
+}
+
+export default async function Page({ params }) {
+  const { slug } = await params;
+  const car = await getCar(slug);
+
+  if (!car) notFound();
+
+  const categoryId = car.categories?.[0];
+  const relatedCars = await getRelatedCars(categoryId, car.id);
 
   return (
-    <div className="max-w-7xl mx-auto p-10">
-      <h1 className="text-4xl font-bold mb-8">Vårt Billager</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {cars.map((car) => {
-          // Determine link based on "New" or "Used"
-          const isNew = car.meta?._car_is_new === 'yes';
-          const path = isNew ? '/bilar/nytt' : '/bilar/begagnat';
-          
-          return (
-            <Link href={`${path}/${car.slug}`} key={car.id} className="group border rounded-xl overflow-hidden shadow hover:shadow-lg transition">
-              <img 
-                src={car.meta?._car_thumbnail || '/placeholder.jpg'} 
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="font-bold text-xl group-hover:text-blue-600 transition" dangerouslySetInnerHTML={{ __html: car.title.rendered }} />
-                <p className="text-gray-600">{car.meta?._car_year} | {car.meta?._car_mileage} mil</p>
-                <p className="text-blue-700 font-extrabold text-lg mt-2">
-                  {parseInt(car.meta?._car_price).toLocaleString('sv-SE')} kr
-                </p>
-              </div>
-            </Link>
-          );
-        })}
+    <main className="bg-slate-50 min-h-screen">
+      <div className="bg-white border-b border-slate-200">
+        <CarDetailView car={car} />
       </div>
-    </div>
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <SimilarVehicles cars={relatedCars} />
+      </div>
+    </main>
   );
 }
