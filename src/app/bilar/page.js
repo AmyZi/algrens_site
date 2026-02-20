@@ -2,31 +2,43 @@
 
 import React, { useState } from 'react';
 
+/**
+ * CarDetailView Component
+ * - Displays car details, image gallery, and Blocket conversion button.
+ * - Optimized for SEO with JSON-LD and semantic HTML.
+ * - Build-safe: Handles potentially missing metadata.
+ */
 export default function CarDetailView({ car }) {
-  // 1. Setup metadata
+  // 1. Build-safe data check
+  if (!car) return null;
+
+  // Setup metadata with fallbacks to prevent "undefined" crashes during build
   const meta = car.meta || {};
   const isNew = meta._car_is_new === 'yes';
+  
+  // Use car thumbnail or a placeholder
   const initialImage = car._car_thumbnail || '/placeholder-car.jpg';
 
-  // Handle Gallery URLs
+  // 2. Handle the Gallery URLs
   const galleryString = meta._car_gallery_urls || "";
   const galleryUrls = galleryString ? galleryString.split(',') : [];
 
-  // 3. State for the main viewer
+  // 3. State for the main image viewer
+  // This must remain inside 'use client'
   const [activeImage, setActiveImage] = useState(initialImage);
 
-  // SEO: Structured Data (JSON-LD) for Google "Car" Snippets
+  // 4. SEO: Structured Data (JSON-LD) for Google "Car" Snippets
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Car",
-    "name": car.title.rendered,
-    "description": car.excerpt?.rendered?.replace(/<[^>]*>/g, '') || car.title.rendered,
+    "name": car.title?.rendered || "Fordon",
+    "description": car.excerpt?.rendered?.replace(/<[^>]*>/g, '') || car.title?.rendered,
     "image": initialImage,
     "brand": { "@type": "Brand", "name": "Ahlgrens Bilar" },
-    "modelDate": meta._car_year,
+    "modelDate": meta._car_year || "",
     "mileageFromOdometer": {
       "@type": "QuantitativeValue",
-      "value": meta._car_mileage,
+      "value": meta._car_mileage || 0,
       "unitCode": "KMT"
     },
     "offers": {
@@ -40,7 +52,7 @@ export default function CarDetailView({ car }) {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 font-sans bg-white">
-      {/* Injecting SEO Schema */}
+      {/* Google SEO Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -53,7 +65,7 @@ export default function CarDetailView({ car }) {
           <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-100 bg-gray-50">
             <img 
               src={activeImage} 
-              alt={car.title.rendered} 
+              alt={car.title?.rendered} 
               className="w-full object-cover aspect-[4/3] transition-all duration-500" 
             />
           </div>
@@ -85,12 +97,12 @@ export default function CarDetailView({ car }) {
             }`}>
               {isNew ? 'Nyhet' : 'Begagnad'}
             </span>
-            <span className="text-gray-400 text-xs font-medium">Ref: {meta._car_registration || 'AHL-123'}</span>
+            <span className="text-gray-400 text-xs font-medium">Ref: {meta._car_registration || '—'}</span>
           </div>
 
           <h1 
             className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight" 
-            dangerouslySetInnerHTML={{ __html: car.title.rendered }} 
+            dangerouslySetInnerHTML={{ __html: car.title?.rendered }} 
           />
           
           <div className="text-4xl font-black text-blue-700 mb-8">
@@ -99,7 +111,7 @@ export default function CarDetailView({ car }) {
               : "Ring för pris"}
           </div>
 
-          {/* HIGH CONVERSION CTAs */}
+          {/* CONVERSION BUTTONS */}
           <div className="grid grid-cols-1 gap-4 mb-10">
             <a 
               href={meta._car_blocket_url || "https://www.blocket.se/butik/ahlgrens-bilar"} 
@@ -110,7 +122,7 @@ export default function CarDetailView({ car }) {
               KÖP NU PÅ BLOCKET
             </a>
             <a 
-              href="mailto:info@ahlgrens.eu"
+              href="mailto:info@ahlgrens.eu?subject=Intresseanmälan: %20"
               className="flex items-center justify-center bg-white border-2 border-gray-200 hover:border-blue-600 text-gray-900 py-4 rounded-2xl font-bold transition-all"
             >
               Intresseanmälan / Byt in din bil
@@ -128,8 +140,8 @@ export default function CarDetailView({ car }) {
           </div>
 
           <div 
-            className="mt-12 text-gray-600 leading-relaxed text-lg border-t border-gray-100 pt-8" 
-            dangerouslySetInnerHTML={{ __html: car.content.rendered }} 
+            className="mt-12 text-gray-600 leading-relaxed text-lg border-t border-gray-100 pt-8 prose prose-slate max-w-none" 
+            dangerouslySetInnerHTML={{ __html: car.content?.rendered || "" }} 
           />
         </div>
       </div>
@@ -137,6 +149,9 @@ export default function CarDetailView({ car }) {
   );
 }
 
+/**
+ * SpecItem Helper Component
+ */
 function SpecItem({ label, value }) {
   return (
     <div className="group">
