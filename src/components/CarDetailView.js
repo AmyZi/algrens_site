@@ -1,98 +1,61 @@
-'use client';
-import React, { useState } from 'react';
+// src/components/CarDetailView.js
+import Link from 'next/link';
 
 export default function CarDetailView({ car }) {
-  // CRITICAL FIX: Ensure car and meta exist before rendering
-  if (!car || !car.title) return null;
-  const meta = car.meta || {};
-  
-  const isNew = meta._car_is_new === 'yes';
-  const initialImage = car._car_thumbnail || '/placeholder-car.jpg';
-  const galleryString = meta._car_gallery_urls || "";
-  const galleryUrls = galleryString ? galleryString.split(',') : [];
+  // Grab the ACF data safely
+  const acf = car.acf || {};
+  const blocketUrl = acf.blocket_url || "https://www.blocket.se/butik/ahlgrens-bilar";
+  const price = acf.price ? `${acf.price} kr` : "Ring för pris";
+  const featuredImage = car._embedded?.['wp:featuredmedia']?.[0]?.source_url;
 
-  const [activeImage, setActiveImage] = useState(initialImage);
+  // SEO: Schema.org Product Data for Google
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Car",
+    "name": car.title.rendered,
+    "image": featuredImage,
+    "description": car.excerpt?.rendered.replace(/<[^>]*>/g, ''),
+    "offers": {
+      "@type": "Offer",
+      "price": acf.price || "0",
+      "priceCurrency": "SEK",
+      "url": `https://www.ahlgrens.eu/bilar/${car.slug}`
+    }
+  };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 sm:p-8 font-sans">
+    <article className="max-w-7xl mx-auto px-4 py-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        
-        {/* GALLERY SECTION */}
-        <div className="space-y-4">
-          <div className="rounded-3xl overflow-hidden shadow-2xl bg-gray-100 border border-gray-100">
-            <img 
-              src={activeImage} 
-              alt={car.title?.rendered} 
-              className="w-full object-cover aspect-[4/3] transition-all duration-500" 
-            />
-          </div>
-          {galleryUrls.length > 0 && (
-            <div className="grid grid-cols-5 gap-3">
-              {galleryUrls.map((url, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveImage(url)}
-                  className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
-                    activeImage === url ? 'border-blue-600 scale-95' : 'border-transparent opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <img src={url} className="w-full h-full object-cover" alt="Galleri" />
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Left: Main Image */}
+        <div className="overflow-hidden rounded-2xl shadow-xl bg-slate-100">
+          <img src={featuredImage} alt={car.title.rendered} className="w-full h-auto object-cover" />
         </div>
 
-        {/* INFO SECTION */}
+        {/* Right: Pricing & CTA */}
         <div className="flex flex-col justify-center">
-          <div className="flex items-center gap-3 mb-4">
-            <span className={`px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-widest ${
-              isNew ? 'bg-green-500 text-white' : 'bg-blue-600 text-white'
-            }`}>
-              {isNew ? 'Nyhet' : 'Begagnad'}
-            </span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4 leading-tight" 
-              dangerouslySetInnerHTML={{ __html: car.title?.rendered }} />
+          <h1 className="text-4xl font-extrabold text-slate-900 mb-4">{car.title.rendered}</h1>
+          <p className="text-3xl font-bold text-blue-600 mb-8">{price}</p>
           
-          <div className="text-4xl font-black text-blue-700 mb-8">
-            {meta._car_price ? `${parseInt(meta._car_price).toLocaleString('sv-SE')} kr` : "Ring för pris"}
-          </div>
-
-          {/* CTA BUTTONS */}
-          <div className="flex flex-col gap-4 mb-10">
-            <a href={meta._car_blocket_url || "https://www.blocket.se/butik/ahlgrens-bilar"} 
-               target="_blank" rel="noopener noreferrer"
-               className="bg-[#ff5c39] hover:bg-[#e04a2d] text-white py-5 rounded-2xl font-black text-center text-xl shadow-lg transition-transform hover:-translate-y-1">
-              KÖP NU PÅ BLOCKET
+          <div className="space-y-4">
+            <a 
+              href={blocketUrl} 
+              target="_blank" 
+              className="block w-full text-center bg-[#ff5c39] hover:bg-[#e04a2a] text-white font-bold py-5 rounded-xl text-xl transition-all shadow-lg hover:scale-[1.02]"
+            >
+              Köp nu på Blocket
             </a>
-          </div>
-
-          {/* SPECS GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 bg-gray-50 p-6 rounded-[2rem] border border-gray-100">
-            <SpecItem label="År" value={meta._car_year} />
-            <SpecItem label="Mil" value={isNew ? '0' : meta._car_mileage} />
-            <SpecItem label="Växel" value={meta._car_gearbox} />
-            <SpecItem label="Bränsle" value={meta._car_fuel} />
-            <SpecItem label="Färg" value={meta._car_color} />
-            <SpecItem label="Reg Nr" value={meta._car_registration} />
+            
+            <Link 
+              href="/kontakt" 
+              className="block w-full text-center border-2 border-slate-200 hover:border-blue-600 py-4 rounded-xl font-semibold transition-colors"
+            >
+              Fråga oss om bilen
+            </Link>
           </div>
         </div>
       </div>
-      
-      {/* FULL DESCRIPTION */}
-      <div className="mt-16 prose prose-slate max-w-none border-t pt-10" 
-           dangerouslySetInnerHTML={{ __html: car.content?.rendered }} />
-    </div>
-  );
-}
-
-function SpecItem({ label, value }) {
-  return (
-    <div>
-      <span className="text-gray-400 text-[10px] block uppercase font-black tracking-widest mb-1">{label}</span>
-      <span className="text-gray-900 font-bold">{value || '—'}</span>
-    </div>
+    </article>
   );
 }
