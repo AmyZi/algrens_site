@@ -1,45 +1,41 @@
-// src/app/bilar/page.js
-'use client';
-import { useState } from 'react';
 import CarCard from '@/components/CarCard';
 
-export default function CarListingPage({ initialCars }) {
-  const [activeFilter, setActiveFilter] = useState('all');
+async function getAllCars() {
+  try {
+    const res = await fetch('https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100&_embed', {
+      next: { revalidate: 60 }
+    });
+    if (!res.ok) return [];
+    const cars = await res.json();
+    return Array.isArray(cars) ? cars : [];
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    return [];
+  }
+}
 
-  const filteredCars = initialCars.filter(car => {
-    if (activeFilter === 'all') return true;
-    // This matches the ACF field or Category. Adjust based on your WP setup:
-    return car.acf?.condition?.toLowerCase() === activeFilter; 
-  });
+export default async function BilarPage() {
+  const cars = await getAllCars();
 
   return (
-    <main className="bg-slate-50 min-h-screen py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <header className="text-center mb-12">
-          <h1 className="text-5xl font-black text-slate-900 mb-4">Vårt Lager</h1>
-          
-          {/* Filter Toggles */}
-          <div className="flex justify-center gap-3 mt-8">
-            {['all', 'nytt', 'begagnat'].map((f) => (
-              <button
-                key={f}
-                onClick={() => setActiveFilter(f)}
-                className={`px-8 py-2 rounded-full font-bold transition-all ${
-                  activeFilter === f ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-500 border hover:bg-slate-100'
-                }`}
-              >
-                {f === 'all' ? 'Alla' : f.charAt(0).toUpperCase() + f.slice(1)}
-              </button>
-            ))}
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCars.map(car => (
-            <CarCard key={car.id} car={car} />
-          ))}
+    <div className="container py-5 mt-5 pt-5 pb-5">
+      <div className="row mb-4">
+        <div className="col-12">
+          <h1 className="fw-bold text-uppercase border-bottom pb-3">Vårt Lager</h1>
         </div>
       </div>
-    </main>
+      
+      <div className="row g-4">
+        {cars.length > 0 ? (
+          cars.map((car) => (
+            <CarCard key={car.id} car={car} />
+          ))
+        ) : (
+          <div className="col-12 text-center py-5">
+            <div className="alert alert-light border">Inga fordon hittades just nu.</div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

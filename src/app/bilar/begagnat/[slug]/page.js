@@ -1,47 +1,75 @@
-import CarDetailView from '@/components/CarDetailView';
 import { notFound } from 'next/navigation';
+import CarDetailView from '@/components/CarDetailView';
+import SimilarVehicles from '@/components/SimilarVehicles';
 
-/**
- * 1. Tell Next.js which paths to pre-render
- */
 export async function generateStaticParams() {
-  // We fetch ALL cars (or at least the first 100) to get their slugs
-  const res = await fetch('https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100');
-  const cars = await res.json();
-
-  if (!Array.isArray(cars)) return [];
-
-  return cars.map((car) => ({
-    slug: car.slug,
-  }));
+  try {
+    const res = await fetch('https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100');
+    const cars = await res.json();
+    return Array.isArray(cars)
+      ? cars
+          .filter(car => car.meta?._car_is_new !== 'yes')
+          .map((car) => ({ slug: car.slug }))
+      : [];
+  } catch (error) {
+    console.error('Build Error fetching params:', error);
+    return [];
+  }
 }
 
-/**
- * 2. Fetch data for a single car
- */
-async function getCar(slug) {
-  const res = await fetch(`https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`, {
-    next: { revalidate: 60 }
-  });
-  
-  const cars = await res.json();
-  return cars && cars.length > 0 ? cars[0] : null;
+async function getCarData(slug) {
+  const res = await fetch(
+    `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`,
+    { cache: 'force-cache' }
+  );
+  const data = await res.json();
+  return data?.[0] || null;
 }
 
-/**
- * 3. The Page Component
- */
-export default async function Page({ params }) {
-  const { slug } = await params; // Note: In newer Next.js versions, params is a Promise
-  const car = await getCar(slug);
+async function getSimilarCars(currentCar) {
+  const res = await fetch(
+    `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100`,
+    { cache: 'force-cache' }
+  );
+  const data = await res.json();
+  if (!Array.isArray(data)) return [];
 
-  if (!car) {
-    notFound();
+  const bodyType = currentCar.meta?._car_body_type?.trim().toLowerCase();
+  const currentId = currentCar.id;
+
+  // Match by body type
+  let similar = data.filter(c =>
+    c.id !== currentId &&
+    c.meta?._car_body_type?.trim().toLowerCase() === bodyType
+  );
+
+  // Fallback: if fewer than 3 matches, fill up with any other cars
+  if (similar.length < 3) {
+    const ids = new Set(similar.map(c => c.id));
+    const extras = data.filter(c => c.id !== currentId && !ids.has(c.id));
+    similar = [...similar, ...extras];
   }
 
+  return similar.slice(0, 3);
+}
+
+export default async function Page({ params }) {
+  const { slug } = await params;
+  const car = await getCarData(slug);
+  if (!car) notFound();
+
+  const similarCars = await getSimilarCars(car);
+
   return (
-    <main className="min-h-screen bg-white py-10">
+    <main className="bg-light min-vh-100 pb-5 mt-5 pt-5">
       <CarDetailView car={car} />
+      {similarCars.length > 0 && (
+        <div className="container">
+          <hr className="my-5" />
+          <h3 className="fw-bold mb-4">LIKNANDE FORDON</h3>
+          <SimilarVehicles cars={similarCars} />
+        </div>
+      )}
     </main>
   );
 }

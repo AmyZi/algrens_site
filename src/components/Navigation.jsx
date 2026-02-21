@@ -27,7 +27,7 @@ export default function Navigation() {
 
   const navLinks = [
     { path: '/', label: 'HEM' },
-    // { path: '/bilar', label: 'VÅRA BILAR' },
+    { path: '/bilar', label: 'VÅRA BILAR' },
     { path: '/marken', label: 'MÄRKEN' },
     { path: '/om-oss', label: 'OM OSS' },
   ];
