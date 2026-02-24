@@ -140,9 +140,9 @@ export default function Footer() {
                     height="1em"
                     fill="none">
                     <text x="50%" y="80"
-                          text-anchor="middle"
-                          font-size="70"
-                          font-family="Brush Script MT, Pacifico, cursive"
+                          textAnchor="middle"
+                          fontSize="70"
+                          fontFamily="Brush Script MT, Pacifico, cursive"
                           fill="#e53935">
                       Amina
                     </text>
