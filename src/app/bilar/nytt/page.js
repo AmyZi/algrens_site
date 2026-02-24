@@ -1,4 +1,4 @@
-import BilarPage from './bilarPage';
+import BilarPage from '../bilarPage';
 
 async function getAllCars() {
   try {
