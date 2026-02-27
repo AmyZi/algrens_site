@@ -39,6 +39,9 @@ body {
 // Smooth scrolling
 html {
   scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 // Card hover effects
@@ -49,4 +52,9 @@ html {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }
+}
+
+/* Force containers to stay within bounds */
+.container, .container-fluid {
+  overflow: hidden;
 }
