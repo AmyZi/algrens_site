@@ -8,11 +8,12 @@ import { useRouter, usePathname } from 'next/navigation';
 export default function Navigation() {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false); // Added for hydration safety
   const router = useRouter();
   const pathname = usePathname();
 
-  // Handle scroll effect for a "glass" header look
   useEffect(() => {
+    setMounted(true); // Signal that we are on the client
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -32,12 +33,17 @@ export default function Navigation() {
     { path: '/om-oss', label: 'OM OSS' },
   ];
 
+  // Prevent rendering the dynamic parts until mounted to stop the hydration error
+  if (!mounted) {
+    return null; 
+  }
+
   return (
     <Navbar 
       expand="lg" 
       fixed="top"
       style={{ 
-        backgroundColor: scrolled ? 'var(--bs-dusty-rose)' : 'transparent',
+        backgroundColor: scrolled ? '#E9D5DA' : 'transparent', // Replaced var with hex for safety
         backdropFilter: scrolled ? 'blur(10px)' : 'none',
         transition: 'all 0.3s ease',
         padding: scrolled ? '10px 0' : '20px 0',
@@ -62,24 +68,32 @@ export default function Navigation() {
         
         <Navbar.Collapse id="main-navbar">
           <Nav className="ms-auto align-items-center">
-            {navLinks.map((link) => (
-              <Nav.Link
-                key={link.path}
-                as={Link}
-                href={link.path}
-                style={{ 
-                  color: '#000', 
-                  fontWeight: '700', 
-                  fontSize: '0.75rem', 
-                  letterSpacing: '0.15em',
-                  margin: '0 15px',
-                  padding: '5px 0',
-                  borderBottom: pathname === link.path ? '2px solid #FFD700' : '2px solid transparent'
-                }}
-              >
-                {link.label}
-              </Nav.Link>
-            ))}
+            {navLinks.map((link) => {
+              // Path matching logic to fix the underline issue
+              const isActive = link.path === '/' 
+                ? pathname === '/' 
+                : pathname.startsWith(link.path);
+
+              return (
+                <Nav.Link
+                  key={link.path}
+                  as={Link}
+                  href={link.path}
+                  style={{ 
+                    color: '#000', 
+                    fontWeight: '700', 
+                    fontSize: '0.75rem', 
+                    letterSpacing: '0.15em',
+                    margin: '0 15px',
+                    padding: '5px 0',
+                    borderBottom: isActive ? '2px solid #FFD700' : '2px solid transparent',
+                    transition: 'border-bottom 0.2s ease'
+                  }}
+                >
+                  {link.label}
+                </Nav.Link>
+              );
+            })}
 
             {/* Kontakt Button */}
             <Nav.Link as={Link} href="/kontakt" className="p-0 ms-lg-4">
@@ -93,14 +107,13 @@ export default function Navigation() {
                   fontSize: '0.75rem',
                   padding: '12px 30px',
                   letterSpacing: '0.1em',
-                  clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0% 100%)' // Slanted look
                 }}
               >
-                KONTAKT
+                KONTAKTA OSS
               </Button>
             </Nav.Link>
 
-            {/* Minimalist Search Icon Toggle (Optional - simplified for Figma feel) */}
+            {/* Search Input */}
             <Form onSubmit={handleSearch} className="ms-lg-3 d-none d-xl-block">
                <input 
                 type="text"

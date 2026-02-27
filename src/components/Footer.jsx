@@ -1,13 +1,20 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [mounted, setMounted] = useState(false);
   const brandGold = '#FFD700';
   const mutedText = '#888888';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentYear = new Date().getFullYear();
 
   // Animation variants for links
   const linkVariants = {
@@ -22,6 +29,11 @@ export default function Footer() {
     { name: 'Kontakt', href: '/kontakt' }
   ];
 
+  // Prevent hydration mismatch by waiting for mount
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <footer style={{ backgroundColor: '#000', color: '#FFF', padding: '80px 0 40px', marginTop: 'auto' }}>
       <Container>
@@ -33,10 +45,10 @@ export default function Footer() {
               initial={{ opacity: 0 }} 
               whileInView={{ opacity: 1 }}
               className="fw-black mb-4" 
-              style={{ letterSpacing: '-0.02em', fontSize: '1.5rem' }}
+              style={{ letterSpacing: '-0.02em', fontSize: '1.5rem', fontWeight: 900 }}
             >
               AHLGRENS<br />
-              <span style={{ color: brandGold }}>HUSBILARS</span>
+              <span style={{ color: brandGold }}>HUSBILAR</span>
             </motion.h5>
             <p style={{ fontSize: '0.9rem', lineHeight: '1.8', color: mutedText, maxWidth: '300px' }}>
               Din pålitliga partner för begagnade bilar av hög kvalitet. 
@@ -137,7 +149,7 @@ export default function Footer() {
               >
                 <svg viewBox="0 0 320 120"
                     xmlns="http://www.w3.org/2000/svg"
-                    height="1em"
+                    height="1.2em"
                     fill="none">
                     <text x="50%" y="80"
                           textAnchor="middle"
@@ -146,14 +158,11 @@ export default function Footer() {
                           fill="#e53935">
                       Amina
                     </text>
-                    <path d="M170 18
-                            C170 8, 185 8, 185 18
-                            C185 8, 200 8, 200 18
-                            C200 30, 185 38, 185 38
-                            C185 38, 170 30, 170 18 Z"
-                          fill="#1e40af"/>
+                    <path 
+                      d="M170 18 C170 8, 185 8, 185 18 C185 8, 200 8, 200 18 C200 30, 185 38, 185 38 C185 38, 170 30, 170 18 Z"
+                      fill="#1e40af"
+                    />
                 </svg>
-
               </motion.a>
             </div>
           </Col>
