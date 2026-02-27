@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import GaragePreview from './GaragePreview';
 
 const brands = [
@@ -15,10 +15,14 @@ const brands = [
 
 export default function HomePage({ cars = [] }) {
   const wpBaseUrl = 'https://www.ahlgrens.eu';
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const featuredCars = cars
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
 
   return (
-    /* Global wrapper with overflow hidden to prevent horizontal mobile shaking */
-    <div className="home-page" style={{ backgroundColor: '#FFFFFF', overflowX: 'hidden' }}>
+    <div className="home-page" style={{ backgroundColor: '#FFFFFF' }}>
 
       {/* 1. HERO SECTION */}
       <section
@@ -35,19 +39,16 @@ export default function HomePage({ cars = [] }) {
           <Row>
             <Col lg={7}>
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                {/* Responsive font size clamp to prevent title from breaking layout on small phones */}
-                <h1 className="fw-bold mb-4" style={{ fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', lineHeight: '1.1' }}>
-                  Husbilar & Fritidsbilar<br />i Borås
-                </h1>
-                <p className="lead fs-4 mb-5" style={{ opacity: 0.9, maxWidth: '600px' }}>
+                <h1 className="display-2 fw-bold mb-4">Husbilar & Fritidsbilar<br />i Borås</h1>
+                <p className="lead fs-4 mb-5" style={{ opacity: 0.9 }}>
                   Handplockat urval av husbilar och fritidsfordon.
-                  Över 25 års branscherfarenhet.
+                  Erfaren husbilshandlare med över 25 års branscherfarenhet.
                 </p>
-                <div className="d-flex flex-wrap gap-3">
-                  <Link href="/bilar" className="btn btn-lg px-4 py-3 fw-bold" style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', fontSize: '1rem' }}>
+                <div className="d-flex gap-3 flex-wrap">
+                  <Link href="/bilar" className="btn btn-lg px-5 py-3 fw-bold" style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0' }}>
                     SE VÅRA BILAR
                   </Link>
-                  <Link href="/kontakt" className="btn btn-lg px-4 py-3 btn-outline-light fw-bold" style={{ borderRadius: '0', fontSize: '1rem' }}>
+                  <Link href="/kontakt" className="btn btn-lg px-5 py-3 btn-outline-light fw-bold" style={{ borderRadius: '0' }}>
                     KONTAKTA OSS
                   </Link>
                 </div>
@@ -58,116 +59,108 @@ export default function HomePage({ cars = [] }) {
       </section>
 
       {/* 2. BRAND TICKER */}
-      <div style={{ backgroundColor: '#FFD700', padding: '15px 0', overflow: 'hidden', whiteSpace: 'nowrap', borderTop: '1px solid #000', borderBottom: '1px solid #000' }}>
+      <div style={{ backgroundColor: '#FFD700', padding: '20px 0', overflow: 'hidden', whiteSpace: 'nowrap', borderTop: '1px solid #000', borderBottom: '1px solid #000' }}>
         <motion.div
           animate={{ x: [0, -2000] }}
-          transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
           style={{ display: 'inline-block' }}
         >
           {[...brands, ...brands].map((brand, i) => (
-            <span key={i} style={{ fontSize: '1.2rem', fontWeight: '900', color: '#000', margin: '0 30px', letterSpacing: '2px' }}>
+            <span key={i} style={{ fontSize: '1.5rem', fontWeight: '900', color: '#000', margin: '0 40px', letterSpacing: '2px' }}>
               {brand} •
             </span>
           ))}
         </motion.div>
       </div>
 
-      {/* 3. UTVALDA FORDON - MOBILE RESPONSIVE SWIPEABLE GRID */}
-      <section className="py-5 mt-4">
+      {/* 3. UTVALDA FORDON */}
+      <section className="py-5 mt-5">
         <Container>
           <div className="d-flex justify-content-between align-items-end mb-4">
             <div>
-              <h6 className="text-primary fw-bold text-uppercase small" style={{ letterSpacing: '2px' }}>Premium Selection</h6>
-              <h2 className="fw-bold m-0" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)' }}>Utvalda Fordon</h2>
+              <h6 className="text-primary fw-bold text-uppercase" style={{ letterSpacing: '2px' }}>Premium Selection</h6>
+              <h2 className="display-4 fw-bold">Utvalda Fordon</h2>
             </div>
-            <Link href="/bilar" className="text-dark fw-bold text-decoration-none border-bottom border-2 border-dark pb-1 small">
+            <Link href="/bilar" className="text-dark fw-bold text-decoration-none border-bottom border-2 border-dark pb-1 d-none d-md-block">
               Se alla bilar
             </Link>
           </div>
 
-          {/* This wrapper enables horizontal scroll on mobile, and standard grid on desktop */}
-          <div className="car-scroll-wrapper" style={{ margin: '0 -15px', padding: '0 15px' }}>
-            <Row 
-              className="flex-nowrap flex-md-wrap g-4" 
-              style={{ 
-                overflowX: 'auto', 
-                WebkitOverflowScrolling: 'touch',
-                scrollSnapType: 'x mandatory',
-                paddingBottom: '20px'
-              }}
-            >
-              {cars && cars.length > 0 ? (
-                cars
-                  .sort((a, b) => new Date(b.date) - new Date(a.date))
-                  .slice(0, 3)
-                  .map((car) => {
-                    const meta = car.meta || {};
-                    const isNew = meta._car_is_new === 'yes';
-                    const folder = isNew ? 'nytt' : 'begagnat';
-                    const thumbnail = meta._car_thumbnail || '/placeholder-car.jpg';
-                    const price = meta._car_price
-                      ? parseInt(meta._car_price).toLocaleString('sv-SE') + ' kr'
-                      : 'Ring för pris';
+          {featuredCars.length > 0 ? (
+            <>
+              {/* DESKTOP: 3 columns */}
+              <Row className="g-4 d-none d-md-flex">
+                {featuredCars.map((car) => (
+                  <Col lg={4} md={6} key={car.id}>
+                    <CarCard car={car} />
+                  </Col>
+                ))}
+              </Row>
 
-                    return (
-                      <Col 
-                        xs={10} md={6} lg={4} 
-                        key={car.id} 
-                        style={{ scrollSnapAlign: 'start', flex: '0 0 auto' }}
-                      >
-                        <motion.div
-                          whileHover={{ y: -5 }}
-                          className="border-0 bg-light shadow-sm overflow-hidden h-100"
-                        >
-                          <div style={{ height: '220px', width: '100%', overflow: 'hidden', position: 'relative' }}>
-                            <img
-                              src={thumbnail}
-                              alt={car.title?.rendered}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                              onError={(e) => { e.target.src = '/placeholder-car.jpg'; }}
-                            />
-                            <div
-                              className="position-absolute top-0 start-0 m-2 px-3 py-1 fw-bold text-uppercase"
-                              style={{ backgroundColor: isNew ? '#FFD700' : '#000', color: isNew ? '#000' : '#FFF', fontSize: '0.65rem', zIndex: 2 }}
-                            >
-                              {isNew ? 'Nyhet' : 'Begagnad'}
-                            </div>
-                          </div>
+              {/* MOBILE: Swipeable single card with dot navigation */}
+              <div className="d-md-none">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -40 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <CarCard car={featuredCars[activeIndex]} />
+                  </motion.div>
+                </AnimatePresence>
 
-                          <div className="p-3">
-                            <p className="text-muted mb-1 fw-bold" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
-                              {meta._car_make} · {meta._car_year}
-                            </p>
-                            <h3
-                              className="h6 fw-bold mb-2 text-truncate"
-                              dangerouslySetInnerHTML={{ __html: car.title?.rendered }}
-                            />
-                            <p className="text-muted small mb-3">
-                              {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
-                              {meta._car_fuel ? ` · ${meta._car_fuel}` : ''}
-                            </p>
-                            <div className="d-flex justify-content-between align-items-center">
-                              <span className="fw-bold mb-0">{price}</span>
-                              <Link
-                                href={`/bilar/${folder}/${car.slug}`}
-                                className="btn btn-dark btn-sm rounded-0 px-3 py-2 fw-bold"
-                                style={{ fontSize: '0.75rem' }}
-                              >
-                                VISA
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      </Col>
-                    );
-                  })
-              ) : (
-                <Col className="text-center py-5 w-100">
-                  <p className="text-muted">Inga fordon hittades just nu.</p>
-                </Col>
-              )}
-            </Row>
-          </div>
+                {/* Dot navigation */}
+                <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+                  <button
+                    onClick={() => setActiveIndex((i) => Math.max(i - 1, 0))}
+                    disabled={activeIndex === 0}
+                    className="btn btn-sm btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
+                    style={{ width: '36px', height: '36px' }}
+                  >
+                    ←
+                  </button>
+
+                  {featuredCars.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      style={{
+                        width: activeIndex === i ? '24px' : '8px',
+                        height: '8px',
+                        borderRadius: '4px',
+                        backgroundColor: activeIndex === i ? '#000' : '#ccc',
+                        border: 'none',
+                        padding: 0,
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer'
+                      }}
+                    />
+                  ))}
+
+                  <button
+                    onClick={() => setActiveIndex((i) => Math.min(i + 1, featuredCars.length - 1))}
+                    disabled={activeIndex === featuredCars.length - 1}
+                    className="btn btn-sm btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
+                    style={{ width: '36px', height: '36px' }}
+                  >
+                    →
+                  </button>
+                </div>
+
+                <div className="text-center mt-3">
+                  <Link href="/bilar" className="text-dark fw-bold text-decoration-none border-bottom border-2 border-dark pb-1">
+                    Se alla bilar
+                  </Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <Col className="text-center py-5">
+              <p className="text-muted">Inga fordon hittades just nu.</p>
+            </Col>
+          )}
         </Container>
       </section>
 
@@ -175,27 +168,25 @@ export default function HomePage({ cars = [] }) {
       <section className="py-5" style={{ backgroundColor: '#F8F9FA' }}>
         <Container>
           <Row className="align-items-center">
-            <Col lg={5} className="mb-5 mb-lg-0">
-              <div className="position-relative">
-                <div style={{ position: 'absolute', top: '-15px', left: '-15px', width: '100%', height: '100%', border: '2px solid #FFD700', zIndex: 0 }} />
-                <div className="bg-dark position-relative" style={{ zIndex: 1 }}>
-                  <Image
-                    src={`${wpBaseUrl}/wp-content/uploads/2026/02/Algrens_CEO.jpeg`}
-                    alt="Ahlgrens Husbilar CEO"
-                    width={600}
-                    height={700}
-                    style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
-                    unoptimized
-                  />
-                </div>
+            <Col lg={5} className="position-relative mb-5 mb-lg-0">
+              <div style={{ position: 'absolute', top: '-20px', left: '-20px', width: '100%', height: '100%', border: '2px solid #FFD700', zIndex: 0 }} />
+              <div className="bg-dark position-relative" style={{ minHeight: '400px', zIndex: 1 }}>
+                <Image
+                  src={`${wpBaseUrl}/wp-content/uploads/2026/02/Algrens_CEO.jpeg`}
+                  alt="Ahlgrens Husbilar CEO"
+                  width={600}
+                  height={700}
+                  style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
+                  unoptimized
+                />
               </div>
             </Col>
-            <Col lg={6} className="offset-lg-1">
-              <h2 className="fw-bold mb-4" style={{ fontSize: 'clamp(1.8rem, 5vw, 2.8rem)' }}>Vår Historia</h2>
+            <Col lg={6} className="offset-lg-1 mt-5 mt-lg-0">
+              <h2 className="display-4 fw-bold mb-4">Vår Historia</h2>
               <p className="lead mb-4">
                 På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar från Europas mest ansedda tillverkare.
               </p>
-              <div className="d-flex gap-4 mb-4">
+              <div className="d-flex gap-4 mb-5">
                 <div>
                   <h3 className="fw-bold mb-0">25+</h3>
                   <p className="small text-muted">Års Erfarenhet</p>
@@ -219,21 +210,16 @@ export default function HomePage({ cars = [] }) {
       {/* 6. CONTACT */}
       <section className="py-5" style={{ backgroundColor: '#000', color: '#fff' }}>
         <Container>
-          <Row className="align-items-center py-4">
+          <Row className="align-items-center py-5">
             <Col lg={6}>
-              <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(2rem, 6vw, 3.5rem)' }}>Redo för nästa äventyr?</h2>
+              <h2 className="display-3 fw-bold mb-4">Redo för<br />nästa äventyr?</h2>
               <p className="fs-5 text-muted mb-0">Vi finns här för personlig rådgivning och visning.</p>
             </Col>
             <Col lg={6} className="text-lg-end mt-4 mt-lg-0">
               <Link
                 href="/kontakt"
-                className="btn btn-lg px-5 py-3 fw-bold"
-                style={{ 
-                  backgroundColor: '#FFD700', 
-                  color: '#000', 
-                  borderRadius: '0', 
-                  clipPath: 'polygon(0 0, 100% 0, 95% 100%, 0% 100%)' 
-                }}
+                className="btn btn-lg px-5 py-4 fw-bold"
+                style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', clipPath: 'polygon(0 0, 100% 0, 92% 100%, 0% 100%)' }}
               >
                 KONTAKTA OSS IDAG
               </Link>
@@ -242,19 +228,62 @@ export default function HomePage({ cars = [] }) {
         </Container>
       </section>
 
-      {/* Internal CSS for the swipe indicator / hiding scrollbars */}
-      <style jsx>{`
-        .car-scroll-wrapper::-webkit-scrollbar {
-          display: none;
-        }
-        @media (max-width: 767px) {
-          .car-scroll-wrapper Row {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-        }
-      `}</style>
-
     </div>
+  );
+}
+
+function CarCard({ car }) {
+  const meta = car.meta || {};
+  const isNew = meta._car_is_new === 'yes';
+  const folder = isNew ? 'nytt' : 'begagnat';
+  const thumbnail = meta._car_thumbnail || '/placeholder-car.jpg';
+  const price = meta._car_price
+    ? parseInt(meta._car_price).toLocaleString('sv-SE') + ' kr'
+    : 'Ring för pris';
+
+  return (
+    <motion.div
+      whileHover={{ y: -10 }}
+      className="border-0 bg-light shadow-sm overflow-hidden"
+      style={{ transition: '0.3s', height: '100%' }}
+    >
+      <div style={{ height: '250px', width: '100%', overflow: 'hidden', position: 'relative' }}>
+        <img
+          src={thumbnail}
+          alt={car.title?.rendered}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          onError={(e) => { e.target.src = '/placeholder-car.jpg'; }}
+        />
+        <div
+          className="position-absolute top-0 start-0 m-2 px-3 py-1 fw-bold text-uppercase"
+          style={{ backgroundColor: isNew ? '#FFD700' : '#000', color: isNew ? '#000' : '#FFF', fontSize: '0.7rem', zIndex: 2 }}
+        >
+          {isNew ? 'Nyhet' : 'Begagnad'}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <p className="text-muted small fw-bold text-uppercase mb-1" style={{ letterSpacing: '1px' }}>
+          {meta._car_make} · {meta._car_year}
+        </p>
+        <h3
+          className="h5 fw-bold mb-1"
+          dangerouslySetInnerHTML={{ __html: car.title?.rendered }}
+        />
+        <p className="text-muted small mb-3">
+          {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
+          {meta._car_fuel ? ` · ${meta._car_fuel}` : ''}
+        </p>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <span className="h5 fw-bold mb-0">{price}</span>
+          <Link
+            href={`/bilar/${folder}/${car.slug}`}
+            className="btn btn-dark btn-sm rounded-0 px-4 py-2 fw-bold"
+          >
+            VISA
+          </Link>
+        </div>
+      </div>
+    </motion.div>
   );
 }
