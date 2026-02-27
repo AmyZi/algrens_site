@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import GaragePreview from './GaragePreview'; // Ensure path is correct
+import GaragePreview from './GaragePreview';
 
 const brands = [
   "PILOTE", "BAVARIA", "HYMER", "LAIKA", "EURA MOBIL",
@@ -87,16 +87,12 @@ export default function HomePage({ cars = [] }) {
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 3)
                 .map((car) => {
-                  const acf = car.acf || {};
-                  const isNew = acf._car_is_new === 'yes';
+                  const meta = car.meta || {};
+                  const isNew = meta._car_is_new === 'yes';
                   const folder = isNew ? 'nytt' : 'begagnat';
-                  
-                  const thumbnail = car._embedded?.['wp:featuredmedia']?.[0]?.source_url 
-                                   || acf._car_thumbnail 
-                                   || '/placeholder-car.jpg';
-
-                  const price = acf._car_price
-                    ? parseInt(acf._car_price).toLocaleString('sv-SE') + ' kr'
+                  const thumbnail = meta._car_thumbnail || '/placeholder-car.jpg';
+                  const price = meta._car_price
+                    ? parseInt(meta._car_price).toLocaleString('sv-SE') + ' kr'
                     : 'Ring för pris';
 
                   return (
@@ -123,15 +119,15 @@ export default function HomePage({ cars = [] }) {
 
                         <div className="p-4">
                           <p className="text-muted small fw-bold text-uppercase mb-1" style={{ letterSpacing: '1px' }}>
-                            {acf._car_make} · {acf._car_year}
+                            {meta._car_make} · {meta._car_year}
                           </p>
                           <h3
                             className="h5 fw-bold mb-1"
                             dangerouslySetInnerHTML={{ __html: car.title?.rendered }}
                           />
                           <p className="text-muted small mb-3">
-                            {acf._car_mileage ? `${parseInt(acf._car_mileage).toLocaleString('sv-SE')} mil` : ''}
-                            {acf._car_fuel ? ` · ${acf._car_fuel}` : ''}
+                            {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
+                            {meta._car_fuel ? ` · ${meta._car_fuel}` : ''}
                           </p>
                           <div className="d-flex justify-content-between align-items-center mt-3">
                             <span className="h5 fw-bold mb-0">{price}</span>
@@ -149,7 +145,7 @@ export default function HomePage({ cars = [] }) {
                 })
             ) : (
               <Col className="text-center py-5">
-                <p className="text-muted italic">Inga fordon hittades just nu.</p>
+                <p className="text-muted">Inga fordon hittades just nu.</p>
               </Col>
             )}
           </Row>
@@ -176,15 +172,50 @@ export default function HomePage({ cars = [] }) {
             <Col lg={6} className="offset-lg-1">
               <h2 className="display-4 fw-bold mb-4">Vår Historia</h2>
               <p className="lead mb-4">
-                På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar.
+                På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar från Europas mest ansedda tillverkare.
               </p>
-              <Link href="/om-oss" className="btn btn-dark px-5 py-3 fw-bold rounded-0">LÄS MER</Link>
+              <div className="d-flex gap-4 mb-5">
+                <div>
+                  <h3 className="fw-bold mb-0">25+</h3>
+                  <p className="small text-muted">Års Erfarenhet</p>
+                </div>
+                <div className="border-start ps-4">
+                  <h3 className="fw-bold mb-0">3000+</h3>
+                  <p className="small text-muted">Nöjda Kunder</p>
+                </div>
+              </div>
+              <Link href="/om-oss" className="btn btn-dark px-5 py-3 fw-bold rounded-0" style={{ letterSpacing: '2px' }}>
+                LÄS MER
+              </Link>
             </Col>
           </Row>
         </Container>
       </section>
 
+      {/* 5. GARAGE PREVIEW */}
       <GaragePreview />
+
+      {/* 6. CONTACT */}
+      <section className="py-5" style={{ backgroundColor: '#000', color: '#fff' }}>
+        <Container>
+          <Row className="align-items-center py-5">
+            <Col lg={6}>
+              <h2 className="display-3 fw-bold mb-4">Redo för<br />nästa äventyr?</h2>
+              <p className="fs-5 text-muted mb-0">Vi finns här för personlig rådgivning och visning.</p>
+            </Col>
+            <Col lg={6} className="text-lg-end mt-4 mt-lg-0">
+              <Link
+                href="/kontakt"
+                className="btn btn-lg px-5 py-4 fw-bold"
+                style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', clipPath: 'polygon(0 0, 100% 0, 92% 100%, 0% 100%)' }}
+              >
+                KONTAKTA OSS IDAG
+              </Link>
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
     </div>
   );
 }
