@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,16 +13,26 @@ const brands = [
   "KNAUS", "CHAUSSON", "PÖSSL", "LMC", "ADRIA"
 ];
 
-  // Fixes hydration mismatch by ensuring animations/client-logic 
-  // only run after the first render.
-  
 export default function HomePage({ cars = [] }) {
   const wpBaseUrl = 'https://www.ahlgrens.eu';
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  // Fixes hydration mismatch by ensuring animations/client-logic 
+  // only run after the first render.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const featuredCars = [...cars]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 3);
+
+  if (!mounted) {
+    // Return a simplified version or null to prevent mismatch 
+    // during the initial hydration swap
+    return <div style={{ backgroundColor: '#FFFFFF', minHeight: '100vh' }} />;
+  }
 
   return (
     <div className="home-page" style={{ 
@@ -37,11 +47,9 @@ export default function HomePage({ cars = [] }) {
         className="hero-section d-flex align-items-center"
         style={{
           minHeight: '80vh',
-          /* Fix 2: Safari  */
           background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${wpBaseUrl}/wp-content/uploads/2026/02/Hero.jpeg')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
           color: '#FFFFFF',
         }}
       >
@@ -56,13 +64,13 @@ export default function HomePage({ cars = [] }) {
                   Handplockat urval av husbilar och fritidsfordon.
                   Över 25 års branscherfarenhet.
                 </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
+                <div className="d-flex flex-wrap gap-3">
                   <Link href="/bilar" className="btn btn-lg fw-bold"
-                    style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', padding: '15px 35px', fontSize: '1rem' }}>
+                    style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', padding: '15px 35px' }}>
                     SE VÅRA BILAR
                   </Link>
                   <Link href="/kontakt" className="btn btn-lg btn-outline-light fw-bold"
-                    style={{ borderRadius: '0', padding: '15px 35px', fontSize: '1rem' }}>
+                    style={{ borderRadius: '0', padding: '15px 35px' }}>
                     KONTAKTA OSS
                   </Link>
                 </div>
@@ -77,7 +85,6 @@ export default function HomePage({ cars = [] }) {
         backgroundColor: '#FFD700',
         padding: '20px 0',
         overflow: 'hidden',
-        width: '100%',
         whiteSpace: 'nowrap',
         borderTop: '1px solid #000',
         borderBottom: '1px solid #000'
@@ -104,14 +111,7 @@ export default function HomePage({ cars = [] }) {
       {/* 3. UTVALDA FORDON */}
       <section style={{ padding: '80px 0' }}>
         <Container>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            marginBottom: '3rem',
-            flexWrap: 'wrap',
-            gap: '15px'
-          }}>
+          <div className="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
             <div>
               <h6 className="text-primary fw-bold text-uppercase" style={{ letterSpacing: '2px', fontSize: '0.8rem' }}>
                 Premium Selection
@@ -120,8 +120,7 @@ export default function HomePage({ cars = [] }) {
                 Utvalda Fordon
               </h2>
             </div>
-            <Link href="/bilar" className="text-dark fw-bold text-decoration-none"
-              style={{ borderBottom: '2px solid #000', paddingBottom: '2px' }}>
+            <Link href="/bilar" className="text-dark fw-bold text-decoration-none border-bottom border-2 border-dark pb-1">
               Se alla bilar
             </Link>
           </div>
@@ -153,43 +152,38 @@ export default function HomePage({ cars = [] }) {
                   </motion.div>
                 </AnimatePresence>
 
-                {/* Dot + Arrow Navigation */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: '30px',
-                  gap: '20px'
-                }}>
+                <div className="d-flex justify-content-center align-items-center mt-4 gap-4">
                   <button
                     onClick={() => setActiveIndex((i) => Math.max(i - 1, 0))}
                     disabled={activeIndex === 0}
-                    className="carousel-nav-btn"
+                    style={{
+                      width: '44px', height: '44px', borderRadius: '50%', border: '1px solid #000',
+                      backgroundColor: 'transparent', opacity: activeIndex === 0 ? 0.2 : 1
+                    }}
                   >
                     ←
                   </button>
-
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <div className="d-flex gap-2">
                     {featuredCars.map((_, i) => (
                       <div
                         key={i}
                         onClick={() => setActiveIndex(i)}
                         style={{
                           width: activeIndex === i ? '25px' : '8px',
-                          height: '8px',
-                          borderRadius: '4px',
+                          height: '8px', borderRadius: '4px',
                           backgroundColor: activeIndex === i ? '#000' : '#ccc',
-                          transition: 'all 0.3s ease',
-                          cursor: 'pointer'
+                          transition: 'all 0.3s ease'
                         }}
                       />
                     ))}
                   </div>
-
                   <button
                     onClick={() => setActiveIndex((i) => Math.min(i + 1, featuredCars.length - 1))}
                     disabled={activeIndex === featuredCars.length - 1}
-                    className="carousel-nav-btn"
+                    style={{
+                      width: '44px', height: '44px', borderRadius: '50%', border: '1px solid #000',
+                      backgroundColor: 'transparent', opacity: activeIndex === featuredCars.length - 1 ? 0.2 : 1
+                    }}
                   >
                     →
                   </button>
@@ -197,7 +191,7 @@ export default function HomePage({ cars = [] }) {
               </div>
             </>
           ) : (
-            <div style={{ textAlign: 'center', padding: '60px 0' }}>
+            <div className="text-center py-5">
               <p className="text-muted">Inga fordon hittades just nu.</p>
             </div>
           )}
@@ -210,13 +204,8 @@ export default function HomePage({ cars = [] }) {
           <Row className="align-items-center">
             <Col lg={5} className="position-relative mb-5 mb-lg-0">
               <div style={{
-                position: 'absolute',
-                top: '-15px',
-                left: '-15px',
-                width: '100%',
-                height: '100%',
-                border: '2px solid #FFD700',
-                zIndex: 0
+                position: 'absolute', top: '-15px', left: '-15px',
+                width: '100%', height: '100%', border: '2px solid #FFD700', zIndex: 0
               }} />
               <div className="bg-dark position-relative" style={{ minHeight: '450px', zIndex: 1 }}>
                 <Image
@@ -229,26 +218,24 @@ export default function HomePage({ cars = [] }) {
                 />
               </div>
             </Col>
-            <Col lg={6} className="offset-lg-1 mt-4 mt-lg-0">
+            <Col lg={6} className="offset-lg-1">
               <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 900, marginBottom: '1.5rem' }}>
                 Vår Historia
               </h2>
-              <p className="lead mb-4" style={{ fontSize: '1.1rem', color: '#444' }}>
-                På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar
-                från Europas mest ansedda tillverkare.
+              <p className="lead mb-4">
+                På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar från Europas mest ansedda tillverkare.
               </p>
-              <div style={{ display: 'flex', gap: '40px', marginBottom: '2.5rem' }}>
+              <div className="d-flex gap-5 mb-4">
                 <div>
                   <h3 className="fw-bold mb-0">25+</h3>
                   <p className="small text-muted">Års Erfarenhet</p>
                 </div>
-                <div style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '40px' }}>
+                <div className="border-start ps-5">
                   <h3 className="fw-bold mb-0">3000+</h3>
                   <p className="small text-muted">Nöjda Kunder</p>
                 </div>
               </div>
-              <Link href="/om-oss" className="btn btn-dark fw-bold"
-                style={{ borderRadius: '0', letterSpacing: '2px', padding: '15px 45px' }}>
+              <Link href="/om-oss" className="btn btn-dark fw-bold px-5 py-3" style={{ borderRadius: '0', letterSpacing: '2px' }}>
                 LÄS MER
               </Link>
             </Col>
@@ -264,23 +251,16 @@ export default function HomePage({ cars = [] }) {
         <Container>
           <Row className="align-items-center">
             <Col lg={6}>
-              <h2 style={{ fontSize: 'clamp(2.2rem, 6vw, 3.5rem)', fontWeight: 900, marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: 'clamp(2.2rem, 6vw, 3.5rem)', fontWeight: 900 }}>
                 Redo för nästa äventyr?
               </h2>
-              <p className="fs-5 text-muted mb-0">Vi finns här för personlig rådgivning och visning.</p>
+              <p className="fs-5 text-muted">Vi finns här för personlig rådgivning och visning.</p>
             </Col>
-            <Col lg={6} className="mt-5 mt-lg-0 text-lg-end">
+            <Col lg={6} className="text-lg-end mt-4 mt-lg-0">
               <Link
                 href="/kontakt"
-                className="btn btn-lg fw-bold contact-btn-safari"
-                style={{
-                  backgroundColor: '#FFD700',
-                  color: '#000',
-                  borderRadius: '0',
-                  padding: '18px 45px',
-                  display: 'inline-block',
-                  fontSize: '1.1rem'
-                }}
+                className="btn btn-lg fw-bold"
+                style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', padding: '18px 45px' }}
               >
                 KONTAKTA OSS IDAG
               </Link>
@@ -288,40 +268,6 @@ export default function HomePage({ cars = [] }) {
           </Row>
         </Container>
       </section>
-
-      {/* Safari Specific Overrides */}
-      <style jsx global>{`
-        /* Fix for Safari scroll bounce and jitter */
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .carousel-nav-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid #000;
-            background-color: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .carousel-nav-btn:disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-        }
-
-        /* Better Button Tap handling for iOS */
-        .btn {
-            -webkit-tap-highlight-color: transparent;
-        }
-      `}</style>
-
     </div>
   );
 }
@@ -337,14 +283,9 @@ function CarCard({ car }) {
 
   return (
     <motion.div
-      style={{
-        backgroundColor: '#f8f9fa',
-        overflow: 'hidden',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
+      whileHover={{ y: -6 }}
+      className="h-100 d-flex flex-column"
+      style={{ backgroundColor: '#f8f9fa', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}
     >
       <div style={{ height: '240px', width: '100%', overflow: 'hidden', position: 'relative' }}>
         <img
@@ -352,41 +293,24 @@ function CarCard({ car }) {
           alt={car.title?.rendered}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
-        <div style={{
-          position: 'absolute',
-          top: '15px',
-          left: '15px',
-          backgroundColor: isNew ? '#FFD700' : '#000',
-          color: isNew ? '#000' : '#FFF',
-          fontSize: '0.7rem',
-          fontWeight: 800,
-          textTransform: 'uppercase',
-          padding: '5px 12px',
-          zIndex: 2
-        }}>
+        <div className="position-absolute top-0 start-0 m-3 px-3 py-1 fw-bold text-uppercase"
+          style={{ backgroundColor: isNew ? '#FFD700' : '#000', color: isNew ? '#000' : '#FFF', fontSize: '0.7rem' }}>
           {isNew ? 'Nyhet' : 'Begagnad'}
         </div>
       </div>
 
-      <div style={{ padding: '25px', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#666', marginBottom: '8px' }}>
+      <div className="p-4 flex-grow-1 d-flex flex-column">
+        <p className="small text-muted fw-bold text-uppercase mb-1">
           {meta._car_make} · {meta._car_year}
         </p>
-        <h3
-          style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '10px', lineHeight: '1.3' }}
-          dangerouslySetInnerHTML={{ __html: car.title?.rendered }}
-        />
-        <p style={{ fontSize: '0.9rem', color: '#777', marginBottom: '20px' }}>
+        <h3 className="h5 fw-bold mb-2" dangerouslySetInnerHTML={{ __html: car.title?.rendered }} />
+        <p className="small text-muted mb-4">
           {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
           {meta._car_fuel ? ` · ${meta._car_fuel}` : ''}
         </p>
-        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '1.25rem', fontWeight: 900 }}>{price}</span>
-          <Link
-            href={`/bilar/${folder}/${car.slug}`}
-            className="btn btn-dark fw-bold"
-            style={{ borderRadius: '0', padding: '10px 25px', fontSize: '0.85rem' }}
-          >
+        <div className="mt-auto d-flex justify-content-between align-items-center">
+          <span className="h5 fw-bold mb-0">{price}</span>
+          <Link href={`/bilar/${folder}/${car.slug}`} className="btn btn-dark btn-sm px-4 py-2" style={{ borderRadius: '0' }}>
             VISA
           </Link>
         </div>
