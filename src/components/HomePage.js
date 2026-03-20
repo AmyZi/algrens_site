@@ -13,6 +13,9 @@ const brands = [
   "KNAUS", "CHAUSSON", "PÖSSL", "LMC", "ADRIA"
 ];
 
+  // Fixes hydration mismatch by ensuring animations/client-logic 
+  // only run after the first render.
+  
 export default function HomePage({ cars = [] }) {
   const wpBaseUrl = 'https://www.ahlgrens.eu';
   const [activeIndex, setActiveIndex] = useState(0);
