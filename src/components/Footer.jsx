@@ -129,7 +129,7 @@ export default function Footer() {
         <hr style={{ borderColor: '#222', margin: '60px 0 30px', opacity: 1 }} />
 
         {/* BOTTOM BAR WITH UNDERLINE */}
-        <Row className="align-items-center" style={{ borderBottom: `1px solid ${brandGold}`, paddingBottom: '20px' }}>
+        <Row className="align-items-center">
           <Col md={6}>
             <p style={{ fontSize: '0.75rem', color: '#555', margin: 0 }}>
               © {currentYear} AHLGRENS HUSBILAR. ALLA RÄTTIGHETER FÖRBEHÅLLNA.
