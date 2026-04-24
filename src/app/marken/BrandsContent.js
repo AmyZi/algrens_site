@@ -1,78 +1,36 @@
 'use client';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import '@/styles/custom.scss';
+import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import PageHero from '@/components/PageHero';
 
 export default function BrandsContent({ wpBaseUrl, brands }) {
   return (
-    <div className="brands-page" style={{ backgroundColor: '#FFFFFF', color: '#000' }}>
-      <section 
-        style={{
-          backgroundColor: '#000',
-          color: 'white',
-          padding: '120px 0 80px 0',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <Container>
-          <Row>
-            <Col lg={8}>
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }} 
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <h6 className="fw-bold mb-3" style={{ color: '#FFD700', letterSpacing: '0.3em' }}>
-                  OUR PARTNERS
-                </h6>
-                <h1 className="display-1 fw-black mb-4" style={{ letterSpacing: '-0.04em', lineHeight: '1' }}>
-                  PREMIUM <br />
-                  <span style={{ 
-                    WebkitTextStroke: '1px #FFD700', 
-                    WebkitTextFillColor: 'transparent' 
-                  }}>
-                    MÄRKEN
-                  </span>
-                </h1>
-                <p className="lead fs-4 fw-medium text-white" style={{ maxWidth: '600px' }}>
-                  Vi samarbetar exklusivt med Europas ledande tillverkare för att säkerställa din livskvalitet på vägen.
-                </p>
-              </motion.div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+    <div className="brands-page">
 
-      {/* 2. BRAND GRID*/}
-      <section className="py-5" style={{ marginTop: '-40px' }}>
+      {/* ── 1. Hero ── */}
+      <PageHero
+        eyebrow="OUR PARTNERS"
+        title="PREMIUM"
+        titleAccent="MÄRKEN"
+        subtitle="Vi samarbetar exklusivt med Europas ledande tillverkare för att säkerställa din livskvalitet på vägen."
+      />
+
+      {/* ── 2. Brand grid ── */}
+      <section className="brands-grid-section">
         <Container>
-          <Row className="g-0 shadow-sm" style={{ border: '1px solid #000' }}>
+          <Row className="g-0 brands-grid">
             {brands.map((brand, index) => (
-              <Col key={index} lg={3} md={4} sm={6} xs={6} 
-                style={{ 
-                  border: '0.5px solid #F1F5F9',
-                  backgroundColor: '#FFF' 
-                }}
-              >
-                <motion.div 
+              <Col key={index} lg={3} md={4} sm={6} xs={6} className="brand-cell">
+                <motion.div
                   whileHover={{ backgroundColor: '#FFD700' }}
-                  className="brand-item text-center p-5"
-                  style={{
-                    height: '220px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    transition: '0.2s ease-in-out',
-                    cursor: 'crosshair'
-                  }}
+                  className="brand-item"
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className="position-relative mb-4" style={{ width: '100%', height: '60px', filter: 'grayscale(100%) brightness(0.2)' }}>
-                    <Image 
+                  <div className="brand-item__logo-wrap">
+                    <Image
                       src={`${wpBaseUrl}/wp-content/uploads/car-logos/${brand.logo}`}
                       alt={brand.name}
                       fill
@@ -80,8 +38,8 @@ export default function BrandsContent({ wpBaseUrl, brands }) {
                       unoptimized
                     />
                   </div>
-                  <h3 className="h6 fw-black mb-1" style={{ letterSpacing: '0.1em' }}>{brand.name.toUpperCase()}</h3>
-                  <p className="small mb-0 opacity-50 fw-bold" style={{ fontSize: '0.7rem' }}>{brand.country.toUpperCase()}</p>
+                  <h3 className="brand-item__name">{brand.name.toUpperCase()}</h3>
+                  <p className="brand-item__country">{brand.country.toUpperCase()}</p>
                 </motion.div>
               </Col>
             ))}
@@ -89,25 +47,25 @@ export default function BrandsContent({ wpBaseUrl, brands }) {
         </Container>
       </section>
 
-      {/* 3. TYPES SECTION */}
-      <section className="py-5 bg-white">
+      {/* ── 3. Categories ── */}
+      <section className="brands-categories">
         <Container className="py-5">
-          <div className="mb-5">
-            <h2 className="display-4 fw-black">KATEGORIER</h2>
-            <div style={{ width: '60px', height: '4px', backgroundColor: '#000' }}></div>
+          <div className="brands-categories__heading">
+            <h2 className="brands-categories__title">KATEGORIER</h2>
+            <div className="brands-categories__rule" />
           </div>
           <Row className="g-4">
             {[
-              { type: 'ALKOVER', desc: 'Familjevänliga klassiker med maximalt utrymme.', icon: '01' },
-              { type: 'HALVINTEGRERAD', desc: 'Smidig körning möter modern lyx.', icon: '02' },
-              { type: 'HELINTEGRERAD', desc: 'Det yttersta inom komfort och panoramavy.', icon: '03' }
+              { type: 'ALKOVER',        desc: 'Familjevänliga klassiker med maximalt utrymme.',  icon: '01' },
+              { type: 'HALVINTEGRERAD', desc: 'Smidig körning möter modern lyx.',                icon: '02' },
+              { type: 'HELINTEGRERAD',  desc: 'Det yttersta inom komfort och panoramavy.',       icon: '03' },
             ].map((item, i) => (
               <Col md={4} key={i}>
-                <div className="p-4 h-100 position-relative" style={{ border: '2px solid #F1F5F9' }}>
-                  <span className="display-5 fw-black position-absolute" style={{ top: '10px', right: '20px', opacity: 0.1 }}>{item.icon}</span>
-                  <h3 className="h4 fw-black mb-3">{item.type}</h3>
-                  <p className="text-muted fw-medium">{item.desc}</p>
-                  <div className="mt-4" style={{ width: '20px', height: '2px', backgroundColor: '#FFD700' }}></div>
+                <div className="brand-category-card">
+                  <span className="brand-category-card__number">{item.icon}</span>
+                  <h3 className="brand-category-card__type">{item.type}</h3>
+                  <p className="brand-category-card__desc">{item.desc}</p>
+                  <div className="brand-category-card__rule" />
                 </div>
               </Col>
             ))}
@@ -115,14 +73,6 @@ export default function BrandsContent({ wpBaseUrl, brands }) {
         </Container>
       </section>
 
-      {/* CUSTOM CSS FOR HOVER LOGO COLORS */}
-      <style jsx>{`
-        .brand-item:hover div {
-          filter: grayscale(0%) brightness(1) !important;
-          transform: scale(1.1);
-          transition: 0.3s;
-        }
-      `}</style>
     </div>
   );
 }

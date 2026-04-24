@@ -40,7 +40,7 @@ export const metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code',
+    google: 'G-62S3QXZSL8',
   },
 };
 

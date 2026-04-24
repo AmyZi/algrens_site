@@ -4,53 +4,67 @@ import SimilarVehicles from '@/components/SimilarVehicles';
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch('https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100');
+    const res = await fetch(
+      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100',
+      { cache: 'force-cache' }
+    );
+    if (!res.ok) return [];
     const cars = await res.json();
-    return Array.isArray(cars)
-      ? cars
-          .filter(car => car.meta?._car_is_new !== 'yes')
-          .map((car) => ({ slug: car.slug }))
-      : [];
-  } catch (error) {
-    console.error('Build Error fetching params:', error);
+    if (!Array.isArray(cars)) return [];
+    return cars
+      .filter(car => car.meta?._car_is_new !== 'yes')
+      .map(car => ({ slug: car.slug }));
+  } catch (err) {
+    console.error('generateStaticParams /begagnat/[slug]:', err);
     return [];
   }
 }
 
+// Required with output:export — never attempt unknown slugs at runtime
+export const dynamicParams = false;
+
 async function getCarData(slug) {
-  const res = await fetch(
-    `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`,
-    { cache: 'force-cache' }
-  );
-  const data = await res.json();
-  return data?.[0] || null;
+  try {
+    const res = await fetch(
+      `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`,
+      { cache: 'force-cache' }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.[0] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 async function getSimilarCars(currentCar) {
-  const res = await fetch(
-    `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100`,
-    { cache: 'force-cache' }
-  );
-  const data = await res.json();
-  if (!Array.isArray(data)) return [];
+  try {
+    const res = await fetch(
+      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100',
+      { cache: 'force-cache' }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!Array.isArray(data)) return [];
 
-  const bodyType = currentCar.meta?._car_body_type?.trim().toLowerCase();
-  const currentId = currentCar.id;
+    const bodyType  = currentCar.meta?._car_body_type?.trim().toLowerCase();
+    const currentId = currentCar.id;
 
-  // Match by body type
-  let similar = data.filter(c =>
-    c.id !== currentId &&
-    c.meta?._car_body_type?.trim().toLowerCase() === bodyType
-  );
+    let similar = data.filter(c =>
+      c.id !== currentId &&
+      c.meta?._car_body_type?.trim().toLowerCase() === bodyType
+    );
 
-  // Fallback: if fewer than 3 matches, fill up with any other cars
-  if (similar.length < 3) {
-    const ids = new Set(similar.map(c => c.id));
-    const extras = data.filter(c => c.id !== currentId && !ids.has(c.id));
-    similar = [...similar, ...extras];
+    if (similar.length < 3) {
+      const ids    = new Set(similar.map(c => c.id));
+      const extras = data.filter(c => c.id !== currentId && !ids.has(c.id));
+      similar = [...similar, ...extras];
+    }
+
+    return similar.slice(0, 3);
+  } catch {
+    return [];
   }
-
-  return similar.slice(0, 3);
 }
 
 export default async function Page({ params }) {

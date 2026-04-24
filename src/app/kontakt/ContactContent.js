@@ -121,6 +121,20 @@ const ContactContent = () => {
               <ContactItem icon={<PhoneIcon />} label="Phone" value="033-10 30 11" />
               <ContactItem icon={<MapIcon />} label="Address" value="Gånghestersvägen 129, 507 62 Borås" />
               <ContactItem icon={<ClockIcon />} label="Business Hours" value="Mon - Fri: 9:00 - 17:00" />
+
+              <div className="mt-5">
+                <h6 className="fw-bold text-uppercase small mb-3" style={{ color: '#64748B', letterSpacing: '0.1em' }}>Follow Us</h6>
+                <div className="d-flex gap-3">
+                   <SocialIcon 
+                     icon={<FacebookIcon />} 
+                     link="https://www.facebook.com/share/14M7UYf2jR3/?mibextid=wwXIfr" 
+                   />
+                   <SocialIcon 
+                     icon={<InstagramIcon />} 
+                     link="https://www.instagram.com/ahlgrenshusbilar?igsh=dWl1NWY3NWJnMnBh" 
+                   />
+                </div>
+              </div> 
             </div>
           </Col>
 
@@ -188,7 +202,7 @@ const ContactContent = () => {
   );
 };
 
-// --- Sub Components & Icons (Keep these exactly as they are) ---
+// --- Sub Components & Icons---
 const ContactItem = ({ icon, label, value }) => (
   <div className="d-flex align-items-center mb-4">
     <div style={{ width: '48px', height: '48px', backgroundColor: '#EFF6FF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '20px', color: '#2563EB' }}>
