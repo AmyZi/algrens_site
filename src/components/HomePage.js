@@ -240,7 +240,7 @@ export default function HomePage({ cars = [] }) {
               }} />
               <div className="bg-dark position-relative" style={{ minHeight: '400px', zIndex: 1 }}>
                 <Image
-                  src={`${wpBaseUrl}/wp-content/uploads/2026/02/Algrens_CEO.jpeg`}
+                  src={`${wpBaseUrl}/wp-content/uploads/2026/05/jonas_temp.jpeg`}
                   alt="Ahlgrens Husbilar CEO"
                   width={600}
                   height={700}
