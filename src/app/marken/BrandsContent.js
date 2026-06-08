@@ -1,6 +1,6 @@
 'use client';
 
-import '@/styles/custom.scss';
+
 import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import { motion } from 'framer-motion';

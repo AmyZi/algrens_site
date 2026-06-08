@@ -1,60 +1,118 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import GaragePreview from './GaragePreview';
 
-const brands = [
+const BRANDS = [
   "PILOTE", "BAVARIA", "HYMER", "LAIKA", "EURA MOBIL",
   "DETHLEFFS", "BÜRSTNER", "CARADO", "RAPIDO", "MCLOUIS",
   "KNAUS", "CHAUSSON", "PÖSSL", "LMC", "ADRIA"
 ];
 
+const WP_BASE = 'https://www.ahlgrens.eu';
+
+function getImages(meta) {
+  const gallery = meta._car_gallery_urls;
+  if (gallery) {
+    const urls = gallery.split(',').map(u => u.trim()).filter(Boolean);
+    if (urls.length > 0) return urls;
+  }
+  return [meta._car_thumbnail || '/placeholder-car.jpg'];
+}
+
+function HomeCarCard({ car }) {
+  const meta   = car.meta || {};
+  const isNew  = meta._car_is_new === 'yes';
+  const folder = isNew ? 'nytt' : 'begagnat';
+  const images = getImages(meta);
+  const price  = meta._car_price
+    ? `${parseInt(meta._car_price).toLocaleString('sv-SE')} kr`
+    : 'Ring för pris';
+
+  return (
+    <motion.div className="hcard" whileHover={{ y: -6 }} transition={{ duration: 0.2 }}>
+      <div className="hcard__image-wrap">
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          pagination={{ clickable: true, type: 'bullets' }}
+          autoplay={images.length > 1 ? { delay: 3500, disableOnInteraction: false } : false}
+          loop={images.length > 1}
+          grabCursor
+          speed={500}
+          className="hcard__swiper"
+        >
+          {images.map((src, i) => (
+            <SwiperSlide key={i}>
+              <img
+                src={src}
+                alt={i === 0 ? (car.title?.rendered ?? 'Fordon') : ''}
+                className="hcard__image"
+                loading={i === 0 ? 'eager' : 'lazy'}
+                onError={e => { e.target.src = '/placeholder-car.jpg'; }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        {/* Badge is sibling to Swiper, both inside hcard__image-wrap (position: relative) */}
+        <span className={`hcard__badge${isNew ? ' hcard__badge--new' : ' hcard__badge--used'}`}>
+          {isNew ? 'NYHET' : 'BEGAGNAD'}
+        </span>
+      </div>
+      <Link href={`/bilar/${folder}/${car.slug}/`} className="hcard__body-link">
+        <div className="hcard__body">
+          <p className="hcard__meta">{meta._car_make} · {meta._car_year}</p>
+          <h3 className="hcard__title" dangerouslySetInnerHTML={{ __html: car.title?.rendered }} />
+          <p className="hcard__specs">
+            {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
+            {meta._car_fuel    ? ` · ${meta._car_fuel}` : ''}
+          </p>
+          <div className="hcard__footer">
+            <span className="hcard__price">{price}</span>
+            <span className="hcard__cta">VISA</span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function HomePage({ cars = [] }) {
-  const wpBaseUrl = 'https://www.ahlgrens.eu';
-  const [activeIndex, setActiveIndex] = useState(0);
+  const desktopSwiperRef = useRef(null);
+  const mobileSwiperRef  = useRef(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
 
   const featuredCars = [...cars]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3);
+    .slice(0, 6);
 
   return (
-    <div className="home-page" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="home-page">
 
-      {/* 1. HERO SECTION */}
+      {/* ── 1. HERO ── */}
       <section
-        className="hero-section d-flex align-items-center"
+        className="hero-section"
         style={{
-          minHeight: '80vh',
-          background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${wpBaseUrl}/wp-content/uploads/2026/02/Hero.jpeg')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          color: '#FFFFFF',
+          background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${WP_BASE}/wp-content/uploads/2026/02/Hero.jpeg') center/cover no-repeat`,
         }}
       >
         <Container>
           <Row>
             <Col lg={7}>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '1rem' }}>
-                  Husbilar & Fritidsbilar<br />i Borås
-                </h1>
-                <p style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', opacity: 0.9, marginBottom: '2rem' }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+                <h1 className="hero-title">Husbilar & Fritidsbilar<br />i Borås</h1>
+                <p className="hero-subtitle">
                   Handplockat urval av husbilar och fritidsfordon.
                   Erfaren husbilshandlare med över 25 års branscherfarenhet.
                 </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                  <Link href="/bilar" className="btn btn-lg fw-bold"
-                    style={{ backgroundColor: '#FFD700', color: '#000', borderRadius: '0', padding: '12px 32px' }}>
-                    SE VÅRA BILAR
-                  </Link>
-                  <Link href="/kontakt" className="btn btn-lg btn-outline-light fw-bold"
-                    style={{ borderRadius: '0', padding: '12px 32px' }}>
-                    KONTAKTA OSS
-                  </Link>
+                <div className="hero-actions">
+                  <Link href="/bilar" className="hero-btn hero-btn--primary">SE VÅRA BILAR</Link>
+                  <Link href="/kontakt" className="hero-btn hero-btn--outline">KONTAKTA OSS</Link>
                 </div>
               </motion.div>
             </Col>
@@ -62,344 +120,177 @@ export default function HomePage({ cars = [] }) {
         </Container>
       </section>
 
-      {/* 2. BRAND TICKER */}
-      <div style={{
-        backgroundColor: '#FFD700',
-        padding: '20px 0',
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        borderTop: '1px solid #000',
-        borderBottom: '1px solid #000'
-      }}>
+      {/* ── 2. BRAND TICKER ── */}
+      <div className="brand-ticker">
         <motion.div
+          className="brand-ticker__track"
           animate={{ x: [0, -2000] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          style={{ display: 'inline-block' }}
+          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
         >
-          {[...brands, ...brands].map((brand, i) => (
-            <span key={i} style={{
-              fontSize: 'clamp(1rem, 2vw, 1.5rem)',
-              fontWeight: '900',
-              color: '#000',
-              margin: '0 40px',
-              letterSpacing: '2px'
-            }}>
-              {brand} •
-            </span>
+          {[...BRANDS, ...BRANDS].map((brand, i) => (
+            <span key={i} className="brand-ticker__item">{brand} •</span>
           ))}
         </motion.div>
       </div>
 
-      {/* 3. UTVALDA FORDON */}
-      <section style={{ padding: '60px 0' }}>
+      {/* ── 3. UTVALDA FORDON ── */}
+      <section className="featured-section">
         <Container>
-          {/* Header */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            marginBottom: '2rem',
-            flexWrap: 'wrap',
-            gap: '12px'
-          }}>
+          <div className="featured-header">
             <div>
-              <h6 className="text-primary fw-bold text-uppercase" style={{ letterSpacing: '2px' }}>
-                Premium Selection
-              </h6>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, margin: 0 }}>
-                Utvalda Fordon
-              </h2>
+              <h6 className="featured-eyebrow">Premium Selection</h6>
+              <h2 className="featured-title">Utvalda Fordon</h2>
             </div>
-            <Link href="/bilar" className="text-dark fw-bold text-decoration-none"
-              style={{ borderBottom: '2px solid #000', paddingBottom: '2px' }}>
-              Se alla bilar
-            </Link>
+            <Link href="/bilar" className="featured-link">Se alla bilar</Link>
           </div>
 
           {featuredCars.length > 0 ? (
             <>
-              {/* DESKTOP: 3 columns — hidden on mobile */}
-              <Row className="g-4" style={{ display: 'none' }} id="desktop-cars">
-                {featuredCars.map((car) => (
-                  <Col lg={4} md={6} key={car.id}>
-                    <CarCard car={car} />
-                  </Col>
-                ))}
-              </Row>
-
-              {/* MOBILE CAROUSEL */}
-              <div id="mobile-cars">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeIndex}
-                    initial={{ opacity: 0, x: 40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -40 }}
-                    transition={{ duration: 0.25 }}
-                  >
-                    <CarCard car={featuredCars[activeIndex]} />
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Dot + Arrow Navigation */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: '24px',
-                  gap: '12px'
-                }}>
+              {/* ── DESKTOP: Arrow-nav Swiper, 3 visible, arrows scroll more ── */}
+              <div className="featured-desktop">
+                <div className="featured-slider-container">
                   <button
-                    onClick={() => setActiveIndex((i) => Math.max(i - 1, 0))}
-                    disabled={activeIndex === 0}
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      border: '1px solid #000',
-                      backgroundColor: 'transparent',
-                      cursor: activeIndex === 0 ? 'not-allowed' : 'pointer',
-                      opacity: activeIndex === 0 ? 0.3 : 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '16px'
-                    }}
-                  >
-                    ←
-                  </button>
+                    className="feat-side-btn feat-side-btn--prev"
+                    aria-label="Föregående bil"
+                    onClick={() => desktopSwiperRef.current?.slidePrev()}
+                  >&#10216;</button>
+                  <button
+                    className="feat-side-btn feat-side-btn--next"
+                    aria-label="Nästa bil"
+                    onClick={() => desktopSwiperRef.current?.slideNext()}
+                  >&#10217;</button>
 
+                  <Swiper
+                    modules={[Pagination]}
+                    onSwiper={swiper => { desktopSwiperRef.current = swiper; }}
+                    slidesPerView={3}
+                    spaceBetween={24}
+                    grabCursor
+                    loop
+                    pagination={{ clickable: true, type: 'bullets' }}
+                    breakpoints={{
+                      768:  { slidesPerView: 2, spaceBetween: 20 },
+                      1024: { slidesPerView: 3, spaceBetween: 24 },
+                    }}
+                    className="featured-desktop__swiper"
+                  >
+                    {featuredCars.map(car => (
+                      <SwiperSlide key={car.id}>
+                        <HomeCarCard car={car} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              </div>
+
+              {/* ── MOBILE: Coverflow carousel ── */}
+              <div className="featured-mobile">
+                {/* Swiper — no built-in pagination; dots rendered manually below */}
+                <div className="featured-mobile__swiper-clip">
+                  <Swiper
+                    modules={[EffectCoverflow]}
+                    onSwiper={swiper => {
+                      mobileSwiperRef.current = swiper;
+                      setMobileIndex(swiper.realIndex);
+                    }}
+                    onSlideChange={swiper => setMobileIndex(swiper.realIndex)}
+                    effect="coverflow"
+                    coverflowEffect={{ rotate: 15, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
+                    centeredSlides
+                    grabCursor
+                    slidesPerView={1.2}
+                    spaceBetween={16}
+                    loop={featuredCars.length > 2}
+                  >
+                    {featuredCars.map(car => (
+                      <SwiperSlide key={car.id}>
+                        <HomeCarCard car={car} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+
+                {/* Manual pagination dots — outside Swiper, above the link */}
+                <div className="featured-mobile__pagination">
                   {featuredCars.map((_, i) => (
                     <button
                       key={i}
-                      onClick={() => setActiveIndex(i)}
-                      style={{
-                        width: activeIndex === i ? '24px' : '8px',
-                        height: '8px',
-                        borderRadius: '4px',
-                        backgroundColor: activeIndex === i ? '#000' : '#ccc',
-                        border: 'none',
-                        padding: 0,
-                        WebkitTransition: 'all 0.3s ease',
-                        transition: 'all 0.3s ease',
-                        cursor: 'pointer'
-                      }}
+                      className={`mobile-dot${i === mobileIndex ? ' mobile-dot--active' : ''}`}
+                      aria-label={`Gå till bil ${i + 1}`}
+                      onClick={() => mobileSwiperRef.current?.slideToLoop(i)}
                     />
                   ))}
-
-                  <button
-                    onClick={() => setActiveIndex((i) => Math.min(i + 1, featuredCars.length - 1))}
-                    disabled={activeIndex === featuredCars.length - 1}
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      border: '1px solid #000',
-                      backgroundColor: 'transparent',
-                      cursor: activeIndex === featuredCars.length - 1 ? 'not-allowed' : 'pointer',
-                      opacity: activeIndex === featuredCars.length - 1 ? 0.3 : 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '16px'
-                    }}
-                  >
-                    →
-                  </button>
                 </div>
 
-                <div style={{ textAlign: 'center', marginTop: '16px' }}>
-                  <Link href="/bilar" className="text-dark fw-bold text-decoration-none"
-                    style={{ borderBottom: '2px solid #000', paddingBottom: '2px' }}>
-                    Se alla bilar
-                  </Link>
+                <div className="featured-mobile__link">
+                  <Link href="/bilar" className="featured-link">Se alla bilar</Link>
                 </div>
               </div>
             </>
           ) : (
-            <div style={{ textAlign: 'center', padding: '60px 0' }}>
-              <p className="text-muted">Inga fordon hittades just nu.</p>
-            </div>
+            <p className="featured-empty">Inga fordon hittades just nu.</p>
           )}
         </Container>
       </section>
 
-      {/* 4. ABOUT SECTION */}
-      <section style={{ padding: '60px 0', backgroundColor: '#F8F9FA' }}>
+      {/* ── 4. ABOUT ── */}
+      <section className="about-section">
         <Container>
           <Row className="align-items-center">
-            <Col lg={5} className="position-relative mb-5 mb-lg-0">
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                left: '-20px',
-                width: '100%',
-                height: '100%',
-                border: '2px solid #FFD700',
-                zIndex: 0
-              }} />
-              <div className="bg-dark position-relative" style={{ minHeight: '400px', zIndex: 1 }}>
-                <Image
-                  src={`${wpBaseUrl}/wp-content/uploads/2026/05/jonas_temp.jpeg`}
-                  alt="Ahlgrens Husbilar CEO"
-                  width={600}
-                  height={700}
-                  style={{ objectFit: 'cover', width: '100%', height: 'auto' }}
-                  unoptimized
-                />
+            <Col lg={5} className="mb-5 mb-lg-0">
+              <div className="about-image-wrap">
+                <div className="about-image-border" />
+                <div className="about-image-inner">
+                  <Image
+                    src={`${WP_BASE}/wp-content/uploads/2026/05/jonas_temp.jpeg`}
+                    alt="Ahlgrens Husbilar CEO"
+                    width={600} height={700}
+                    className="about-image"
+                    unoptimized
+                  />
+                </div>
               </div>
             </Col>
             <Col lg={6} className="offset-lg-1 mt-5 mt-lg-0">
-              <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 900, marginBottom: '1rem' }}>
-                Vår Historia
-              </h2>
-              <p className="lead mb-4">
+              <h2 className="about-title">Vår Historia</h2>
+              <p className="about-lead">
                 På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar
                 från Europas mest ansedda tillverkare.
               </p>
-              <div style={{ display: 'flex', gap: '32px', marginBottom: '2rem' }}>
-                <div>
-                  <h3 className="fw-bold mb-0">25+</h3>
-                  <p className="small text-muted">Års Erfarenhet</p>
+              <div className="about-stats">
+                <div className="about-stat">
+                  <h3 className="about-stat__number">25+</h3>
+                  <p className="about-stat__label">Års Erfarenhet</p>
                 </div>
-                <div style={{ borderLeft: '1px solid #dee2e6', paddingLeft: '32px' }}>
-                  <h3 className="fw-bold mb-0">3000+</h3>
-                  <p className="small text-muted">Nöjda Kunder</p>
+                <div className="about-stat about-stat--divided">
+                  <h3 className="about-stat__number">3000+</h3>
+                  <p className="about-stat__label">Nöjda Kunder</p>
                 </div>
               </div>
-              <Link href="/om-oss" className="btn btn-dark fw-bold"
-                style={{ borderRadius: '0', letterSpacing: '2px', padding: '12px 40px' }}>
-                LÄS MER
-              </Link>
+              <Link href="/om-oss" className="about-cta">LÄS MER</Link>
             </Col>
           </Row>
         </Container>
       </section>
 
-      {/* 5. GARAGE PREVIEW */}
+      {/* ── 5. GARAGE PREVIEW ── */}
       <GaragePreview />
 
-      {/* 6. CONTACT */}
-      <section style={{ padding: '60px 0', backgroundColor: '#000', color: '#fff' }}>
+      {/* ── 6. CONTACT CTA ── */}
+      <section className="contact-section">
         <Container>
-          <Row className="align-items-center" style={{ padding: '40px 0' }}>
+          <Row className="align-items-center contact-row">
             <Col lg={6}>
-              <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '1rem' }}>
-                Redo för<br />nästa äventyr?
-              </h2>
-              <p className="fs-5 text-muted mb-0">Vi finns här för personlig rådgivning och visning.</p>
+              <h2 className="contact-title">Redo för<br />nästa äventyr?</h2>
+              <p className="contact-sub">Vi finns här för personlig rådgivning och visning.</p>
             </Col>
-            <Col lg={6} className="mt-4 mt-lg-0" style={{ textAlign: 'right' }}>
-              {/* Removed clipPath — not supported in all Safari versions */}
-              <Link
-                href="/kontakt"
-                className="btn btn-lg fw-bold"
-                style={{
-                  backgroundColor: '#FFD700',
-                  color: '#000',
-                  borderRadius: '0',
-                  padding: '16px 40px',
-                  display: 'inline-block'
-                }}
-              >
-                KONTAKTA OSS IDAG
-              </Link>
+            <Col lg={6} className="mt-4 mt-lg-0 text-lg-end">
+              <Link href="/kontakt" className="contact-cta">KONTAKTA OSS IDAG</Link>
             </Col>
           </Row>
         </Container>
       </section>
 
-      {/* Safari-safe responsive styles */}
-      <style jsx global>{`
-        @media (min-width: 768px) {
-          #desktop-cars {
-            display: flex !important;
-          }
-          #mobile-cars {
-            display: none !important;
-          }
-        }
-        @media (max-width: 767px) {
-          #desktop-cars {
-            display: none !important;
-          }
-          #mobile-cars {
-            display: block !important;
-          }
-        }
-      `}</style>
-
     </div>
-  );
-}
-
-function CarCard({ car }) {
-  const meta = car.meta || {};
-  const isNew = meta._car_is_new === 'yes';
-  const folder = isNew ? 'nytt' : 'begagnat';
-  const thumbnail = meta._car_thumbnail || '/placeholder-car.jpg';
-  const price = meta._car_price
-    ? parseInt(meta._car_price).toLocaleString('sv-SE') + ' kr'
-    : 'Ring för pris';
-
-  return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      style={{
-        backgroundColor: '#f8f9fa',
-        overflow: 'hidden',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-        WebkitTransform: 'translateZ(0)',
-        transform: 'translateZ(0)',
-      }}
-    >
-      <div style={{ height: '250px', width: '100%', overflow: 'hidden', position: 'relative' }}>
-        <img
-          src={thumbnail}
-          alt={car.title?.rendered}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          onError={(e) => { e.target.src = '/placeholder-car.jpg'; }}
-        />
-        <div style={{
-          position: 'absolute',
-          top: '12px',
-          left: '12px',
-          backgroundColor: isNew ? '#FFD700' : '#000',
-          color: isNew ? '#000' : '#FFF',
-          fontSize: '0.7rem',
-          fontWeight: 700,
-          letterSpacing: '1px',
-          textTransform: 'uppercase',
-          padding: '4px 12px',
-          zIndex: 2
-        }}>
-          {isNew ? 'Nyhet' : 'Begagnad'}
-        </div>
-      </div>
-
-      <div style={{ padding: '20px 24px 24px' }}>
-        <p style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#6c757d', margin: '0 0 4px' }}>
-          {meta._car_make} · {meta._car_year}
-        </p>
-        <h3
-          style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '8px' }}
-          dangerouslySetInnerHTML={{ __html: car.title?.rendered }}
-        />
-        <p style={{ fontSize: '0.85rem', color: '#6c757d', marginBottom: '16px' }}>
-          {meta._car_mileage ? `${parseInt(meta._car_mileage).toLocaleString('sv-SE')} mil` : ''}
-          {meta._car_fuel ? ` · ${meta._car_fuel}` : ''}
-        </p>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '1.2rem', fontWeight: 700 }}>{price}</span>
-          <Link
-            href={`/bilar/${folder}/${car.slug}`}
-            className="btn btn-dark btn-sm fw-bold"
-            style={{ borderRadius: '0', padding: '8px 20px' }}
-          >
-            VISA
-          </Link>
-        </div>
-      </div>
-    </motion.div>
   );
 }

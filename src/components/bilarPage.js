@@ -1,6 +1,4 @@
 'use client';
-import '@/styles/custom.scss';
-import '@/styles/bilarPage.css';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import VehicleGrid from '@/components/VehicleGrid';

@@ -815,3 +815,76 @@
 @media (max-width: 560px) {
   .filter-grid-primary { grid-template-columns: 1fr; }
 }
+/* ── Swiper image containers ─────────────────────────────────── */
+ 
+/* Shared wrapper — fills the image-wrap height */
+.card-swiper {
+  width: 100%;
+  height: 100%;
+}
+ 
+/* Desktop: fade — visible above 640px */
+.card-swiper--desktop {
+  display: none;
+}
+ 
+/* Mobile: cube — visible below 640px */
+.card-swiper--mobile {
+  display: block;
+}
+ 
+@media (min-width: 640px) {
+  .card-swiper--desktop { display: block; }
+  .card-swiper--mobile  { display: none; }
+}
+ 
+/* Swiper fills its container */
+.card-swiper .swiper,
+.card-swiper .swiper-wrapper,
+.card-swiper .swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+ 
+/* Image inside each slide */
+.card-swiper .swiper-slide img,
+.card-swiper .vehicle-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+ 
+/* Pagination dots — position inside image area */
+.card-swiper .swiper-pagination {
+  bottom: 8px;
+}
+ 
+.card-swiper .swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.6;
+  width: 6px;
+  height: 6px;
+}
+ 
+.card-swiper .swiper-pagination-bullet-active {
+  background: var(--yellow);
+  opacity: 1;
+  width: 18px;
+  border-radius: 3px;
+}
+ 
+/* Cube effect slide shadows */
+.card-swiper--mobile .swiper-slide-shadow-left,
+.card-swiper--mobile .swiper-slide-shadow-right {
+  border-radius: 0;
+}
+ 
+/* Body link — only wraps card body, not image */
+.vehicle-card__link--body {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: #333;
+  flex: 1;
+}
