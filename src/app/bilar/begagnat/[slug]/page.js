@@ -5,7 +5,7 @@ import SimilarVehicles from '@/components/SimilarVehicles';
 export async function generateStaticParams() {
   try {
     const res = await fetch(
-      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100',
+      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100&_fields=slug,meta',
       { cache: 'force-cache' }
     );
     if (!res.ok) return [];
