@@ -3,21 +3,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { siteConfig } from '@/config/site-config';
+import '@/styles/bilarPage.css';
 
 export default function CarDetailView({ car }) {
   if (!car || !car.title) return null;
 
   const meta = car.meta || {};
 
-  const blocketUrl = meta._car_blocket_url || siteConfig.links.blocketShop;
-
-  const isNew         = meta._car_is_new === 'yes';
+  const blocketUrl = siteConfig.links.blocketShop;
+  const isNew         = meta._car_is_new  === 'yes';
   const isSold        = meta._car_is_sold === 'yes';
   const categoryLabel = isNew ? 'Nya husbilar' : 'Begagnade bilar';
   const categoryPath  = isNew ? '/bilar/nytt' : '/bilar/begagnat';
 
-  const mainImage    = meta._car_thumbnail || '/placeholder-car.jpg';
-  const galleryUrls  = meta._car_gallery_urls
+  const mainImage   = meta._car_thumbnail || '/placeholder-car.jpg';
+  const galleryUrls = meta._car_gallery_urls
     ? meta._car_gallery_urls.split(',').filter(u => u.length > 0)
     : [];
   const allImages = [mainImage, ...galleryUrls];
@@ -29,11 +29,11 @@ export default function CarDetailView({ car }) {
     : 'Ring för pris';
 
   return (
-    <div className="container mt-4 pt-5 pb-5" style={{ color: 'var(--charcoal)' }}>
+    <div className="cdv container mt-4 pt-5 pb-5">
 
       {/* 1. BREADCRUMBS */}
       <nav aria-label="breadcrumb" className="mb-4">
-        <ol className="breadcrumb" style={{ fontSize: '0.85rem', letterSpacing: '0.5px' }}>
+        <ol className="breadcrumb cdv__breadcrumb">
           <li className="breadcrumb-item">
             <Link href="/" className="text-decoration-none text-muted">Hem</Link>
           </li>
@@ -45,7 +45,7 @@ export default function CarDetailView({ car }) {
               {categoryLabel}
             </Link>
           </li>
-          <li className="breadcrumb-item active text-truncate" aria-current="page" style={{ color: 'var(--charcoal)', fontWeight: '700' }}>
+          <li className="breadcrumb-item active text-truncate cdv__breadcrumb-active" aria-current="page">
             <span dangerouslySetInnerHTML={{ __html: car.title.rendered }} />
           </li>
         </ol>
@@ -55,64 +55,26 @@ export default function CarDetailView({ car }) {
 
         {/* 2. LEFT COLUMN: GALLERY */}
         <div className="col-lg-7">
-          {/* Main image — greyed out with SÅLD overlay if sold */}
-          <div
-            className="card border-0 shadow-sm rounded-4 overflow-hidden mb-3 bg-white"
-            style={{ position: 'relative' }}
-          >
+          <div className="cdv__main-image-wrap card border-0 shadow-sm rounded-4 overflow-hidden mb-3 bg-white">
             <img
               src={activeImage}
               alt={car.title.rendered}
-              className="w-100 object-fit-cover"
-              style={{
-                aspectRatio: '16/10',
-                transition: '0.3s ease-in-out',
-                filter: isSold ? 'grayscale(100%) brightness(0.6)' : 'none',
-              }}
+              className={`cdv__main-image w-100 object-fit-cover${isSold ? ' cdv__main-image--sold' : ''}`}
             />
             {isSold && (
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  pointerEvents: 'none',
-                }}
-              >
-                <span
-                  style={{
-                    background: 'rgba(0,0,0,0.75)',
-                    color: '#fff',
-                    fontWeight: 900,
-                    fontSize: 'clamp(1.5rem, 6vw, 3rem)',
-                    letterSpacing: '0.15em',
-                    padding: '0.3em 0.8em',
-                    textTransform: 'uppercase',
-                    border: '3px solid #fff',
-                  }}
-                >
-                  SÅLD
-                </span>
+              <div className="cdv__sold-overlay">
+                <span className="cdv__sold-label">SÅLD</span>
               </div>
             )}
           </div>
 
-          {/* Thumbnail Strip */}
-          <div className="d-flex gap-2 overflow-auto pb-2 custom-scrollbar" style={{ whiteSpace: 'nowrap' }}>
+          {/* Thumbnail strip */}
+          <div className="cdv__thumbs custom-scrollbar">
             {allImages.map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveImage(img)}
-                className="btn p-0 border-2 rounded-3 overflow-hidden flex-shrink-0"
-                style={{
-                  width: '100px',
-                  height: '70px',
-                  borderColor: activeImage === img ? 'var(--sage)' : 'transparent',
-                  transition: '0.2s',
-                  filter: isSold ? 'grayscale(100%) brightness(0.6)' : 'none',
-                }}
+                className={`cdv__thumb-btn${activeImage === img ? ' cdv__thumb-btn--active' : ''}${isSold ? ' cdv__thumb-btn--sold' : ''}`}
               >
                 <img src={img} className="w-100 h-100 object-fit-cover" alt={`Galleri bild ${idx + 1}`} />
               </button>
@@ -126,54 +88,25 @@ export default function CarDetailView({ car }) {
 
             {/* Status badges */}
             <div className="d-flex gap-2 mb-3 flex-wrap">
-              <span
-                className="badge rounded-pill text-uppercase fw-bold"
-                style={{
-                  backgroundColor: isNew ? 'var(--sage)' : 'var(--slate)',
-                  padding: '10px 20px',
-                  fontSize: '0.75rem',
-                  letterSpacing: '1px',
-                }}
-              >
+              <span className={`cdv__badge cdv__badge--${isNew ? 'new' : 'used'}`}>
                 {isNew ? 'Nyhet' : 'Begagnad'}
               </span>
               {isSold && (
-                <span
-                  className="badge rounded-pill text-uppercase fw-bold"
-                  style={{
-                    backgroundColor: '#111',
-                    color: '#fff',
-                    padding: '10px 20px',
-                    fontSize: '0.75rem',
-                    letterSpacing: '1px',
-                  }}
-                >
-                  SÅLD
-                </span>
+                <span className="cdv__badge cdv__badge--sold">SÅLD</span>
               )}
             </div>
 
             <h1
-              className="fw-black mb-2 display-5"
-              style={{ lineHeight: '1.1', opacity: isSold ? 0.5 : 1 }}
+              className={`cdv__title fw-black mb-2 display-5${isSold ? ' cdv__title--sold' : ''}`}
               dangerouslySetInnerHTML={{ __html: car.title.rendered }}
             />
-            <h2 className="fw-bold mb-4" style={{ color: 'var(--slate)', opacity: isSold ? 0.5 : 1 }}>
+            <h2 className={`cdv__price fw-bold mb-4${isSold ? ' cdv__price--sold' : ''}`}>
               {isSold ? 'Såld' : price}
             </h2>
 
             <div className="d-grid gap-3 mb-5">
               {isSold ? (
-                <div
-                  className="btn btn-lg fw-bold py-3 rounded-4 border-2 d-flex align-items-center justify-content-center"
-                  style={{
-                    background: '#e0e0e0',
-                    color: '#999',
-                    borderColor: '#ccc',
-                    fontSize: '1.1rem',
-                    cursor: 'not-allowed',
-                  }}
-                >
+                <div className="cdv__sold-btn">
                   SÅLD — EJ TILLGÄNGLIG
                 </div>
               ) : (
@@ -181,8 +114,7 @@ export default function CarDetailView({ car }) {
                   href={blocketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-lg fw-bold py-3 rounded-4 border-2 btn-warning text-decoration-none d-flex align-items-center justify-content-center"
-                  style={{ color: 'var(--charcoal)', borderColor: 'var(--charcoal)', fontSize: '1.1rem' }}
+                  className="cdv__blocket-btn btn btn-lg fw-bold py-3 rounded-4 border-2 btn-warning text-decoration-none d-flex align-items-center justify-content-center"
                 >
                   SE BILEN PÅ BLOCKET
                 </a>
@@ -192,12 +124,12 @@ export default function CarDetailView({ car }) {
                 href={`tel:${siteConfig.contact.phone}`}
                 className="btn btn-outline-dark fw-bold py-2 border-0 d-flex align-items-center justify-content-center gap-2"
               >
-                <i className="bi bi-telephone"></i> Ring oss: {siteConfig.contact.phone}
+                <i className="bi bi-telephone" /> Ring oss: {siteConfig.contact.phone}
               </a>
             </div>
 
-            {/* SPECS GRID */}
-            <div className="row g-3 p-4 bg-white rounded-4 shadow-sm border mx-0" style={{ opacity: isSold ? 0.5 : 1 }}>
+            {/* Specs grid */}
+            <div className={`cdv__specs row g-3 p-4 bg-white rounded-4 shadow-sm border mx-0${isSold ? ' cdv__specs--sold' : ''}`}>
               <SpecItem label="Modellår"  value={meta._car_year} />
               <SpecItem label="Miltal"    value={meta._car_mileage ? `${meta._car_mileage} mil` : '0'} />
               <SpecItem label="Växellåda" value={meta._car_gearbox} />
@@ -209,35 +141,20 @@ export default function CarDetailView({ car }) {
         </div>
       </div>
 
-      {/* 4. DESCRIPTION SECTION */}
+      {/* 4. DESCRIPTION */}
       <div className="row mt-5">
         <div className="col-12">
-          <hr className="my-5" style={{ opacity: 0.1 }} />
-          <h3 className="fw-black mb-4 text-uppercase" style={{ color: 'var(--slate)', letterSpacing: '1px' }}>
+          <hr className="cdv__divider my-5" />
+          <h3 className="cdv__desc-heading fw-black mb-4 text-uppercase">
             Information & Beskrivning
           </h3>
           <div
-            className="description-content"
-            style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--charcoal)', maxWidth: '900px' }}
+            className="cdv__desc-content"
             dangerouslySetInnerHTML={{ __html: car.content?.rendered }}
           />
         </div>
       </div>
 
-      <style jsx>{`
-        .breadcrumb-item + .breadcrumb-item::before {
-          content: "›" !important;
-          color: var(--slate);
-          font-weight: bold;
-        }
-        .description-content :global(p) { margin-bottom: 1.5rem; }
-        .description-content :global(ul) { margin-bottom: 1.5rem; }
-        .fw-black { font-weight: 900 !important; }
-
-        .custom-scrollbar::-webkit-scrollbar        { height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track  { background: #f1f1f1; }
-        .custom-scrollbar::-webkit-scrollbar-thumb  { background: var(--sage); border-radius: 10px; }
-      `}</style>
     </div>
   );
 }
@@ -245,10 +162,10 @@ export default function CarDetailView({ car }) {
 function SpecItem({ label, value }) {
   return (
     <div className="col-6 col-md-4">
-      <small className="d-block text-uppercase fw-bold mb-1" style={{ fontSize: '0.65rem', color: 'var(--slate)', opacity: 0.8, letterSpacing: '0.5px' }}>
+      <small className="cdv__spec-label d-block text-uppercase fw-bold mb-1">
         {label}
       </small>
-      <span className="fw-bold" style={{ color: 'var(--charcoal)', fontSize: '0.95rem' }}>
+      <span className="cdv__spec-value fw-bold">
         {value || '—'}
       </span>
     </div>
