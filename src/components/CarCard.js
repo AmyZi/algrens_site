@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectFade, EffectCube, Autoplay, Pagination } from 'swiper/modules';
@@ -23,7 +24,6 @@ const CONDITION_LABEL = {
   used: 'BEGAGNAD',
 };
 
-// Parse gallery URLs — stored as comma-separated string from importer
 function getImages(meta) {
   const gallery = meta._car_gallery_urls;
   if (gallery) {
@@ -35,67 +35,60 @@ function getImages(meta) {
   return ['/placeholder-car.jpg'];
 }
 
-// ── Image section — Fade on desktop, Cube on mobile ──────────
-
 function CardImages({ images, title }) {
   const hasMultiple = images.length > 1;
+  const [isMobile, setIsMobile] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+    setReady(true);
+  }, []);
+
+  if (!ready) {
+    return (
+      <img
+        src={images[0]}
+        alt={title ?? 'Fordon'}
+        className="vehicle-card__image"
+        loading="eager"
+      />
+    );
+  }
+
+  const modules = isMobile
+    ? [EffectCube, Autoplay, Pagination]
+    : [EffectFade, Autoplay, Pagination];
+
+  const effectProps = isMobile
+    ? { effect: 'cube', cubeEffect: { shadow: false, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 } }
+    : { effect: 'fade', fadeEffect: { crossFade: true } };
 
   return (
-    <>
-      {/* Desktop: Effect Fade */}
-      <div className="card-swiper card-swiper--desktop">
-        <Swiper
-          modules={[EffectFade, Autoplay, Pagination]}
-          effect="fade"
-          fadeEffect={{ crossFade: true }}
-          autoplay={hasMultiple ? { delay: 3000, disableOnInteraction: false } : false}
-          pagination={hasMultiple ? { clickable: true } : false}
-          loop={hasMultiple}
-          speed={600}
-          style={{ width: '100%', height: '100%' }}
-        >
-          {images.map((src, i) => (
-            <SwiperSlide key={i}>
-              <img
-                src={src}
-                alt={i === 0 ? (title ?? 'Fordon') : ''}
-                className="vehicle-card__image"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-
-      {/* Mobile: Effect Cube */}
-      <div className="card-swiper card-swiper--mobile">
-        <Swiper
-          modules={[EffectCube, Autoplay, Pagination]}
-          effect="cube"
-          cubeEffect={{ shadow: false, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 }}
-          autoplay={hasMultiple ? { delay: 3000, disableOnInteraction: false } : false}
-          pagination={hasMultiple ? { clickable: true } : false}
-          loop={hasMultiple}
-          speed={500}
-          style={{ width: '100%', height: '100%' }}
-        >
-          {images.map((src, i) => (
-            <SwiperSlide key={i}>
-              <img
-                src={src}
-                alt={i === 0 ? (title ?? 'Fordon') : ''}
-                className="vehicle-card__image"
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-    </>
+    <div className="card-swiper">
+      <Swiper
+        modules={modules}
+        {...effectProps}
+        autoplay={hasMultiple ? { delay: 3000, disableOnInteraction: false } : false}
+        pagination={hasMultiple ? { clickable: true } : false}
+        loop={hasMultiple}
+        speed={isMobile ? 500 : 600}
+        style={{ width: '100%', height: '100%' }}
+      >
+        {images.map((src, i) => (
+          <SwiperSlide key={i}>
+            <img
+              src={src}
+              alt={i === 0 ? (title ?? 'Fordon') : ''}
+              className="vehicle-card__image"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 }
-
-// ── Main component ────────────────────────────────────────────
 
 export default function CarCard({ car, viewMode = 'grid' }) {
   if (!car || !car.meta) return null;
@@ -115,7 +108,6 @@ export default function CarCard({ car, viewMode = 'grid' }) {
   return (
     <div className={`vehicle-card${isSold ? ' vehicle-card--sold' : ''}${viewMode === 'list' ? ' vehicle-card--list' : ''}`}>
 
-      {/* Image section — outside Link so Swiper clicks don't navigate */}
       <div className="vehicle-card__image-wrap">
         <CardImages images={images} title={title} />
         <span className={`vehicle-card__badge vehicle-card__badge--${condition}`}>
@@ -124,7 +116,6 @@ export default function CarCard({ car, viewMode = 'grid' }) {
         {isSold && <div className="vehicle-card__sold-overlay">SÅLD</div>}
       </div>
 
-      {/* Card body — wrapped in Link */}
       <Link href={`/bilar/${folder}/${car.slug}/`} className="vehicle-card__link vehicle-card__link--body">
         <div className="vehicle-card__body">
           <p className="vehicle-card__meta">
