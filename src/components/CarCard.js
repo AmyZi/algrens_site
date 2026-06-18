@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/effect-cube';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 import '@/styles/bilarPage.css';
 import { EffectFade, EffectCube, Autoplay, Pagination } from 'swiper/modules';
 
@@ -38,57 +42,13 @@ function getImages(meta) {
 }
 
 function CardImages({ images, title }) {
-  const hasMultiple = images.length > 1;
-  const [isMobile, setIsMobile] = useState(false);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 640);
-    setReady(true);
-  }, []);
-
-  if (!ready) {
-    return (
-      <img
-        src={images[0]}
-        alt={title ?? 'Fordon'}
-        className="vehicle-card__image"
-        loading="eager"
-      />
-    );
-  }
-
-  const modules = isMobile
-    ? [EffectCube, Autoplay, Pagination]
-    : [EffectFade, Autoplay, Pagination];
-
-  const effectProps = isMobile
-    ? { effect: 'cube', cubeEffect: { shadow: false, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 } }
-    : { effect: 'fade', fadeEffect: { crossFade: true } };
-
   return (
-    <div className="card-swiper">
-      <Swiper
-        modules={modules}
-        {...effectProps}
-        autoplay={hasMultiple ? { delay: 3000, disableOnInteraction: false } : false}
-        pagination={hasMultiple ? { clickable: true } : false}
-        loop={hasMultiple}
-        speed={isMobile ? 500 : 600}
-        style={{ width: '100%', height: '100%' }}
-      >
-        {images.map((src, i) => (
-          <SwiperSlide key={i}>
-            <img
-              src={src}
-              alt={i === 0 ? (title ?? 'Fordon') : ''}
-              className="vehicle-card__image"
-              loading={i === 0 ? 'eager' : 'lazy'}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+    <img
+      src={images[0]}
+      alt={title ?? 'Fordon'}
+      className="vehicle-card__image"
+      loading="eager"
+    />
   );
 }
 
