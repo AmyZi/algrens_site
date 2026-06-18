@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import CarCard from '@/components/CarCard';
 
 const INITIAL_COUNT = 10;
@@ -23,7 +23,9 @@ export default function VehicleGrid({ vehicles = [], onClearFilters, viewMode = 
   const loadMore = () => setVisibleCount(c => c + LOAD_MORE_COUNT);
 
   // Reset when vehicles prop changes (filter applied)
-  const prevLen = useMemo(() => { setVisibleCount(INITIAL_COUNT); return vehicles.length; }, [vehicles]);
+  useEffect(() => {
+    setVisibleCount(INITIAL_COUNT);
+  }, [vehicles]);
 
   // Empty state
   if (sorted.length === 0) {
