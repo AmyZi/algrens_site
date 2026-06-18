@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import '@/styles/bilarPage.css';
 import { EffectFade, EffectCube, Autoplay, Pagination } from 'swiper/modules';
 
 const BODY_TYPE_LABELS = {
