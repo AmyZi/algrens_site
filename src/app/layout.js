@@ -65,8 +65,6 @@ export default function RootLayout({ children }) {
           {children}
         </main>
         <Footer />
-        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
-        <script dangerouslySetInnerHTML={{ __html: 'eruda.init()' }} />
       </body>
     </html>
   );
