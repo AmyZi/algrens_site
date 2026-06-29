@@ -561,3 +561,191 @@ html {
   height: 2px;
   background-color: var(--yellow);
 }
+
+
+/* ── Borås landing page ───────────────────────────────────────── */
+
+/* Section headings */
+.boras-section-heading {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.boras-section-heading__title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+.boras-section-heading__rule {
+  width: 60px;
+  height: 3px;
+  background: var(--yellow);
+  margin: 0 auto 0.75rem;
+}
+.boras-section-heading__sub {
+  color: var(--taupe);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Reasons */
+.boras-reasons {
+  background: var(--cream);
+}
+.boras-reason-card {
+  padding: 2rem 1.5rem;
+  border: 1px solid var(--sage);
+  background: #fff;
+  height: 100%;
+}
+.boras-reason-card__number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--yellow);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.boras-reason-card__title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+  color: var(--charcoal);
+}
+.boras-reason-card__desc {
+  font-size: 0.9rem;
+  color: var(--taupe);
+  line-height: 1.6;
+  margin: 0;
+}
+.boras-reason-card__rule {
+  width: 32px;
+  height: 2px;
+  background: var(--yellow);
+  margin-top: 1.25rem;
+}
+
+/* Vehicle cards */
+.boras-vehicles--husvagnar {
+  background: var(--cream);
+}
+.boras-vehicle-card {
+  border: 1px solid var(--sage);
+  background: #fff;
+  height: 100%;
+  overflow: hidden;
+}
+.boras-vehicle-card__link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.boras-vehicle-card__image-wrap {
+  position: relative;
+  height: 200px;
+  background: var(--cream);
+  overflow: hidden;
+}
+.boras-vehicle-card__no-image {
+  width: 100%;
+  height: 100%;
+  background: var(--sage);
+  opacity: 0.3;
+}
+.boras-vehicle-card__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+}
+.badge--new {
+  background: var(--yellow);
+  color: var(--charcoal);
+}
+.badge--used {
+  background: var(--charcoal);
+  color: #fff;
+}
+.boras-vehicle-card__body {
+  padding: 1rem 1.25rem;
+}
+.boras-vehicle-card__year {
+  font-size: 0.8rem;
+  color: var(--taupe);
+  margin: 0 0 0.2rem;
+}
+.boras-vehicle-card__title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+  color: var(--charcoal);
+}
+.boras-vehicle-card__price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--yellow);
+  margin: 0;
+}
+
+/* Local areas */
+.boras-areas__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.boras-areas__tag {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--charcoal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+  cursor: default;
+  transition: background 0.15s;
+}
+
+/* Map + CTA */
+.boras-map-cta__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--yellow);
+  margin-bottom: 0.5rem;
+}
+.boras-map-cta__title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  color: var(--charcoal);
+}
+.boras-map-cta__desc {
+  color: var(--taupe);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.boras-map-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.boras-map-cta__map-wrap {
+  overflow: hidden;
+  border: 1px solid var(--sage);
+}
+.text-accent {
+  color: var(--yellow);
+}
+.hero-btn--outline-dark {
+  background-color: transparent;
+  color: var(--charcoal);
+  border: 2px solid var(--charcoal);
+}
