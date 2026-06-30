@@ -48,7 +48,9 @@ const NAV_LINKS = [
   { name: 'Hem',        href: '/' },
   { name: 'Våra Bilar', href: '/bilar' },
   { name: 'Om Oss',     href: '/om-oss' },
+  { name: 'Husbilar & husvagnar i Borås', href: '/husbilar-husvagnar-borås' },
   { name: 'Kontakt',    href: '/kontakt' },
+  
 ];
 
 const SERVICES = [
