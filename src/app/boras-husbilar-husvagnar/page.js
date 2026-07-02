@@ -24,7 +24,7 @@ async function fetchBorasCars() {
       page++;
     }
 
-    // Return only unsold vehicles
+    
     return allCars.filter(car => car.meta?._car_is_sold !== 'yes');
   } catch (err) {
     console.error('fetchBorasCars error:', err);
@@ -48,7 +48,7 @@ export default async function BorasPage() {
     description: 'Husbilar och husvagnar i Borås',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Gånghestervägen 129',   // update if different
+      streetAddress: 'Gånghestervägen 129',
       addressLocality: 'Borås',
       addressCountry: 'SE',
     },
