@@ -48,7 +48,7 @@ export default async function BorasPage() {
     description: 'Husbilar och husvagnar i Borås',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Fabriksvägen 2',   // update if different
+      streetAddress: 'Gånghestervägen 129',   // update if different
       addressLocality: 'Borås',
       addressCountry: 'SE',
     },
