@@ -12,9 +12,9 @@ export default function ContactPage() {
     "name": "Ahlgrens Automotive",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Borås", // Add specific street if you have one
+      "streetAddress": "Gånghestervägen 129",
       "addressLocality": "Borås",
-      "postalCode": "50100", // Update with correct zip
+      "postalCode": "50100",
       "addressCountry": "SE"
     },
     "telephone": "+4633103011",
@@ -26,7 +26,7 @@ export default function ContactPage() {
     ],
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "57.7210", // Approximate for Borås
+      "latitude": "57.7210",
       "longitude": "12.9400"
     }
   };

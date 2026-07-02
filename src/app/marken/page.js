@@ -22,7 +22,12 @@ const BRANDS_DATA = [
 
 export const metadata = {
   title: 'Husbilsmärken - Pilote, Bavaria, Hymer, Laika & Fler | Ahlgrens Automotive',
-  description: 'Vi specialiserar oss på premium fritidsbilar från Pilote, Bavaria, Challenger, Rimor, Laika, Eura Mobil, Dethleffs, Bürstner, Hymer, Carado, Rapido, McLouis, Knaus, Chausson, Pössl and LMC.',
+  description: 'Vi specialiserar oss på premium fritidsbilar från Pilote, Bavaria, Challenger, Rimor, Laika, Eura Mobil, Dethleffs, Bürstner, Hymer, Carado, Rapido, McLouis, Knaus, Chausson, Adria, Pössl och LMC.',
+  openGraph: {
+    title: 'Husbilsmärken hos Ahlgrens Automotive',
+    description: 'Auktoriserad återförsäljare av Pilote, Bavaria, Hymer, Laika, Dethleffs, Knaus med flera.',
+    type: 'website',
+  },
 };
 
 export default function BrandsPage() {
