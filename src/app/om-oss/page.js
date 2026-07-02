@@ -11,6 +11,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  // Pass any server-side data here if needed
   return <AboutContent />;
 }
