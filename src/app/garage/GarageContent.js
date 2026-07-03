@@ -71,7 +71,7 @@ const GarageContent = () => {
       id: 'office',
       name: 'KONTOR',
       number: '05',
-      mediaUrl: `${wpBaseUrl}/wp-content/uploads/2026/02/Office.jpg`,
+      mediaUrl: `${wpBaseUrl}/wp-content/uploads/2026/office_update.jpeg`,
       description: 'I vårt bekväma mötesrum går vi igenom finansiering och avtal över en kopp kaffe.',
       features: ['Kostnadsfritt WiFi', 'Nybyggt pentry', 'Privat miljö']
     }
