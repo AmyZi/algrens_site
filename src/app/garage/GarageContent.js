@@ -55,6 +55,7 @@ const GarageContent = () => {
       id: 'workshop',
       name: 'VERKSTAD',
       number: '03',
+      isVideo: true,
       mediaUrl: `${wpBaseUrl}/wp-content/uploads/2026/02/Ahlgrens-Reception.mp4`,
       description: 'Vår fullt utrustade verkstad säkerställer att varje fordon lämnar oss i toppskick.',
       features: ['Modern diagnosutrustning', 'Specialverktyg', 'Godkända lyftanordningar']
