@@ -39,7 +39,7 @@ const GarageContent = () => {
       name: 'ENTRÉ',
       number: '01',
       isVideo: true,
-      mediaUrl: `${wpBaseUrl}/wp-content/uploads/2026/02/entrance.mp4`,
+      mediaUrl: `${wpBaseUrl}/wp-content/uploads/2026/entrance.mp4`,
       description: 'Välkommen till Ahlgrens Husbilar i Borås. Här möts du av en personlig atmosfär och professionell rådgivning.',
       features: ['Rymlig parkering', 'Handikappanpassad entré', 'Värmeisolerad anläggning']
     },
