@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import CarDetailView from '@/components/CarDetailView';
 import SimilarVehicles from '@/components/SimilarVehicles';
+import { absoluteUrl, stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 
 export async function generateStaticParams() {
   try {

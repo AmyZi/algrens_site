@@ -101,7 +101,6 @@ const GarageContent = () => {
     return () => clearInterval(interval);
   }, [activeZone, showroomImages.length]);
 
-  // 5. Scroll Spy Logic (refs only accessed in effect - NOT during render)
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + window.innerHeight / 2;
@@ -120,7 +119,7 @@ const GarageContent = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [zonesData, getZoneRef]);
 
-  // Scroll handler (only used in event handlers)
+  // Scroll handler )
   const scrollToZone = useCallback((zoneId) => {
     const ref = getZoneRef(zoneId);
     ref?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -202,7 +201,6 @@ const GarageContent = () => {
                   
                   <div style={{ height: '500px', backgroundColor: '#F1F5F9', zIndex: 1, position: 'relative', overflow: 'hidden' }}>
                     
-                    {/* Media Rendering Logic - FIXED: Use <img> not <Image> */}
                     {zone.isSlider ? (
                       <>
                         <AnimatePresence mode="wait">
@@ -257,7 +255,7 @@ const GarageContent = () => {
       <Modal show={showLightbox} onHide={() => setShowLightbox(false)} centered size="xl" contentClassName="bg-transparent border-0">
         <Modal.Body className="p-0 position-relative">
           <button onClick={() => setShowLightbox(false)} style={{ position: 'absolute', top: '-40px', right: '0', background: 'none', border: 'none', color: '#FFF', fontSize: '2rem' }}>×</button>
-          {activeZone === 'entrance' ? (
+          {activeZone === 'entrance'  || activeZone === 'workshop' ? (
              <video autoPlay muted loop controls style={{ width: '100%', height: 'auto' }}>
                <source src={zonesData[0].mediaUrl} type="video/mp4" />
              </video>
