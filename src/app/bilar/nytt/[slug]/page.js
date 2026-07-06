@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import CarDetailView from '@/components/CarDetailView';
 import SimilarVehicles from '@/components/SimilarVehicles';
+import { absoluteUrl, stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 
 export async function generateStaticParams() {
   try {
@@ -35,6 +36,38 @@ async function getCarData(slug) {
     return null;
   }
 }
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const car = await getCarData(slug);
+  if (!car) {
+    return {
+      title: 'Ny husbil till salu',
+      robots: { index: false, follow: true },
+    };
+  }
+
+  const meta = car.meta || {};
+  const title = `${vehicleTitle(car)} - ny husbil till salu`;
+  const price = meta._car_price ? `${parseInt(meta._car_price, 10).toLocaleString('sv-SE')} kr` : 'Ring för pris';
+  const description = truncateDescription(
+    `${vehicleTitle(car)} hos Ahlgrens Husbilar i Borås. Pris: ${price}. ${meta._car_mileage ? `${parseInt(meta._car_mileage, 10).toLocaleString('sv-SE')} mil. ` : ''}Kontakta oss för visning, finansiering och garanti.`
+  );
+  const image = meta._car_thumbnail || meta._car_gallery_urls?.split(',')?.[0]?.trim() || '/images/og-image.jpg';
+
+  return {
+    title,
+    description,
+    alternates: { canonical: vehicleUrl(car) },
+    openGraph: {
+      title,
+      description,
+      url: vehicleUrl(car),
+      type: 'website',
+      images: [{ url: image }],
+    },
+  };
+}
+
 
 async function getSimilarCars(currentCar) {
   try {
@@ -72,9 +105,33 @@ export default async function Page({ params }) {
   if (!car) notFound();
 
   const similarCars = await getSimilarCars(car);
+  const meta = car.meta || {};
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Vehicle',
+    name: vehicleTitle(car),
+    url: vehicleUrl(car),
+    image: meta._car_thumbnail || meta._car_gallery_urls?.split(',')?.[0]?.trim() || absoluteUrl('/images/og-image.jpg'),
+    brand: meta._car_make ? { '@type': 'Brand', name: meta._car_make } : undefined,
+    modelDate: meta._car_year,
+    mileageFromOdometer: meta._car_mileage ? { '@type': 'QuantitativeValue', value: meta._car_mileage, unitCode: 'SMI' } : undefined,
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'SEK',
+      price: meta._car_price || undefined,
+      availability: meta._car_is_sold === 'yes' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+      seller: { '@id': 'https://ahlgrens.eu/#autodealer' },
+    },
+    description: stripHtml(car.excerpt?.rendered || car.content?.rendered || ''),
+  };
+
 
   return (
     <main className="bg-light min-vh-100 pb-5 mt-5 pt-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <CarDetailView car={car} />
       {similarCars.length > 0 && (
         <div className="container">
