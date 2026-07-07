@@ -21,7 +21,6 @@ export async function generateStaticParams() {
   }
 }
 
-// Required with output:export — never attempt unknown slugs at runtime
 export const dynamicParams = false;
 
 async function getCarData(slug) {
@@ -115,8 +114,14 @@ export default async function Page({ params }) {
     url: vehicleUrl(car),
     image: meta._car_thumbnail || meta._car_gallery_urls?.split(',')?.[0]?.trim() || absoluteUrl('/images/og-image.jpg'),
     brand: meta._car_make ? { '@type': 'Brand', name: meta._car_make } : undefined,
-    modelDate: meta._car_year,
-    mileageFromOdometer: meta._car_mileage ? { '@type': 'QuantitativeValue', value: meta._car_mileage, unitCode: 'SMI' } : undefined,
+    vehicleModelDate: meta._car_year,
+    mileageFromOdometer: meta._car_mileage
+      ? {
+          '@type': 'QuantitativeValue',
+          value: parseInt(meta._car_mileage, 10) * 10,
+          unitCode: 'KMT',
+        }
+      : undefined,
     offers: {
       '@type': 'Offer',
       priceCurrency: 'SEK',

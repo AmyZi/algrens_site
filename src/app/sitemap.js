@@ -36,9 +36,8 @@ async function fetchAllVehicleSlugs() {
 
     data.forEach(car => {
       if (!car?.slug) return;
-      const isNew = car.meta?._car_is_new === 'yes';
       slugs.push({
-        path: isNew ? `/nytt/${car.slug}/` : `/begagnade/${car.slug}/`,
+        url: vehicleUrl(car), 
         lastModified: car.modified || new Date().toISOString(),
       });
     });
@@ -93,7 +92,7 @@ export default async function sitemap() {
   try {
     const vehicles = await fetchAllVehicleSlugs();
     vehiclePages = vehicles.map(v => ({
-      url: `${BASE_URL}${v.path}`,
+      url: v.url,
       lastModified: v.lastModified,
       changeFrequency: 'weekly',
       priority: 0.8,

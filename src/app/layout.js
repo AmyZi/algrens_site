@@ -10,19 +10,20 @@ import '@/styles/homePage.css';
 import '@/styles/bilarPage.css';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { autoDealerJsonLd, siteUrl } from '@/lib/seo';
 import MajblommanAnimation from '@/components/MajblommanAnimation';
 
 export const metadata = {
   title: {
-    default: 'Ahlgrens Automotive | Premium Husbilar i Borås',
+    default: 'Husbilar i Borås - Nya & Begagnade | Ahlgrens Husbilar',
     template: '%s | Ahlgrens Husbilar'
   },
   description: 'Handplockade husbilar från Europas bästa tillverkare. 25 års erfarenhet, över 3000 nöjda kunder, fullständig service och garanti.',
   keywords: ['husbilar Borås', 'köpa husbil', 'Bavaria husbilar', 'Pilote', 'Hymer', 'Laika', 'fritidsbilar', 'husbil begagnad'],
   authors: [{ name: 'Ahlgrens Automotive' }],
   openGraph: {
-    title: 'Ahlgrens Automotive | Premium Husbilar i Borås',
-    description: 'Handplockade husbilar från Europas bästa tillverkare. 25 års erfarenhet, fullständig service.',
+    title: 'Husbilar i Borås - Nya & Begagnade | Ahlgrens Husbilar',
+    description: 'Köp nya och begagnade husbilar i Borås hos Ahlgrens Husbilar. Service, garanti och personlig rådgivning.',
     url: 'https://ahlgrens.eu',
     siteName: 'Ahlgrens Husbilar',
     locale: 'sv_SE',
@@ -47,10 +48,14 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
+  alternates: {
+    canonical: '/',
+  },
   verification: {
     google: 'G-62S3QXZSL8',
   },
 };
+const jsonLd = autoDealerJsonLd();
 
 export default function RootLayout({ children }) {
   return (
@@ -59,6 +64,10 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="d-flex flex-column min-vh-100">
+         <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />y
         <MajblommanAnimation />
         <Navigation />
         <main className="flex-grow-1">

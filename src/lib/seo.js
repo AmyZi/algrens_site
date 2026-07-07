@@ -1,4 +1,4 @@
-export const siteUrl = 'https://ahlgrens.eu';
+export const siteUrl = 'https://www.ahlgrens.eu';
 export const businessName = 'Ahlgrens Husbilar';
 export const businessPhone = '+4633103011';
 export const businessEmail = 'jonas@ahlgrens.eu';
