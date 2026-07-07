@@ -67,7 +67,7 @@ export default function RootLayout({ children }) {
          <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />y
+        />
         <MajblommanAnimation />
         <Navigation />
         <main className="flex-grow-1">
