@@ -5,11 +5,10 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 
 const ContactContent = () => {
-  const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
+  const [status, setStatus] = useState('idle');
 
   const location = 'Ahlgrens Husbilar, Gånghestersvägen 129, 507 62 Borås, Sweden';
   
-  // FIXED: Corrected the ${} syntax for the API key
   const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(location)}`;
 
   const handleSubmit = async (e) => {
@@ -127,11 +126,11 @@ const ContactContent = () => {
                 <div className="d-flex gap-3">
                    <SocialIcon 
                      icon={<FacebookIcon />} 
-                     link="https://www.facebook.com/share/14M7UYf2jR3/?mibextid=wwXIfr" 
+                     link="https://www.facebook.com/people/Ahlgrens-husbilar/61577980988245/" 
                    />
                    <SocialIcon 
                      icon={<InstagramIcon />} 
-                     link="https://www.instagram.com/ahlgrenshusbilar?igsh=dWl1NWY3NWJnMnBh" 
+                     link="https://www.instagram.com/ahlgrenshusbilar/" 
                    />
                 </div>
               </div> 

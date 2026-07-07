@@ -55,6 +55,10 @@ export function autoDealerJsonLd({ url = siteUrl, description = 'Husbilar och hu
       latitude: 57.721,
       longitude: 12.9401,
     },
+    sameAs: [
+      'https://www.facebook.com/p/Ahlgrens-husbilar-61577980988245/',
+    ],
+
     areaServed: ['Borås', 'Västra Götaland', 'Sverige'],
     openingHoursSpecification: [
       {
