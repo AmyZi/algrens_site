@@ -21,10 +21,10 @@ const BRANDS_DATA = [
 ];
 
 export const metadata = {
-  title: 'Husbilsmärken - Pilote, Bavaria, Hymer, Laika & Fler | Ahlgrens Automotive',
+  title: 'Husbilsmärken - Pilote, Bavaria, Hymer, Laika & Fler | Ahlgrens Husbilar',
   description: 'Vi specialiserar oss på premium fritidsbilar från Pilote, Bavaria, Challenger, Rimor, Laika, Eura Mobil, Dethleffs, Bürstner, Hymer, Carado, Rapido, McLouis, Knaus, Chausson, Adria, Pössl och LMC.',
   openGraph: {
-    title: 'Husbilsmärken hos Ahlgrens Automotive',
+    title: 'Husbilsmärken hos Ahlgrens Husbilar',
     description: 'Auktoriserad återförsäljare av Pilote, Bavaria, Hymer, Laika, Dethleffs, Knaus med flera.',
     type: 'website',
   },
@@ -36,7 +36,7 @@ export default function BrandsPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AutoDealer",
-    "name": "Ahlgrens Automotive",
+    "name": "Ahlgrens Husbilar",
     "description": "Premium motorhome dealer in Sweden.",
     "brand": BRANDS_DATA.map(brand => ({
       "@type": "Brand",

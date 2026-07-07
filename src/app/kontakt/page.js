@@ -1,15 +1,15 @@
 import ContactContent from './ContactContent';
 
 export const metadata = {
-  title: 'Kontakta Oss - Ahlgrens Automotive i Borås',
-  description: 'Har du frågor om våra husbilar? Kontakta Ahlgrens Automotive för personlig rådgivning, tidsbokning eller värdering. Vi svarar inom 24 timmar.',
+  title: 'Kontakta Oss - Ahlgrens Husbilar i Borås',
+  description: 'Har du frågor om våra husbilar? Kontakta Ahlgrens Husbilar för personlig rådgivning, tidsbokning eller värdering. Vi svarar inom 24 timmar.',
 };
 
 export default function ContactPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AutoDealer",
-    "name": "Ahlgrens Automotive",
+    "name": "Ahlgrens Husbilar",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Gånghestervägen 129",

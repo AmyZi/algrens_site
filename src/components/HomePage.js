@@ -254,7 +254,7 @@ export default function HomePage({ cars = [] }) {
             <Col lg={6} className="offset-lg-1 mt-5 mt-lg-0">
               <h2 className="about-title">Vår Historia</h2>
               <p className="about-lead">
-                På Ahlgrens Automotive erbjuder vi ett noggrant utvalt sortiment av premium husbilar
+                På Ahlgrens Husbilar erbjuder vi ett noggrant utvalt sortiment av premium husbilar
                 från Europas mest ansedda tillverkare.
               </p>
               <div className="about-stats">

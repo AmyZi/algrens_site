@@ -20,7 +20,7 @@ export const metadata = {
   },
   description: 'Handplockade husbilar från Europas bästa tillverkare. 25 års erfarenhet, över 3000 nöjda kunder, fullständig service och garanti.',
   keywords: ['husbilar Borås', 'köpa husbil', 'Bavaria husbilar', 'Pilote', 'Hymer', 'Laika', 'fritidsbilar', 'husbil begagnad'],
-  authors: [{ name: 'Ahlgrens Automotive' }],
+  authors: [{ name: 'Ahlgrens Husbilar' }],
   openGraph: {
     title: 'Husbilar i Borås - Nya & Begagnade | Ahlgrens Husbilar',
     description: 'Köp nya och begagnade husbilar i Borås hos Ahlgrens Husbilar. Service, garanti och personlig rådgivning.',
