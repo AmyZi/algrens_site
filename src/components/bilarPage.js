@@ -2,6 +2,8 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import VehicleGrid from '@/components/VehicleGrid';
+import Hero from '@/components/PageHero';
+import { siteConfig } from '@/config/site-config';
 
 // ── Icons ─────────────────────────────────────────────────────
 
@@ -194,137 +196,145 @@ export default function BilarPage({ cars, initialFilter = 'all' }) {
   const goTo = (page) => { setCurrentPage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
   return (
-    <div className="container py-5 mt-5 listings-page">
+    <>
+      <Hero
+          breadcrumb={
+            <ol className="breadcrumb" style={{ fontSize: '0.85rem' }}>
+              <li className="breadcrumb-item"><Link href="/" className="link-subtle">Hem</Link></li>
+              <li className="breadcrumb-item active fw-bold">Lager</li>
+            </ol>
+          }
+          title="Husbilar, husvagnar & bilar"
+          titleAccent="i Borås"
+          description="Drömmer du om frihet på vägen – oavsett om målet är fjällen, skärgården eller en spontan helg utan planer? Hos Ahlgrens Husbilar hjälper vi dig hitta rätt husbil eller husvagn, ny som begagnad. Vi erbjuder personlig rådgivning, service och trygg finansiering – allt på ett och samma ställe i Borås."
+          primaryCta={{ label: 'Kontakta oss', href: '/kontakt' }}
+          secondaryCta={{ label: 'Hela vårt utbud', href: siteConfig.links.blocketShop }}
+          badges={['Personlig service', 'Trygg affär', 'Lokal expertis']}
+        />
 
-      {/* BREADCRUMB */}
-      <nav aria-label="breadcrumb" className="mb-4">
-        <ol className="breadcrumb" style={{ fontSize: '0.85rem' }}>
-          <li className="breadcrumb-item"><Link href="/" className="link-subtle">Hem</Link></li>
-          <li className="breadcrumb-item active fw-bold">Lager</li>
-        </ol>
-      </nav>
+      <div className="container py-5 mt-5 listings-page">
+        {/* ── ROW 1: Vehicle type tabs + body type icon cards ── */}
+        <div className="lp-type-row">
+          <div className="lp-type-left">
+            <span className="lp-type-label">Välj fordonstyp:</span>
+            <div className="status-seg" role="group" aria-label="Fordonstyp">
+              {VEHICLE_TYPES.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => { setActiveType(key); setTypeSelected(true); setActiveBody(null); setCurrentPage(1); }}
+                  className={`status-btn${activeType === key ? ' status-btn--active' : ''}`}
+                >{label}</button>
+              ))}
+            </div>
+          </div>
 
-      {/* ── ROW 1: Vehicle type tabs + body type icon cards ── */}
-      <div className="lp-type-row">
-        <div className="lp-type-left">
-          <span className="lp-type-label">Välj fordonstyp:</span>
-          <div className="status-seg" role="group" aria-label="Fordonstyp">
-            {VEHICLE_TYPES.map(({ key, label }) => (
+          <div className="lp-body-icons">
+            {currentBodyIcons.map(({ key, label, imgUrl }) => (
               <button
                 key={key}
-                onClick={() => { setActiveType(key); setTypeSelected(true); setActiveBody(null); setCurrentPage(1); }}
-                className={`status-btn${activeType === key ? ' status-btn--active' : ''}`}
-              >{label}</button>
+                onClick={() => { setActiveBody(prev => prev === key ? null : key); setCurrentPage(1); }}
+                className={`body-icon-btn${activeBody === key ? ' body-icon-btn--active' : ''}${activeBody && activeBody !== key ? ' body-icon-btn--dim' : ''}`}
+                aria-pressed={activeBody === key}
+              >
+                <div className="body-icon-btn__svg">
+                  <img src={imgUrl} alt="" width="60" height="30" loading="lazy" role="presentation" />
+                </div>
+                <span className="body-icon-btn__label">{label}</span>
+              </button>
             ))}
           </div>
         </div>
 
-        <div className="lp-body-icons">
-          {currentBodyIcons.map(({ key, label, imgUrl }) => (
-            <button
-              key={key}
-              onClick={() => { setActiveBody(prev => prev === key ? null : key); setCurrentPage(1); }}
-              className={`body-icon-btn${activeBody === key ? ' body-icon-btn--active' : ''}${activeBody && activeBody !== key ? ' body-icon-btn--dim' : ''}`}
-              aria-pressed={activeBody === key}
-            >
-              <div className="body-icon-btn__svg">
-                <img src={imgUrl} alt="" width="60" height="30" loading="lazy" role="presentation" />
-              </div>
-              <span className="body-icon-btn__label">{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* ── ROW 2: Condition + Search ── */}
+        <div className="lp-filter-row">
+          <div className="status-seg" role="group" aria-label="Status">
+            {[['all','Alla'],['new','Nya'],['used','Begagnade']].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => { setCondition(key); setCurrentPage(1); }}
+                className={`status-btn${condition === key ? ' status-btn--active' : ''}`}
+              >{label}</button>
+            ))}
+          </div>
 
-      {/* ── ROW 2: Condition + Search ── */}
-      <div className="lp-filter-row">
-        <div className="status-seg" role="group" aria-label="Status">
-          {[['all','Alla'],['new','Nya'],['used','Begagnade']].map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => { setCondition(key); setCurrentPage(1); }}
-              className={`status-btn${condition === key ? ' status-btn--active' : ''}`}
-            >{label}</button>
-          ))}
-        </div>
-
-        <div className="lp-search">
-          <span className="lp-search__icon"><SvgSearch /></span>
-          <input
-            type="text"
-            className="lp-search__input"
-            placeholder="Sök märke eller modell..."
-            value={search}
-            onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
-            aria-label="Sök fordon"
-          />
-        </div>
-      </div>
-
-      {/* ── ROW 3: Extended filter grid (toggleable) ── */}
-      {showFilters && (
-        <div className="filter-grid-primary">
-          <FilterSelect label="PRIS"        value={filterPrice}  onChange={v => { setFilterPrice(v);  setCurrentPage(1); }} options={PRICE_RANGE_OPTIONS} />
-          <FilterSelect label="PLANLÖSNING" value={filterPlan}   onChange={v => { setFilterPlan(v);   setCurrentPage(1); }} options={planOptions} />
-          <FilterSelect label="MÄRKE"       value={filterMake}   onChange={v => { setFilterMake(v);   setCurrentPage(1); }} options={makeOptions} />
-          <FilterSelect label="MODELLÅR"    value={filterYear}   onChange={v => { setFilterYear(v);   setCurrentPage(1); }} options={yearOptions} />
-          <FilterSelect label="TOTALVIKT"   value={filterWeight} onChange={v => { setFilterWeight(v); setCurrentPage(1); }} options={weightOptions} />
-        </div>
-      )}
-
-      {/* ── ROW 4: Filter actions ── */}
-      <div className="filter-actions">
-        <div className="filter-actions__left">
-          <button className="faction-btn" onClick={() => setShowFilters(v => !v)} aria-expanded={showFilters}>
-            {showFilters ? <SvgEyeSlash /> : <SvgSliders />}
-            <span>{showFilters ? 'Dölj filter' : 'Visa fler filter'}</span>
-          </button>
-          <button
-            className={`faction-btn faction-btn--reset${!hasActiveFilters ? ' faction-btn--disabled' : ''}`}
-            onClick={resetAll}
-            disabled={!hasActiveFilters}
-          >
-            <SvgTrash />
-            <span>Nollställ filter</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ── ROW 5: Sort + results count + view toggle ── */}
-      <div className="results-toolbar">
-        <div className="sort-pills">
-          <span className="sort-pills__label">Sortera:</span>
-          {SORT_OPTIONS.map(o => (
-            <button
-              key={o.key}
-              onClick={() => { setSort(o.key); setCurrentPage(1); }}
-              className={`sort-pill${sort === o.key ? ' sort-pill--active' : ''}`}
-            >{o.label}</button>
-          ))}
-        </div>
-        <div className="results-right">
-          <span className="results-count">{filteredCars.length} fordon</span>
-          <div className="view-toggle">
-            <button onClick={() => setViewMode('list')} className={`view-btn${viewMode === 'list' ? ' view-btn--active' : ''}`} aria-label="Listvy"><SvgListView /></button>
-            <button onClick={() => setViewMode('grid')} className={`view-btn${viewMode === 'grid' ? ' view-btn--active' : ''}`} aria-label="Rutnätsvy"><SvgGridView /></button>
+          <div className="lp-search">
+            <span className="lp-search__icon"><SvgSearch /></span>
+            <input
+              type="text"
+              className="lp-search__input"
+              placeholder="Sök märke eller modell..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
+              aria-label="Sök fordon"
+            />
           </div>
         </div>
-      </div>
 
-      {/* ── VEHICLE GRID ── */}
-      <VehicleGrid vehicles={currentVehicles} viewMode={viewMode} onClearFilters={resetAll} />
+        {/* ── ROW 3: Extended filter grid (toggleable) ── */}
+        {showFilters && (
+          <div className="filter-grid-primary">
+            <FilterSelect label="PRIS"        value={filterPrice}  onChange={v => { setFilterPrice(v);  setCurrentPage(1); }} options={PRICE_RANGE_OPTIONS} />
+            <FilterSelect label="PLANLÖSNING" value={filterPlan}   onChange={v => { setFilterPlan(v);   setCurrentPage(1); }} options={planOptions} />
+            <FilterSelect label="MÄRKE"       value={filterMake}   onChange={v => { setFilterMake(v);   setCurrentPage(1); }} options={makeOptions} />
+            <FilterSelect label="MODELLÅR"    value={filterYear}   onChange={v => { setFilterYear(v);   setCurrentPage(1); }} options={yearOptions} />
+            <FilterSelect label="TOTALVIKT"   value={filterWeight} onChange={v => { setFilterWeight(v); setCurrentPage(1); }} options={weightOptions} />
+          </div>
+        )}
 
-      {/* ── PAGINATION ── */}
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button onClick={() => goTo(currentPage - 1)} disabled={currentPage === 1} className="pagination-btn" aria-label="Föregående">←</button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <button key={page} onClick={() => goTo(page)} className={`pagination-btn${currentPage === page ? ' pagination-btn--active' : ''}`}>{page}</button>
-          ))}
-          <button onClick={() => goTo(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-btn" aria-label="Nästa">→</button>
+        {/* ── ROW 4: Filter actions ── */}
+        <div className="filter-actions">
+          <div className="filter-actions__left">
+            <button className="faction-btn" onClick={() => setShowFilters(v => !v)} aria-expanded={showFilters}>
+              {showFilters ? <SvgEyeSlash /> : <SvgSliders />}
+              <span>{showFilters ? 'Dölj filter' : 'Visa fler filter'}</span>
+            </button>
+            <button
+              className={`faction-btn faction-btn--reset${!hasActiveFilters ? ' faction-btn--disabled' : ''}`}
+              onClick={resetAll}
+              disabled={!hasActiveFilters}
+            >
+              <SvgTrash />
+              <span>Nollställ filter</span>
+            </button>
+          </div>
         </div>
-      )}
 
-    </div>
+        {/* ── ROW 5: Sort + results count + view toggle ── */}
+        <div className="results-toolbar">
+          <div className="sort-pills">
+            <span className="sort-pills__label">Sortera:</span>
+            {SORT_OPTIONS.map(o => (
+              <button
+                key={o.key}
+                onClick={() => { setSort(o.key); setCurrentPage(1); }}
+                className={`sort-pill${sort === o.key ? ' sort-pill--active' : ''}`}
+              >{o.label}</button>
+            ))}
+          </div>
+          <div className="results-right">
+            <span className="results-count">{filteredCars.length} fordon</span>
+            <div className="view-toggle">
+              <button onClick={() => setViewMode('list')} className={`view-btn${viewMode === 'list' ? ' view-btn--active' : ''}`} aria-label="Listvy"><SvgListView /></button>
+              <button onClick={() => setViewMode('grid')} className={`view-btn${viewMode === 'grid' ? ' view-btn--active' : ''}`} aria-label="Rutnätsvy"><SvgGridView /></button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── VEHICLE GRID ── */}
+        <VehicleGrid vehicles={currentVehicles} viewMode={viewMode} onClearFilters={resetAll} />
+
+        {/* ── PAGINATION ── */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button onClick={() => goTo(currentPage - 1)} disabled={currentPage === 1} className="pagination-btn" aria-label="Föregående">←</button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button key={page} onClick={() => goTo(page)} className={`pagination-btn${currentPage === page ? ' pagination-btn--active' : ''}`}>{page}</button>
+            ))}
+            <button onClick={() => goTo(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-btn" aria-label="Nästa">→</button>
+          </div>
+        )}
+
+      </div>
+    </>
   );
 }

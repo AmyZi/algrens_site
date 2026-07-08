@@ -394,7 +394,9 @@ html {
 .page-hero {
   background-color: var(--taupe);
   color: #fff;
-  padding: 120px 0 80px;
+  padding: 120px 0 0;
+  display: flex;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
 }
@@ -431,8 +433,41 @@ html {
   line-height: 1.6;
   margin-bottom: 0;
 }
+.page-hero__badge-bar {
+  width: 100%;
+  margin-top: 60px;
+  padding: 1rem 2rem;
+  background-color: color-mix(in srgb, var(--taupe) 70%, black);
+}
 
+.page-hero__badge-bar-inner {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 
+.page-hero__badge {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .page-hero {
+    padding: 80px 0 0;
+  }
+
+  .page-hero__title {
+    font-size: 2.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .page-hero__subtitle,
+  .page-hero__description {
+    font-size: 1rem;
+  }
+}
 /* ── Brand grid section ──────────────────────────────────────── */
 
 .brands-grid-section {
