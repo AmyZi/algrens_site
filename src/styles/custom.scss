@@ -17,6 +17,7 @@ $custom-colors: (
   --bs-slate: #4A5759;
   --bs-taupe: #8B7E74;
   --bs-charcoal: #2C2C2C;
+  --pinky: #f87d90;
 
   // Duplicates for compatibility
   --cream: #F5F1E8;
@@ -179,8 +180,6 @@ html {
 
 // ============================================================
 // Site Footer
-// Only layout & structure specific to the footer element.
-// Visual styles (colors, type, spacing) come from utilities above.
 // ============================================================
 
 .site-footer {
@@ -467,6 +466,10 @@ html {
   .page-hero__description {
     font-size: 1rem;
   }
+}
+
+.breadcrumb-item a {
+  color: var(--pinky);
 }
 /* ── Brand grid section ──────────────────────────────────────── */
 

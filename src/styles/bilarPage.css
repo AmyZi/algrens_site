@@ -941,7 +941,7 @@
 
 .cdv__breadcrumb .breadcrumb-item + .breadcrumb-item::before {
   content: "›" !important;
-  color: var(--slate);
+  color: var(--main-dusty-rose);
   font-weight: bold;
 }
 
