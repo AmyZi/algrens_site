@@ -24,6 +24,8 @@ export default function PsaBar({ announcements = [] }) {
 
   if (!announcements || announcements.length === 0) return null;
 
+  const current = announcements[currentIndex];
+
   return (
     <div className="psa-bar">
       <div className="psa-bar__track">
@@ -31,7 +33,12 @@ export default function PsaBar({ announcements = [] }) {
           className={`psa-ticker-text ${fade ? 'fade-in' : ''}`}
           style={{ transition: 'opacity 0.4s ease-in-out' }}
         >
-          {announcements[currentIndex].message}
+          <span>{current.message}</span>
+          {current.linkUrl && (
+            <a href={current.linkUrl} className="psa-bar__link">
+              {current.linkLabel || 'Läs mer'}
+            </a>
+          )}
         </div>
       </div>
     </div>
