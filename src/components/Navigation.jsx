@@ -5,6 +5,8 @@ import { Navbar, Nav, Container, Form } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { siteConfig } from '@/config/site-config';
+import PsaBar from '@/components/PsaBar';
+
 
 const NAV_LINKS = [
   { path: '/',       label: 'HEM' },
@@ -20,7 +22,7 @@ const NAV_LINKS = [
   { path: '/om-oss', label: 'OM OSS' },
 ];
 
-export default function Navigation() {
+export default function Navigation({ announcements = [] }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled]       = useState(false);
   const router   = useRouter();
@@ -41,13 +43,16 @@ export default function Navigation() {
 
   const isActive = (path) =>
     path === '/' ? pathname === '/' : pathname.startsWith(path);
+  
 
   return (
     <Navbar
       expand="lg"
       fixed="top"
-      className={`site-nav${scrolled ? ' site-nav--scrolled' : ''}`}
+      
+      className={`site-nav flex-column w-100 p-0 ${scrolled ? ' site-nav--scrolled' : ''}`}
     >
+      <PsaBar announcements={announcements} />
       <Container>
 
         <Navbar.Brand as={Link} href="/" className="nav-brand">

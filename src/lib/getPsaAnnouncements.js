@@ -3,7 +3,7 @@ const WP_API = process.env.NEXT_PUBLIC_WP_API_URL || 'https://ahlgrens.eu/wp-jso
 export async function getPsaAnnouncements() {
   try {
     const res = await fetch(
-      `${WP_API}/psa?per_page=20&_fields=id,title,meta&orderby=menu_order&order=asc`,
+      `${WP_API}/psa?per_page=20&_fields=id,title,meta._psa_active,meta._psa_link_url,meta._psa_link_label`,
       { cache: 'force-cache' }
     );
     if (!res.ok) return [];

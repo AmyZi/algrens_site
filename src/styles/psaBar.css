@@ -1,10 +1,16 @@
 .psa-bar {
   width: 100%;
-  background-color: var(--yellow);
+  background-color: var(--pinky);
   padding: 0.5rem 1rem;
+  border-bottom: 1px solid #e5e5e5;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  font-style: italic;
 }
 
-.psa-bar__inner {
+.psa-bar__track {
   max-width: 1140px;
   margin: 0 auto;
   min-height: 1.5rem;
@@ -12,18 +18,18 @@
   justify-content: center;
 }
 
-.psa-bar__message {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--taupe);
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-align: center;
-}
 
 .psa-bar__link {
   text-decoration: underline;
   color: var(--taupe);
   white-space: nowrap;
+}
+
+.psa-ticker-text {
+  opacity: 0;
+  will-change: opacity;
+}
+
+.psa-ticker-text.fade-in {
+  opacity: 1;
 }

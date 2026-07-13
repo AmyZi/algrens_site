@@ -12,7 +12,6 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { autoDealerJsonLd, siteUrl } from '@/lib/seo';
 import { getPsaAnnouncements } from '@/lib/getPsaAnnouncements';
-import PsaBar from '@/components/PsaBar';
 import '@/styles/psaBar.css';
 import MajblommanAnimation from '@/components/MajblommanAnimation';
 
@@ -58,10 +57,10 @@ export const metadata = {
     google: 'G-62S3QXZSL8',
   },
 };
-const announcements = await getPsaAnnouncements();
-const jsonLd = autoDealerJsonLd();
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const jsonLd = autoDealerJsonLd();
+  const announcements = await getPsaAnnouncements();
   return (
     <html lang="sv">
       <head>
@@ -72,9 +71,8 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <PsaBar announcements={announcements} />
         <MajblommanAnimation />
-        <Navigation />
+        <Navigation announcements={announcements} />
         <main className="flex-grow-1">
           {children}
         </main>
