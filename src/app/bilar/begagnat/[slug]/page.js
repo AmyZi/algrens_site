@@ -4,9 +4,10 @@ import SimilarVehicles from '@/components/SimilarVehicles';
 import { absoluteUrl, stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 
 export async function generateStaticParams() {
+  var WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
   try {
     const res = await fetch(
-      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100&_fields=slug,meta',
+      `${WP_API}/car_listing?per_page=100&_fields=slug,meta`,
       { cache: 'force-cache' }
     );
     if (!res.ok) return [];
@@ -26,7 +27,7 @@ export const dynamicParams = false;
 async function getCarData(slug) {
   try {
     const res = await fetch(
-      `https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?slug=${slug}&_embed`,
+      `${WP_API}/car_listing?slug=${slug}&_embed`,
       { cache: 'force-cache' }
     );
     if (!res.ok) return null;
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }) {
 async function getSimilarCars(currentCar) {
   try {
     const res = await fetch(
-      'https://www.ahlgrens.eu/wp-json/wp/v2/car_listing?per_page=100',
+      `${WP_API}/car_listing?per_page=100`,
       { cache: 'force-cache' }
     );
     if (!res.ok) return [];
