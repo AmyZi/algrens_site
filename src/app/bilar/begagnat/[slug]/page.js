@@ -3,8 +3,9 @@ import CarDetailView from '@/components/CarDetailView';
 import SimilarVehicles from '@/components/SimilarVehicles';
 import { absoluteUrl, stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 
+const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
+
 export async function generateStaticParams() {
-  var WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
   try {
     const res = await fetch(
       `${WP_API}/car_listing?per_page=100&_fields=slug,meta`,
