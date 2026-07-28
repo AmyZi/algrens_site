@@ -3,7 +3,7 @@ import CarDetailView from '@/components/CarDetailView';
 import SimilarVehicles from '@/components/SimilarVehicles';
 import { absoluteUrl, stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 
-const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
+const WP_API = process.env.WP_API_URL;
 
 export async function generateStaticParams() {
   try {
