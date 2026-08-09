@@ -1,4 +1,4 @@
-const WP_API = process.env.NEXT_PUBLIC_WP_API_URL || 'https://ahlgrens.eu/wp-json/wp/v2';
+const WP_API = process.env.WP_API_URL || 'https://ahlgrens.eu/wp-json/wp/v2';
 
 export async function getPsaAnnouncements() {
   try {
