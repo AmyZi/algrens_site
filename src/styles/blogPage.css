@@ -4,7 +4,8 @@
    the same naming pattern as your other *Page.css files. */
 
 .blog-page {
-  padding: 3rem 0 4rem;
+  padding-top: 6rem;
+  padding-bottom: 4rem;
 }
 
 .blog-page__header {

@@ -1,6 +1,7 @@
 
 .blog-post {
-  padding: 3rem 0 4rem;
+  padding-top: 6rem;
+  padding-bottom: 4rem;
 }
 
 .blog-post__article {
