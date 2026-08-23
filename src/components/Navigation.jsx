@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Form } from 'react-bootstrap';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { siteConfig } from '@/config/site-config';
 import PsaBar from '@/components/PsaBar';
 
 const NAV_LINKS = [

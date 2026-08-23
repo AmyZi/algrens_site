@@ -1,0 +1,179 @@
+/* src/styles/blogHero.css */
+
+.blog-hero {
+  --hero-accent: #E8A33D;
+  --hero-ink: #1B1E1A;
+  --hero-cream: #F7F3EA;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 78svh;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--hero-ink);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.blog-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(27, 30, 26, 0.15) 0%,
+    rgba(27, 30, 26, 0) 30%,
+    rgba(27, 30, 26, 0.55) 65%,
+    rgba(27, 30, 26, 0.92) 100%
+  );
+  z-index: 1;
+}
+
+.blog-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px 56px;
+  max-width: 780px;
+}
+
+.blog-hero__eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hero-accent);
+  margin-bottom: 12px;
+}
+
+.blog-hero__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(28px, 8vw, 42px);
+  line-height: 1.1;
+  color: var(--hero-cream);
+  margin: 0 0 20px;
+  text-wrap: balance;
+}
+
+.blog-hero__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(247, 243, 234, 0.85);
+}
+
+.blog-hero__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(247, 243, 234, 0.4);
+  margin-right: 2px;
+}
+
+.blog-hero__author {
+  font-weight: 600;
+  color: var(--hero-cream);
+}
+
+.blog-hero__dot {
+  opacity: 0.5;
+}
+
+.blog-hero__link {
+  color: var(--hero-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blog-hero__link:hover,
+.blog-hero__link:focus-visible {
+  text-decoration: underline;
+}
+
+/* Scroll cue — animated road-dash, on theme for a motorhome/caravan blog */
+.blog-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.blog-hero__scroll-track {
+  position: relative;
+  width: 2px;
+  height: 34px;
+  overflow: hidden;
+  background: rgba(247, 243, 234, 0.25);
+}
+
+.blog-hero__scroll-dash {
+  position: absolute;
+  top: -14px;
+  left: 0;
+  width: 2px;
+  height: 14px;
+  background: var(--hero-accent);
+  animation: blog-hero-dash-move 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes blog-hero-dash-move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(48px);
+  }
+}
+
+.blog-hero__scroll-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 234, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-hero__scroll-dash {
+    animation: none;
+    top: 0;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .blog-hero {
+    min-height: 86svh;
+  }
+  .blog-hero__content {
+    padding: 0 48px 72px;
+  }
+  .blog-hero__meta {
+    font-size: 14px;
+    gap: 10px;
+  }
+  .blog-hero__avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+  .blog-hero {
+    min-height: 92svh;
+  }
+  .blog-hero__content {
+    max-width: 920px;
+    padding: 0 64px 88px;
+  }
+}

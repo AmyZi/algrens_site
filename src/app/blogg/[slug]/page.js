@@ -1,7 +1,5 @@
-// src/app/blogg/[slug]/page.js
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   getAllBlogPosts,
   getBlogPostBySlug,
@@ -14,6 +12,7 @@ import {
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 import '@/styles/blogPost.css';
+import BlogHero from '@/components/blog/BlogHero';
 
 export async function generateStaticParams() {
   const posts = await getAllBlogPosts();
@@ -51,14 +50,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('sv-SE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
-
 export default async function BlogPostPage({ params }) {
   const { slug } = await params;
   const post = await getBlogPostBySlug(slug);
@@ -67,6 +58,7 @@ export default async function BlogPostPage({ params }) {
   const meta = post.meta || {};
   const image = getFeaturedImageUrl(post);
   const faqItems = getFaqItems(post);
+  const categories = getPostCategories(post);
   const relatedVehicle = meta._related_vehicle_id
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
@@ -88,8 +80,6 @@ export default async function BlogPostPage({ params }) {
     mainEntityOfPage: { '@type': 'WebPage', '@id': blogPostUrl(post) },
   };
 
-  // Only emit FAQPage schema when the author actually filled in Q&A pairs —
-  // don't force it onto every post.
   const faqJsonLd =
     faqItems.length > 0
       ? {
@@ -116,37 +106,18 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
+      {/* Full-bleed hero deliberately sits outside .container */}
+      <BlogHero {...post.hero} eyebrow={categories[0]} />
+
       <div className="container">
         <article className="blog-post__article">
-          <header className="blog-post__header">
-            {getPostCategories(post).length > 0 && (
-              <div className="blog-post__tags">
-                {getPostCategories(post).map(cat => (
-                  <span key={cat} className="blog-post__tag">{cat}</span>
-                ))}
-              </div>
-            )}
-            <h1
-              className="blog-post__title"
-              dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-            />
-            <div className="blog-post__meta">
-              <span>{formatDate(post.date)}</span>
-              <span>·</span>
-              <span>{getReadingTime(post.content.rendered)}</span>
+          {categories.length > 0 && (
+            <div className="blog-post__tags">
+              {categories.map(cat => (
+                <span key={cat} className="blog-post__tag">{cat}</span>
+              ))}
             </div>
-          </header>
-
-          <div className="blog-post__cover-wrap">
-            <Image
-              src={image}
-              alt={post.title.rendered}
-              fill
-              sizes="(min-width: 1024px) 800px, 100vw"
-              className="blog-post__cover"
-              priority
-            />
-          </div>
+          )}
 
           <div
             className="blog-post__content"
@@ -156,10 +127,7 @@ export default async function BlogPostPage({ params }) {
           {relatedVehicle && (
             <div className="blog-post__related-vehicle">
               <p className="blog-post__related-label">Nämnd i det här inlägget</p>
-              <Link
-                href={vehicleUrl(relatedVehicle)}
-                className="blog-post__related-link"
-              >
+              <Link href={vehicleUrl(relatedVehicle)} className="blog-post__related-link">
                 {vehicleTitle(relatedVehicle)} →
               </Link>
             </div>
