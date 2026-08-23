@@ -106,7 +106,6 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
-      {/* Full-bleed hero deliberately sits outside .container */}
       <BlogHero {...post.hero} eyebrow={categories[0]} />
 
       <div className="container">
