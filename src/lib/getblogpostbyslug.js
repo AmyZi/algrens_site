@@ -4,19 +4,15 @@
 // REST bloat — note _embedded has to be listed explicitly or the embed data
 // gets stripped back out by the _fields filter.
 
-const POST_FIELDS = [
+const HERO_FIELDS = [
   'id',
   'slug',
   'date',
-  'modified',
   'title',
-  'excerpt',
   'content',
   'author',
   'featured_media',
-  'categories',
   'meta',
-  '_links',
   '_embedded',
 ].join(',');
 
@@ -24,8 +20,8 @@ export async function getBlogPostBySlug(slug) {
   const url =
     `${process.env.NEXT_PUBLIC_WP_API_URL}/posts` +
     `?slug=${encodeURIComponent(slug)}` +
-    `&_embed=author,wp:featuredmedia,wp:term` +
-    `&_fields=${POST_FIELDS}`;
+    `&_embed=author,wp:featuredmedia` +
+    `&_fields=${HERO_FIELDS}`;
 
   const res = await fetch(url, { cache: 'force-cache' });
   if (!res.ok) return null;
@@ -34,16 +30,21 @@ export async function getBlogPostBySlug(slug) {
   if (!post) return null;
 
   const author = post._embedded?.author?.[0];
+  const media = post._embedded?.['wp:featuredmedia']?.[0];
+
+  const plainText = post.content.rendered.replace(/<[^>]+>/g, ' ');
+  const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
+  const readTime = `${Math.max(1, Math.round(wordCount / 200))} min läsning`;
 
   return {
     ...post,
     hero: {
       title: post.title.rendered,
-      imageUrl: getFeaturedImageUrl(post),
+      imageUrl: media?.source_url ?? null,
       authorName: author?.name ?? 'Ahlgrens Husbilar',
       authorAvatarUrl: author?.avatar_urls?.['96'] ?? null,
       dateISO: post.date,
-      readTime: getReadingTime(post.content.rendered),
+      readTime,
       linkUrl: post.meta?._hero_link_url || null,
       linkLabel: post.meta?._hero_link_label || 'Läs mer',
     },
