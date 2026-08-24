@@ -1,4 +1,4 @@
-import "../styles/blogHero.css";
+import "@/styles/blogHero.css";
  
 export default function BlogHero({
   imageUrl,
