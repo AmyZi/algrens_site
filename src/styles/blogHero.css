@@ -1,9 +1,8 @@
-/* src/styles/blogHero.css */
 
 .blog-hero {
-  --hero-accent: #E8A33D;
-  --hero-ink: #1B1E1A;
-  --hero-cream: #F7F3EA;
+  --blog-hero-accent: var(--color-accent, #e8a33d);
+  --blog-hero-ink: var(--color-ink, #1b1e1a);
+  --blog-hero-cream: var(--color-cream, #f7f3ea);
 
   position: relative;
   display: flex;
@@ -12,7 +11,7 @@
   min-height: 78svh;
   background-size: cover;
   background-position: center;
-  background-color: var(--hero-ink);
+  background-color: var(--blog-hero-ink);
   overflow: hidden;
   isolation: isolate;
 }
@@ -43,16 +42,16 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--hero-accent);
+  color: var(--blog-hero-accent);
   margin-bottom: 12px;
 }
 
 .blog-hero__title {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: var(--font-display, inherit);
   font-weight: 600;
   font-size: clamp(28px, 8vw, 42px);
   line-height: 1.1;
-  color: var(--hero-cream);
+  color: var(--blog-hero-cream);
   margin: 0 0 20px;
   text-wrap: balance;
 }
@@ -77,7 +76,7 @@
 
 .blog-hero__author {
   font-weight: 600;
-  color: var(--hero-cream);
+  color: var(--blog-hero-cream);
 }
 
 .blog-hero__dot {
@@ -85,17 +84,19 @@
 }
 
 .blog-hero__link {
-  color: var(--hero-accent);
+  color: var(--blog-hero-accent);
   font-weight: 600;
-  text-decoration: none;
-}
-
-.blog-hero__link:hover,
-.blog-hero__link:focus-visible {
   text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
 }
 
-/* Scroll cue — animated road-dash, on theme for a motorhome/caravan blog */
+.blog-hero__link:hover {
+  text-decoration-color: var(--blog-hero-accent);
+}
+
+/* Scroll cue: animated road-dash line — on-theme for a motorhome/caravan blog */
 .blog-hero__scroll {
   position: absolute;
   left: 50%;
@@ -122,7 +123,7 @@
   left: 0;
   width: 2px;
   height: 14px;
-  background: var(--hero-accent);
+  background: var(--blog-hero-accent);
   animation: blog-hero-dash-move 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
@@ -149,7 +150,7 @@
   }
 }
 
-/* Tablet and up */
+/* Tablet / desktop up */
 @media (min-width: 768px) {
   .blog-hero {
     min-height: 86svh;
@@ -167,7 +168,6 @@
   }
 }
 
-/* Desktop */
 @media (min-width: 1200px) {
   .blog-hero {
     min-height: 92svh;

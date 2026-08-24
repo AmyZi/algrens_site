@@ -1,5 +1,16 @@
-
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
+
+const POST_FIELDS = [
+  'id',
+  'slug',
+  'date',
+  'title',
+  'content',
+  'author',
+  'featured_media',
+  'meta',
+  '_embedded',
+].join(',');
 
 export async function getAllBlogPosts() {
   try {
@@ -19,7 +30,9 @@ export async function getAllBlogPosts() {
 export async function getBlogPostBySlug(slug) {
   try {
     const res = await fetch(
-      `${WP_API}/posts?slug=${slug}&_embed`,
+      `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
+        `&_embed=author,wp:featuredmedia,wp:term` +
+        `&_fields=${POST_FIELDS}`,
       { cache: 'force-cache' }
     );
     if (!res.ok) return null;
@@ -77,4 +90,27 @@ export function getFaqItems(post) {
 // Blog-equivalent of vehicleUrl() in seo.js — keep both in sync.
 export function blogPostUrl(post) {
   return `https://www.ahlgrens.eu/blogg/${post.slug}/`;
+}
+
+// Shapes a fetched post into BlogHero props. Pure function, no fetch —
+// reuses getFeaturedImageUrl / getReadingTime / getPostCategories above,
+// so formatting stays in one place per concern.
+
+export function getHeroProps(post) {
+  if (!post) return null;
+
+  const author = post._embedded?.author?.[0];
+  const categories = getPostCategories(post);
+
+  return {
+    title: post.title.rendered,
+    imageUrl: getFeaturedImageUrl(post),
+    eyebrow: categories[0] ?? null,
+    authorName: author?.name ?? 'Ahlgrens Husbilar',
+    authorAvatarUrl: author?.avatar_urls?.['96'] ?? null,
+    dateISO: post.date,
+    readTime: getReadingTime(post.content?.rendered),
+    linkUrl: post.meta?._hero_link_url || null,
+    linkLabel: post.meta?._hero_link_label || 'Läs mer',
+  };
 }
