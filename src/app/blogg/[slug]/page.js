@@ -3,9 +3,9 @@ import Link from 'next/link';
 import {
   getAllBlogPosts,
   getBlogPostBySlug,
+  getHeroProps,
   getRelatedVehicle,
   getFeaturedImageUrl,
-  getReadingTime,
   getPostCategories,
   getFaqItems,
   blogPostUrl,
@@ -20,11 +20,10 @@ export async function generateStaticParams() {
   const posts = await getAllBlogPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
- 
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = await getAllBlogPosts(slug);
+  const post = await getBlogPostBySlug(slug); // was getAllBlogPosts(slug) — wrong function, ignored slug
 
   if (!post) {
     return { title: 'Blogginlägg', robots: { index: false, follow: true } };
@@ -36,7 +35,6 @@ export async function generateMetadata({ params }) {
     meta._seo_description?.trim() ||
     truncateDescription(stripHtml(post.excerpt.rendered));
   const image = getFeaturedImageUrl(post);
-  const hero = getHeroProps(post);
 
   return {
     title,
@@ -61,6 +59,7 @@ export default async function BlogPostPage({ params }) {
   const image = getFeaturedImageUrl(post);
   const faqItems = getFaqItems(post);
   const categories = getPostCategories(post);
+  const hero = getHeroProps(post);
   const relatedVehicle = meta._related_vehicle_id
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
@@ -108,7 +107,7 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
-      <BlogHero {...post.hero} eyebrow={categories[0]} />
+      <BlogHero {...hero} />
 
       <div className="container">
         <article className="blog-post__article">
