@@ -1,15 +1,10 @@
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
 
-// _fields trims Astra's REST bloat on the single-post fetch.
-// _embedded must be listed explicitly or the embed data (author,
-// featured image, terms) gets stripped back out by the _fields filter.
 const POST_FIELDS = [
   'id',
   'slug',
   'date',
-  'modified',
   'title',
-  'excerpt',
   'content',
   'author',
   'featured_media',
@@ -32,8 +27,6 @@ export async function getAllBlogPosts() {
   }
 }
 
-// Single source of truth for fetching one post by slug.
-// Used by both the page's content render and getHeroProps() below.
 export async function getBlogPostBySlug(slug) {
   try {
     const res = await fetch(
@@ -102,13 +95,7 @@ export function blogPostUrl(post) {
 // Shapes a fetched post into BlogHero props. Pure function, no fetch —
 // reuses getFeaturedImageUrl / getReadingTime / getPostCategories above,
 // so formatting stays in one place per concern.
-//
-// _hero_link_url / _hero_link_label: optional, separate from the author
-// byline (matches the rvproseal.ca reference — plain "Author · Date",
-// no link on the name). Empty meta -> linkUrl is null -> BlogHero hides it.
-//
-// dateISO is passed through raw; BlogHero.jsx does the sv-SE formatting,
-// so it isn't duplicated here.
+
 export function getHeroProps(post) {
   if (!post) return null;
 
@@ -116,7 +103,7 @@ export function getHeroProps(post) {
   const categories = getPostCategories(post);
 
   return {
-    title: post.title?.rendered || '',
+    title: post.title.rendered,
     imageUrl: getFeaturedImageUrl(post),
     eyebrow: categories[0] ?? null,
     authorName: author?.name ?? 'Ahlgrens Husbilar',
