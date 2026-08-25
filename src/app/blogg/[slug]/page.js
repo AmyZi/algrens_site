@@ -14,16 +14,17 @@ import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/
 import '@/styles/blogPost.css';
 import BlogHero from '@/components/blog/BlogHero';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await getAllBlogPosts();
-  return posts.map(post => ({ slug: post.slug }));
+  return posts.map((post) => ({ slug: post.slug }));
 }
-
-export const dynamicParams = false;
+ 
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const post = await getAllBlogPosts(slug);
 
   if (!post) {
     return { title: 'Blogginlägg', robots: { index: false, follow: true } };
@@ -35,6 +36,7 @@ export async function generateMetadata({ params }) {
     meta._seo_description?.trim() ||
     truncateDescription(stripHtml(post.excerpt.rendered));
   const image = getFeaturedImageUrl(post);
+  const hero = getHeroProps(post);
 
   return {
     title,
