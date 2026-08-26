@@ -1,129 +1,174 @@
-const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
+// src/app/blogg/[slug]/page.js
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import {
+  getAllBlogPosts,
+  getBlogPostBySlug,
+  getRelatedVehicle,
+  getFeaturedImageUrl,
+  getReadingTime,
+  getPostCategories,
+  getFaqItems,
+  getHeroProps,
+  blogPostUrl,
+} from '@/lib/getBlogPosts';
+import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
+import BlogHero from '@/components/BlogHero';
+import '@/styles/blogPost.css';
 
-// _fields trims Astra's REST bloat on the single-post fetch.
-// _embedded must be listed explicitly or the embed data (author,
-// featured image, terms) gets stripped back out by the _fields filter.
-const POST_FIELDS = [
-  'id',
-  'slug',
-  'date',
-  'modified',
-  'title',
-  'excerpt',
-  'content',
-  'author',
-  'featured_media',
-  'meta',
-  '_embedded',
-].join(',');
+export async function generateStaticParams() {
+  const posts = await getAllBlogPosts();
+  return posts.map(post => ({ slug: post.slug }));
+}
 
-export async function getAllBlogPosts() {
-  try {
-    const res = await fetch(
-      `${WP_API}/posts?per_page=100&_embed`,
-      { cache: 'force-cache' }
-    );
-    if (!res.ok) return [];
-    const posts = await res.json();
-    return Array.isArray(posts) ? posts : [];
-  } catch (err) {
-    console.error('getAllBlogPosts:', err);
-    return [];
+export const dynamicParams = false;
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
+
+  if (!post) {
+    return { title: 'Blogginlägg', robots: { index: false, follow: true } };
   }
-}
 
-// Single source of truth for fetching one post by slug.
-// Used by both the page's content render and getHeroProps() below.
-export async function getBlogPostBySlug(slug) {
-  try {
-    const res = await fetch(
-      `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
-        `&_embed=author,wp:featuredmedia,wp:term` +
-        `&_fields=${POST_FIELDS}`,
-      { cache: 'force-cache' }
-    );
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.[0] ?? null;
-  } catch {
-    return null;
-  }
-}
-
-export async function getRelatedVehicle(vehicleId) {
-  if (!vehicleId) return null;
-  try {
-    const res = await fetch(
-      `${WP_API}/car_listing/${vehicleId}`,
-      { cache: 'force-cache' }
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
-export function getFeaturedImageUrl(post) {
-  return (
-    post?._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
-    '/images/og-image.jpg'
-  );
-}
-
-export function getPostCategories(post) {
-  const terms = post?._embedded?.['wp:term']?.[0] || [];
-  return terms.map(t => t.name);
-}
-
-export function getReadingTime(htmlContent = '') {
-  const text = htmlContent.replace(/<[^>]+>/g, ' ');
-  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.round(wordCount / 200));
-  return `${minutes} min läsning`;
-}
-
-export function getFaqItems(post) {
-  const raw = post?.meta?._faq_items;
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-// Blog-equivalent of vehicleUrl() in seo.js — keep both in sync.
-export function blogPostUrl(post) {
-  return `https://www.ahlgrens.eu/blogg/${post.slug}/`;
-}
-
-// Shapes a fetched post into BlogHero props. Pure function, no fetch —
-// reuses getFeaturedImageUrl / getReadingTime / getPostCategories above,
-// so formatting stays in one place per concern.
-//
-// _hero_link_url / _hero_link_label: optional, separate from the author
-// byline (matches the rvproseal.ca reference — plain "Author · Date",
-// no link on the name). Empty meta -> linkUrl is null -> BlogHero hides it.
-//
-// dateISO is passed through raw; BlogHero.jsx does the sv-SE formatting,
-// so it isn't duplicated here.
-export function getHeroProps(post) {
-  if (!post) return null;
-
-  const author = post._embedded?.author?.[0];
-  const categories = getPostCategories(post);
+  const meta = post.meta || {};
+  const title = meta._seo_title?.trim() || `${stripHtml(post.title.rendered)} – Ahlgrens Husbilar`;
+  const description =
+    meta._seo_description?.trim() ||
+    truncateDescription(stripHtml(post.excerpt.rendered));
+  const image = getFeaturedImageUrl(post);
 
   return {
-    title: post.title?.rendered || '',
-    imageUrl: getFeaturedImageUrl(post),
-    eyebrow: categories[0] ?? null,
-    authorName: author?.name ?? 'Ahlgrens Husbilar',
-    authorAvatarUrl: author?.avatar_urls?.['96'] ?? null,
-    dateISO: post.date,
-    readTime: getReadingTime(post.content?.rendered),
-    linkUrl: post.meta?._hero_link_url || null,
-    linkLabel: post.meta?._hero_link_label || 'Läs mer',
+    title,
+    description,
+    alternates: { canonical: blogPostUrl(post) },
+    openGraph: {
+      title,
+      description,
+      url: blogPostUrl(post),
+      type: 'article',
+      images: [{ url: image }],
+    },
   };
+}
+
+export default async function BlogPostPage({ params }) {
+  const { slug } = await params;
+  const post = await getBlogPostBySlug(slug);
+  if (!post) notFound();
+
+  const meta = post.meta || {};
+  const image = getFeaturedImageUrl(post);
+  const faqItems = getFaqItems(post);
+  const categories = getPostCategories(post);
+  const readingTime = getReadingTime(post.content.rendered);
+  const relatedVehicle = meta._related_vehicle_id
+    ? await getRelatedVehicle(meta._related_vehicle_id)
+    : null;
+
+  // fallbackToCompanyLink: true -> hero links to siteConfig company URL
+  // when the post has no _hero_link_url set. Set false per-post logic here
+  // if you'd rather some posts show no link at all.
+  const heroProps = getHeroProps(post, { fallbackToCompanyLink: true });
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: stripHtml(post.title.rendered),
+    description: stripHtml(post.excerpt.rendered),
+    image: [image],
+    datePublished: post.date,
+    dateModified: post.modified,
+    author: { '@type': 'Organization', name: 'Ahlgrens Husbilar' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Ahlgrens Husbilar',
+      logo: { '@type': 'ImageObject', url: 'https://www.ahlgrens.eu/images/logo.png' },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': blogPostUrl(post) },
+  };
+
+  // Only emit FAQPage schema when the author actually filled in Q&A pairs —
+  // don't force it onto every post.
+  const faqJsonLd =
+    faqItems.length > 0
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqItems.map(item => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: { '@type': 'Answer', text: item.answer },
+          })),
+        }
+      : null;
+
+  return (
+    <main className="blog-post">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
+
+      <BlogHero {...heroProps} />
+
+      <div className="container">
+        <article className="blog-post__article">
+          {(categories.length > 0 || readingTime) && (
+            <div className="blog-post__meta-row">
+              {categories.length > 0 && (
+                <div className="blog-post__tags">
+                  {categories.map(cat => (
+                    <span key={cat} className="blog-post__tag">{cat}</span>
+                  ))}
+                </div>
+              )}
+              {readingTime && (
+                <span className="blog-post__reading-time">{readingTime}</span>
+              )}
+            </div>
+          )}
+
+          <div
+            className="blog-post__content"
+            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+          />
+
+          {relatedVehicle && (
+            <div className="blog-post__related-vehicle">
+              <p className="blog-post__related-label">Nämnd i det här inlägget</p>
+              <Link
+                href={vehicleUrl(relatedVehicle)}
+                className="blog-post__related-link"
+              >
+                {vehicleTitle(relatedVehicle)} →
+              </Link>
+            </div>
+          )}
+
+          {faqItems.length > 0 && (
+            <section className="blog-post__faq">
+              <h2 className="blog-post__faq-title">Vanliga frågor</h2>
+              {faqItems.map((item, i) => (
+                <div className="blog-post__faq-item" key={i}>
+                  <h3 className="blog-post__faq-question">{item.question}</h3>
+                  <p className="blog-post__faq-answer">{item.answer}</p>
+                </div>
+              ))}
+            </section>
+          )}
+        </article>
+
+        <div className="blog-post__back">
+          <Link href="/blogg/">← Tillbaka till bloggen</Link>
+        </div>
+      </div>
+    </main>
+  );
 }
