@@ -1,4 +1,3 @@
-// src/app/blogg/[slug]/page.js
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -9,12 +8,11 @@ import {
   getReadingTime,
   getPostCategories,
   getFaqItems,
-  getHeroProps,
   blogPostUrl,
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
-import BlogHero from '@/components/blog/BlogHero';
 import '@/styles/blogPost.css';
+import BlogHero from '@/components/blog/BlogHero';
 
 export async function generateStaticParams() {
   const posts = await getAllBlogPosts();
@@ -61,15 +59,9 @@ export default async function BlogPostPage({ params }) {
   const image = getFeaturedImageUrl(post);
   const faqItems = getFaqItems(post);
   const categories = getPostCategories(post);
-  const readingTime = getReadingTime(post.content.rendered);
   const relatedVehicle = meta._related_vehicle_id
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
-
-  // fallbackToCompanyLink: true -> hero links to siteConfig company URL
-  // when the post has no _hero_link_url set. Set false per-post logic here
-  // if you'd rather some posts show no link at all.
-  const heroProps = getHeroProps(post, { fallbackToCompanyLink: true });
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -88,8 +80,6 @@ export default async function BlogPostPage({ params }) {
     mainEntityOfPage: { '@type': 'WebPage', '@id': blogPostUrl(post) },
   };
 
-  // Only emit FAQPage schema when the author actually filled in Q&A pairs —
-  // don't force it onto every post.
   const faqJsonLd =
     faqItems.length > 0
       ? {
@@ -116,22 +106,16 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
-      <BlogHero {...heroProps} />
+      {/* Full-bleed hero deliberately sits outside .container */}
+      <BlogHero {...post.hero} eyebrow={categories[0]} />
 
       <div className="container">
         <article className="blog-post__article">
-          {(categories.length > 0 || readingTime) && (
-            <div className="blog-post__meta-row">
-              {categories.length > 0 && (
-                <div className="blog-post__tags">
-                  {categories.map(cat => (
-                    <span key={cat} className="blog-post__tag">{cat}</span>
-                  ))}
-                </div>
-              )}
-              {readingTime && (
-                <span className="blog-post__reading-time">{readingTime}</span>
-              )}
+          {categories.length > 0 && (
+            <div className="blog-post__tags">
+              {categories.map(cat => (
+                <span key={cat} className="blog-post__tag">{cat}</span>
+              ))}
             </div>
           )}
 
@@ -143,10 +127,7 @@ export default async function BlogPostPage({ params }) {
           {relatedVehicle && (
             <div className="blog-post__related-vehicle">
               <p className="blog-post__related-label">Nämnd i det här inlägget</p>
-              <Link
-                href={vehicleUrl(relatedVehicle)}
-                className="blog-post__related-link"
-              >
+              <Link href={vehicleUrl(relatedVehicle)} className="blog-post__related-link">
                 {vehicleTitle(relatedVehicle)} →
               </Link>
             </div>
