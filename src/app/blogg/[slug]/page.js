@@ -13,7 +13,7 @@ import {
   blogPostUrl,
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
-import BlogHero from '@/components/BlogHero';
+import BlogHero from '@/components/blog/BlogHero';
 import '@/styles/blogPost.css';
 
 export async function generateStaticParams() {
