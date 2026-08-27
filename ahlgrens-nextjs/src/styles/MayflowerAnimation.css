@@ -1,0 +1,139 @@
+/* Mayflower Floating Animation Styles */
+
+.mayflower-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.mayflower {
+  position: fixed;
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 1;
+  will-change: transform;
+}
+
+/* Drift and rotate animation */
+@keyframes drift-rotate {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(100vw, -100vh) rotate(360deg);
+  }
+}
+
+/* Individual flower animations with unique timings and positions */
+.mayflower-1 {
+  animation: drift-rotate 25s linear infinite;
+  top: 10%;
+  left: -10%;
+}
+
+.mayflower-2 {
+  animation: drift-rotate 30s linear infinite;
+  top: 30%;
+  left: -15%;
+  animation-delay: 5s;
+}
+
+.mayflower-3 {
+  animation: drift-rotate 28s linear infinite;
+  top: 50%;
+  left: -12%;
+  animation-delay: 10s;
+}
+
+.mayflower-4 {
+  animation: drift-rotate 32s linear infinite;
+  top: 70%;
+  left: -8%;
+  animation-delay: 15s;
+}
+
+.mayflower-5 {
+  animation: drift-rotate 27s linear infinite;
+  top: 85%;
+  left: -14%;
+  animation-delay: 20s;
+}
+
+.mayflower-6 {
+  animation: drift-rotate 29s linear infinite;
+  top: 20%;
+  left: -11%;
+  animation-delay: 8s;
+}
+
+.mayflower-7 {
+  animation: drift-rotate 26s linear infinite;
+  top: 15%;
+  left: -13%;
+  animation-delay: 3s;
+}
+
+.mayflower-8 {
+  animation: drift-rotate 31s linear infinite;
+  top: 40%;
+  left: -9%;
+  animation-delay: 12s;
+}
+
+.mayflower-9 {
+  animation: drift-rotate 24s linear infinite;
+  top: 60%;
+  left: -16%;
+  animation-delay: 18s;
+}
+
+.mayflower-10 {
+  animation: drift-rotate 33s linear infinite;
+  top: 75%;
+  left: -11%;
+  animation-delay: 7s;
+}
+
+.mayflower-11 {
+  animation: drift-rotate 29s linear infinite;
+  top: 25%;
+  left: -14%;
+  animation-delay: 14s;
+}
+
+.mayflower-12 {
+  animation: drift-rotate 27s linear infinite;
+  top: 55%;
+  left: -10%;
+  animation-delay: 22s;
+}
+
+/* Responsive adjustments */
+@media (width <= 768px) {
+  .mayflower {
+    opacity: 0.3;
+    width: 30px;
+    height: 30px;
+  }
+  
+  /* Reduce number of flowers on mobile */
+  .mayflower-9,
+  .mayflower-10,
+  .mayflower-11,
+  .mayflower-12 {
+    display: none;
+  }
+}
+
+/* Optional: Pause animation on hover for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .mayflower {
+    animation: none;
+    opacity: 0.2;
+  }
+}

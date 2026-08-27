@@ -1,0 +1,23 @@
+⚠ `eslint` configuration in next.config.mjs is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+⚠ Invalid next.config.mjs options detected: 
+⚠     Unrecognized key(s) in object: 'eslint'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.production, .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 21.2s
+  Skipping validation of types
+  Collecting page data using 3 workers ...
+Error: export const dynamic = "force-static"/export const revalidate not configured on route "/sitemap.xml" with "output: export". See more info here: https://nextjs.org/docs/advanced-features/static-html-export
+    at instantiateModule (.next/server/chunks/[turbopack]_runtime.js:740:9)
+    at instantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:768:12)
+    at getOrInstantiateRuntimeModule (.next/server/chunks/[turbopack]_runtime.js:781:12)
+    at Object.m (.next/server/chunks/[turbopack]_runtime.js:790:18)
+    at Object.<anonymous> (.next/server/app/sitemap.xml/route.js:6:3)
+
+> Build error occurred
+Error: Failed to collect page data for /sitemap.xml
+    at ignore-listed frames {
+  type: 'Error'
+}

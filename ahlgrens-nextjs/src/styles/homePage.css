@@ -1,0 +1,618 @@
+/* =============================================================
+   homePage.css
+   All homepage styles — hero, ticker, featured, about, contact
+   Import: import '@/styles/homePage.css' in HomePage.jsx
+   Tokens: uses :root vars from custom.scss
+   ============================================================= */
+
+
+/* ── Page shell ──────────────────────────────────────────────── */
+
+.home-page {
+  background-color: #fff;
+}
+
+
+/* ── 1. Hero ─────────────────────────────────────────────────── */
+
+.hero-section {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 120px 0 80px;
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  max-width: 560px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-btn {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  padding: 12px 32px;
+  border-radius: 0;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.hero-btn--primary {
+  background-color: var(--yellow);
+  color: #000;
+  border: 2px solid var(--yellow);
+}
+
+.hero-btn--outline {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.hero-btn:hover {
+  opacity: 0.85;
+}
+
+
+/* ── 2. Brand ticker ─────────────────────────────────────────── */
+
+.brand-ticker {
+  background-color: var(--yellow);
+  padding: 20px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+.brand-ticker__track {
+  display: inline-block;
+}
+
+.brand-ticker__item {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  font-weight: 900;
+  color: #000;
+  margin: 0 40px;
+  letter-spacing: 2px;
+}
+
+
+/* ── 3. Featured vehicles ────────────────────────────────────── */
+
+.featured-section {
+  padding: 60px 0;
+}
+
+.featured-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.featured-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--slate);
+  margin-bottom: 0.25rem;
+}
+
+.featured-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  margin: 0;
+  color: var(--charcoal);
+}
+
+.featured-link {
+  font-weight: 700;
+  color: #000;
+  text-decoration: none;
+  border-bottom: 2px solid #000;
+  padding-bottom: 2px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.featured-link:hover {
+  color: var(--charcoal);
+  border-color: var(--yellow);
+}
+
+.featured-empty {
+  text-align: center;
+  padding: 60px 0;
+  color: #6c757d;
+}
+
+
+/* ── Desktop featured layout ─────────────────────────────────── */
+
+/* Hidden on mobile, shown on tablet and above */
+.featured-desktop {
+  display: none;
+}
+
+@media (width > 767px) {
+  .featured-desktop {
+    display: block;
+  }
+}
+
+/*
+  Extra horizontal padding makes room for the -56px-positioned arrow buttons
+  so they render inside the Bootstrap Container and are never clipped.
+*/
+.featured-desktop .featured-slider-container {
+  padding: 0 68px;
+}
+
+/* Swiper: pagination dots sit below the cards */
+.featured-desktop__swiper {
+  padding-bottom: 48px !important;
+}
+
+.featured-desktop__swiper .swiper-pagination {
+  bottom: 0;
+}
+
+.featured-desktop__swiper .swiper-pagination-bullet {
+  background: #ccc;
+  opacity: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 4px !important;
+}
+
+.featured-desktop__swiper .swiper-pagination-bullet-active {
+  background: var(--yellow);
+  width: 24px;
+  border-radius: 4px;
+}
+
+
+/* ── Mobile featured layout ──────────────────────────────────── */
+
+/* Shown on mobile, hidden on tablet and above */
+.featured-mobile {
+  display: block;
+}
+
+@media (width > 767px) {
+  .featured-mobile {
+    display: none;
+  }
+}
+
+.featured-mobile__link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/*
+  Clipping wrapper: clips coverflow overflow so cards don't bleed
+  into the rest of the page. Swiper keeps overflow: visible internally
+  so the 3D depth effect still renders.
+*/
+.featured-mobile__swiper-clip {
+  overflow: hidden;
+  padding-bottom: 8px;  /* small breathing room under last card */
+}
+
+/* Coverflow Swiper overrides */
+.featured-mobile .swiper {
+  overflow: visible;    /* must stay visible for coverflow 3D depth */
+  padding: 20px 0 0;
+}
+
+.featured-mobile .swiper-wrapper {
+  align-items: center;
+}
+
+/* Manual pagination dots — rendered outside Swiper in the DOM */
+.featured-mobile__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 16px 0 12px;
+}
+
+.mobile-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #ccc;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.25s, width 0.25s, border-radius 0.25s;
+}
+
+.mobile-dot--active {
+  background: var(--yellow);
+  width: 24px;
+  border-radius: 4px;
+}
+
+
+/* ── Featured slider container + side nav buttons ────────────── */
+
+.featured-slider-container {
+  position: relative;
+}
+
+/* Hidden by default; shown on tablet and above */
+.feat-side-btn {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--charcoal);
+  background: #fff;
+  color: var(--charcoal);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feat-side-btn:hover {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: var(--charcoal);
+}
+
+/*
+  Buttons sit just outside the Swiper edge, inside the 68px padding of
+  .featured-desktop .featured-slider-container
+*/
+.feat-side-btn--prev { left: 8px; }
+.feat-side-btn--next { right: 8px; }
+
+.feat-side-btn.swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (width > 767px) {
+  .feat-side-btn {
+    display: flex;
+  }
+}
+
+
+/* ── Home CarCard ────────────────────────────────────────────── */
+
+.hcard {
+  position: relative;   /* badge anchors here, above all Swiper/coverflow transforms */
+  background-color: #f8f9fa;
+  /* NO overflow: hidden — it clips the absolutely-positioned badge when the
+     coverflow 3D transform shifts the slide. Image clipping is handled by
+     .hcard__image-wrap which has its own overflow: hidden. */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  height: 100%;
+}
+
+.hcard__image-wrap {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  overflow: hidden;     /* clips image scale-up on hover */
+  position: relative;   /* anchor for badge and Swiper pagination */
+  /*
+    NO isolation: isolate — it creates a stacking context that flattens
+    children inside coverflow 3D-transformed slides, misplacing the badge.
+    NO transform: translateZ(0) — same side-effect.
+    position: relative alone is sufficient.
+  */
+}
+
+.hcard__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.hcard:hover .hcard__image {
+  transform: scale(1.04);
+}
+
+.hcard__badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  z-index: 10;    /* high enough to clear coverflow stacking contexts */
+  pointer-events: none;
+}
+
+.hcard__badge--new {
+  background-color: var(--yellow);
+  color: #000;
+}
+
+.hcard__badge--used {
+  background-color: var(--charcoal);
+  color: #fff;
+}
+
+.hcard__body {
+  padding: 20px 24px 24px;
+}
+
+.hcard__meta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6c757d;
+  margin: 0 0 4px;
+}
+
+.hcard__title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.3;
+  color: var(--charcoal);
+}
+
+.hcard__specs {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-bottom: 16px;
+}
+
+.hcard__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hcard__price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.hcard__cta {
+  display: inline-block;
+  background-color: var(--charcoal);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 8px 20px;
+  border-radius: 0;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.hcard__cta:hover {
+  background-color: var(--yellow);
+  color: var(--charcoal);
+}
+
+
+/* ── hcard gallery Swiper ────────────────────────────────────── */
+
+.hcard__swiper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.hcard__swiper .swiper-wrapper,
+.hcard__swiper .swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+
+/* Pagination bullets overlaid on image, inside .hcard__image-wrap */
+.hcard__swiper .swiper-pagination {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  z-index: 3;
+}
+
+.hcard__swiper .swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.6;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px !important;
+  transition: all 0.3s ease;
+}
+
+.hcard__swiper .swiper-pagination-bullet-active {
+  background: var(--yellow);
+  opacity: 1;
+  width: 18px;
+  border-radius: 3px;
+}
+
+/* Body link — no underline, full width */
+.hcard__body-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.hcard__body-link:hover {
+  color: inherit;
+}
+
+
+/* ── 4. About ────────────────────────────────────────────────── */
+
+.about-section {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.about-image-wrap {
+  position: relative;
+}
+
+.about-image-border {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--yellow);
+  z-index: 0;
+}
+
+.about-image-inner {
+  position: relative;
+  z-index: 1;
+  min-height: 400px;
+  background-color: var(--charcoal);
+}
+
+.about-image {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+.about-title {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: var(--charcoal);
+}
+
+.about-lead {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  color: var(--slate);
+  line-height: 1.7;
+}
+
+.about-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.about-stat__number {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 0;
+  color: var(--charcoal);
+}
+
+.about-stat__label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.about-stat--divided {
+  border-left: 1px solid #dee2e6;
+  padding-left: 2rem;
+}
+
+.about-cta {
+  display: inline-block;
+  background-color: var(--charcoal);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  padding: 12px 40px;
+  border-radius: 0;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+
+.about-cta:hover {
+  background-color: var(--yellow);
+  color: var(--charcoal);
+}
+
+
+/* ── 6. Contact CTA ──────────────────────────────────────────── */
+
+.contact-section {
+  padding: 60px 0;
+  background-color: #000;
+  color: #fff;
+}
+
+.contact-row {
+  padding: 40px 0;
+}
+
+.contact-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+
+.contact-sub {
+  font-size: 1.1rem;
+  color: #888;
+  margin: 0;
+}
+
+.contact-cta {
+  display: inline-block;
+  background-color: var(--yellow);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  padding: 16px 40px;
+  border-radius: 0;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.contact-cta:hover {
+  opacity: 0.85;
+}
