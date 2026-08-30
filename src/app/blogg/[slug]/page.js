@@ -8,6 +8,7 @@ import {
   getReadingTime,
   getPostCategories,
   getFaqItems,
+  getHeroProps,
   blogPostUrl,
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
@@ -107,7 +108,7 @@ export default async function BlogPostPage({ params }) {
       )}
 
       {/* Full-bleed hero deliberately sits outside .container */}
-      <BlogHero {...post.hero} eyebrow={categories[0]} />
+      <BlogHero {...getHeroProps(post)} />
 
       <div className="container">
         <article className="blog-post__article">

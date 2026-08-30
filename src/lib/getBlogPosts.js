@@ -1,10 +1,19 @@
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
 
+if (!WP_API) {
+  throw new Error(
+    'NEXT_PUBLIC_WP_API_URL is not set at build time. Check .env.local / ' +
+    '.env.production locally, or the workflow YAML env: mapping in CI ' +
+    '(secrets.WP_API_URL -> NEXT_PUBLIC_WP_API_URL).'
+  );
+}
+
 const POST_FIELDS = [
   'id',
   'slug',
   'date',
   'title',
+  'excerpt',
   'content',
   'author',
   'featured_media',
@@ -12,19 +21,32 @@ const POST_FIELDS = [
   '_embedded',
 ].join(',');
 
+/**
+ * All published blog posts. No try/catch here on purpose: if this fetch
+ * fails, generateStaticParams() should throw with the real error rather
+ * than silently returning [] — an empty array from generateStaticParams
+ * under output: 'export' is a known Next.js bug that gets misreported as
+ * "missing generateStaticParams()" instead of showing the real cause.
+ */
 export async function getAllBlogPosts() {
-  try {
-    const res = await fetch(
-      `${WP_API}/posts?per_page=100&_embed`,
-      { cache: 'force-cache' }
+  const res = await fetch(
+    `${WP_API}/posts?per_page=100&_embed`,
+    { cache: 'force-cache' }
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `WP posts fetch failed: ${res.status} ${res.statusText} — URL: ${WP_API}/posts`
     );
-    if (!res.ok) return [];
-    const posts = await res.json();
-    return Array.isArray(posts) ? posts : [];
-  } catch (err) {
-    console.error('getAllBlogPosts:', err);
-    return [];
   }
+
+  const posts = await res.json();
+
+  if (!Array.isArray(posts)) {
+    throw new Error(`WP posts response was not an array — got: ${JSON.stringify(posts).slice(0, 200)}`);
+  }
+
+  return posts;
 }
 
 export async function getBlogPostBySlug(slug) {
