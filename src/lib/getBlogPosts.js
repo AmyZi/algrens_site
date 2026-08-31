@@ -18,6 +18,7 @@ const POST_FIELDS = [
   'author',
   'featured_media',
   'meta',
+  '_links',
   '_embedded',
 ].join(',');
 
@@ -53,7 +54,7 @@ export async function getBlogPostBySlug(slug) {
   try {
     const res = await fetch(
       `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
-        `&_embed=author,wp:featuredmedia,wp:term` +
+        `&_embed` +
         `&_fields=${POST_FIELDS}`,
       { cache: 'force-cache' }
     );
