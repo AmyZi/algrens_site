@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import '@/styles/similarVehicles.css';
+import '@/styles/bilarPage.css';
 
 export default function SimilarVehicles({ cars }) {
   return (
