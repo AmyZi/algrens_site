@@ -1,178 +1,179 @@
-/* ==========================================================================
-   blog-post__content typography
-   --------------------------------------------------------------------------
-   References custom.scss vars directly (--color-ink, --color-accent,
-   --color-cream) — no per-property hardcoded fallback colors, no local
-   re-aliasing. One derived value (--content-muted) for muted text since
-   no dedicated muted/secondary token exists yet — replace with a real
-   var (e.g. --color-slate) if/when custom.scss defines one.
-   ========================================================================== */
 
-.blog-post__content {
-  --content-muted: color-mix(in srgb, var(--color-ink) 65%, transparent);
+.blog-hero {
+  --blog-hero-accent: var(--color-accent, #e8a33d);
+  --blog-hero-ink: var(--color-ink, #1b1e1a);
+  --blog-hero-cream: var(--color-cream, #f7f3ea);
 
-  color: var(--color-ink);
-  font-size: 1.0625rem;
-  line-height: 1.75;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 78svh;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--blog-hero-ink);
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.blog-post__content > * + * {
-  margin-top: 1.25em;
+.blog-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(27, 30, 26, 0.15) 0%,
+    rgba(27, 30, 26, 0) 30%,
+    rgba(27, 30, 26, 0.55) 65%,
+    rgba(27, 30, 26, 0.92) 100%
+  );
+  z-index: 1;
 }
 
-.blog-post__content h2 {
-  margin-top: 2em;
-  color: var(--color-ink);
-  font-size: 1.5rem;
-  font-weight: 800;
-  line-height: 1.3;
+.blog-hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px 56px;
+  max-width: 780px;
 }
 
-.blog-post__content h3 {
-  margin-top: 1.75em;
-  color: var(--color-ink);
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.blog-post__content h4 {
-  margin-top: 1.5em;
-  color: var(--color-ink);
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.blog-post__content p {
-  color: var(--color-ink);
-}
-
-.blog-post__content a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+.blog-hero__eyebrow {
+  display: inline-block;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blog-hero-accent);
+  margin-bottom: 12px;
 }
 
-.blog-post__content a:hover,
-.blog-post__content a:focus-visible {
-  color: var(--color-ink);
+.blog-hero__title {
+  font-family: var(--font-display, inherit);
+  font-weight: 600;
+  font-size: clamp(28px, 8vw, 42px);
+  line-height: 1.1;
+  color: var(--blog-hero-cream);
+  margin: 0 0 20px;
+  text-wrap: balance;
 }
 
-.blog-post__content strong,
-.blog-post__content b {
-  color: var(--color-ink);
-  font-weight: 800;
+.blog-hero__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(247, 243, 234, 0.85);
 }
 
-.blog-post__content em,
-.blog-post__content i {
-  font-style: italic;
+.blog-hero__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(247, 243, 234, 0.4);
+  margin-right: 2px;
 }
 
-.blog-post__content ul,
-.blog-post__content ol {
-  padding-left: 1.4em;
+.blog-hero__author {
+  font-weight: 600;
+  color: var(--blog-hero-cream);
 }
 
-.blog-post__content ul {
-  list-style: disc;
+.blog-hero__dot {
+  opacity: 0.5;
 }
 
-.blog-post__content ol {
-  list-style: decimal;
+.blog-hero__link {
+  color: var(--blog-hero-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
 }
 
-.blog-post__content li + li {
-  margin-top: 0.5em;
+.blog-hero__link:hover {
+  text-decoration-color: var(--blog-hero-accent);
 }
 
-.blog-post__content li::marker {
-  color: var(--color-accent);
+/* Scroll cue: animated road-dash line — on-theme for a motorhome/caravan blog */
+.blog-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
-.blog-post__content blockquote {
-  margin: 1.5em 0;
-  padding: 0.25em 0 0.25em 1.25em;
-  border-left: 3px solid var(--color-accent);
-  color: var(--content-muted);
-  font-style: italic;
+.blog-hero__scroll-track {
+  position: relative;
+  width: 2px;
+  height: 34px;
+  overflow: hidden;
+  background: rgba(247, 243, 234, 0.25);
 }
 
-.blog-post__content hr {
-  margin: 2.5em 0;
-  border: 0;
-  border-top: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+.blog-hero__scroll-dash {
+  position: absolute;
+  top: -14px;
+  left: 0;
+  width: 2px;
+  height: 14px;
+  background: var(--blog-hero-accent);
+  animation: blog-hero-dash-move 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
-.blog-post__content code {
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  background: var(--color-cream);
-  font-size: 0.9em;
+@keyframes blog-hero-dash-move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(48px);
+  }
 }
 
-.blog-post__content table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5em 0;
+.blog-hero__scroll-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247, 243, 234, 0.7);
 }
 
-.blog-post__content th,
-.blog-post__content td {
-  padding: 0.6em 0.8em;
-  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
-  text-align: left;
+@media (prefers-reduced-motion: reduce) {
+  .blog-hero__scroll-dash {
+    animation: none;
+    top: 0;
+  }
 }
 
-.blog-post__content th {
-  color: var(--color-ink);
-  font-weight: 700;
-  background: var(--color-cream);
-}
-
-/* ---- Featured / inline images — mobile-first ----
-   Mobile: full-bleed edge-to-edge (breaks out of the article's side
-   padding). No radius at this size — the bleed itself is the cue. */
-.blog-post__content img {
-  display: block;
-  width: 100vw;
-  max-width: 100vw;
-  height: auto;
-  margin: 1.5em calc(50% - 50vw);
-}
-
-.blog-post__content figure {
-  margin: 1.5em 0;
-}
-
-.blog-post__content figcaption {
-  margin-top: 0.5em;
-  padding: 0 1.25rem;
-  color: var(--content-muted);
-  font-size: 0.85rem;
-  text-align: center;
-}
-
-/* ---- Tablet / desktop scale-up ---- */
+/* Tablet / desktop up */
 @media (min-width: 768px) {
-  .blog-post__content {
-    font-size: 1.125rem;
+  .blog-hero {
+    min-height: 86svh;
   }
-
-  .blog-post__content h2 {
-    font-size: 1.75rem;
+  .blog-hero__content {
+    padding: 0 48px 72px;
   }
-
-  .blog-post__content h3 {
-    font-size: 1.4rem;
+  .blog-hero__meta {
+    font-size: 14px;
+    gap: 10px;
   }
+  .blog-hero__avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
 
-  /* Contained again once there's room to spare. */
-  .blog-post__content img {
-    width: 100%;
-    max-width: 100%;
-    margin: 1.5em 0;
-    border-radius: 12px;
+@media (min-width: 1200px) {
+  .blog-hero {
+    min-height: 92svh;
+  }
+  .blog-hero__content {
+    max-width: 920px;
+    padding: 0 64px 88px;
   }
 }
