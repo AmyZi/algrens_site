@@ -13,6 +13,7 @@ import {
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 import '@/styles/blogPost.css';
+import SimilarVehicles from '@/components/SimilarVehicles';
 import BlogHero from '@/components/blog/BlogHero';
 
 export async function generateStaticParams() {
@@ -127,10 +128,8 @@ export default async function BlogPostPage({ params }) {
 
           {relatedVehicle && (
             <div className="blog-post__related-vehicle">
-              <p className="blog-post__related-label">Nämnd i det här inlägget</p>
-              <Link href={vehicleUrl(relatedVehicle)} className="blog-post__related-link">
-                {vehicleTitle(relatedVehicle)} →
-              </Link>
+              <h2 className="blog-post__related-title">Nämnd i det här inlägget</h2>
+              <SimilarVehicles cars={[relatedVehicle]} />
             </div>
           )}
 
