@@ -50,20 +50,29 @@ export async function getAllBlogPosts() {
   return posts;
 }
 
-export async function getBlogPostBySlug(slug) {
-    const res = await fetch(
-      `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
-        `&_embed` +
-        `&_fields=${POST_FIELDS}`,
-      { cache: 'force-cache' }
-    );
-    if (!res.ok){
-      throw new Error(
+export async function getBlogPostBySlug(slug, attempt = 1) {
+  const res = await fetch(
+    `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
+      `&_embed` +
+      `&_fields=${POST_FIELDS}`,
+    { cache: 'force-cache' }
+  );
+
+  if (!res.ok) {
+    throw new Error(
       `WP post-by-slug fetch failed for "${slug}": ${res.status} ${res.statusText}`
     );
   }
-    const data = await res.json();
-    return data?.[0] ?? null;
+
+  const data = await res.json();
+  const post = data?.[0] ?? null;
+
+  if (!post && attempt < 3) {
+    await new Promise((r) => setTimeout(r, 1500 * attempt));
+    return getBlogPostBySlug(slug, attempt + 1);
+  }
+
+  return post;
 }
 
 export async function getRelatedVehicle(vehicleId) {
