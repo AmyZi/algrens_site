@@ -51,19 +51,19 @@ export async function getAllBlogPosts() {
 }
 
 export async function getBlogPostBySlug(slug) {
-  try {
     const res = await fetch(
       `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
         `&_embed` +
         `&_fields=${POST_FIELDS}`,
       { cache: 'force-cache' }
     );
-    if (!res.ok) return null;
+    if (!res.ok){
+      throw new Error(
+      `WP post-by-slug fetch failed for "${slug}": ${res.status} ${res.statusText}`
+    );
+  }
     const data = await res.json();
     return data?.[0] ?? null;
-  } catch {
-    return null;
-  }
 }
 
 export async function getRelatedVehicle(vehicleId) {

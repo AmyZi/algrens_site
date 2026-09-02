@@ -108,7 +108,6 @@ export default async function BlogPostPage({ params }) {
         />
       )}
 
-      {/* Full-bleed hero deliberately sits outside .container */}
       <BlogHero {...getHeroProps(post)} />
 
       <div className="container">
