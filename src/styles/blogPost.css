@@ -162,3 +162,178 @@
 .blog-post__back a:hover {
   text-decoration: underline;
 }
+
+.blog-post__content {
+  --content-ink: var(--color-ink, #1b1e1a);
+  --content-accent: var(--color-accent, #e8a33d);
+  --content-cream: var(--color-cream, #f7f3ea);
+  --content-muted: color-mix(in srgb, var(--content-ink) 65%, transparent);
+ 
+  color: var(--content-ink);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+ 
+.blog-post__content > * + * {
+  margin-top: 1.25em;
+}
+ 
+.blog-post__content h2 {
+  margin-top: 2em;
+  color: var(--content-ink);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+ 
+.blog-post__content h3 {
+  margin-top: 1.75em;
+  color: var(--content-ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+ 
+.blog-post__content h4 {
+  margin-top: 1.5em;
+  color: var(--content-ink);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+ 
+.blog-post__content p {
+  color: var(--content-ink);
+}
+ 
+.blog-post__content a {
+  color: var(--content-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+ 
+.blog-post__content a:hover,
+.blog-post__content a:focus-visible {
+  color: var(--content-ink);
+}
+ 
+.blog-post__content strong,
+.blog-post__content b {
+  color: var(--content-ink);
+  font-weight: 800;
+}
+ 
+.blog-post__content em,
+.blog-post__content i {
+  font-style: italic;
+}
+ 
+.blog-post__content ul,
+.blog-post__content ol {
+  padding-left: 1.4em;
+}
+ 
+.blog-post__content ul {
+  list-style: disc;
+}
+ 
+.blog-post__content ol {
+  list-style: decimal;
+}
+ 
+.blog-post__content li + li {
+  margin-top: 0.5em;
+}
+ 
+.blog-post__content li::marker {
+  color: var(--content-accent);
+}
+ 
+.blog-post__content blockquote {
+  margin: 1.5em 0;
+  padding: 0.25em 0 0.25em 1.25em;
+  border-left: 3px solid var(--content-accent);
+  color: var(--content-muted);
+  font-style: italic;
+}
+ 
+.blog-post__content hr {
+  margin: 2.5em 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--content-ink) 12%, transparent);
+}
+ 
+.blog-post__content code {
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--content-cream);
+  font-size: 0.9em;
+}
+ 
+.blog-post__content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+ 
+.blog-post__content th,
+.blog-post__content td {
+  padding: 0.6em 0.8em;
+  border: 1px solid color-mix(in srgb, var(--content-ink) 12%, transparent);
+  text-align: left;
+}
+ 
+.blog-post__content th {
+  color: var(--content-ink);
+  font-weight: 700;
+  background: var(--content-cream);
+}
+ 
+/* ---- Featured / inline images — mobile-first ----
+   Mobile: full-bleed edge-to-edge (breaks out of the article's side
+   padding) so images read as immersive, not letterboxed on a small
+   screen. No radius at this size — the bleed itself is the visual cue. */
+.blog-post__content img {
+  display: block;
+  width: 100vw;
+  max-width: 100vw;
+  height: auto;
+  margin: 1.5em calc(50% - 50vw);
+}
+ 
+.blog-post__content figure {
+  margin: 1.5em 0;
+}
+ 
+.blog-post__content figcaption {
+  margin-top: 0.5em;
+  padding: 0 1.25rem;
+  color: var(--content-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+ 
+/* ---- Tablet / desktop scale-up ---- */
+@media (min-width: 768px) {
+  .blog-post__content {
+    font-size: 1.125rem;
+  }
+ 
+  .blog-post__content h2 {
+    font-size: 1.75rem;
+  }
+ 
+  .blog-post__content h3 {
+    font-size: 1.4rem;
+  }
+ 
+  /* Contained again once there's room to spare — the rounded corners
+     only read as intentional once the image isn't already full-bleed. */
+  .blog-post__content img {
+    width: 100%;
+    max-width: 100%;
+    margin: 1.5em 0;
+    border-radius: 12px;
+  }
+}
+ 
