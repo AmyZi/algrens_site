@@ -64,6 +64,9 @@ export default async function BlogPostPage({ params }) {
   const relatedVehicle = meta._related_vehicle_id
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
+  const similarVehicles = relatedVehicle
+  ? await getSimilarVehicles(relatedVehicle) 
+  : [];
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -112,23 +115,16 @@ export default async function BlogPostPage({ params }) {
 
       <div className="container">
         <article className="blog-post__article">
-          {categories.length > 0 && (
-            <div className="blog-post__tags">
-              {categories.map(cat => (
-                <span key={cat} className="blog-post__tag">{cat}</span>
-              ))}
-            </div>
-          )}
 
           <div
             className="blog-post__content"
             dangerouslySetInnerHTML={{ __html: post.content.rendered }}
           />
 
-          {relatedVehicle && (
+          {similarVehicles.length > 0 && (
             <div className="blog-post__related-vehicle">
-              <h2 className="blog-post__related-title">Nämnd i det här inlägget</h2>
-              <SimilarVehicles cars={[relatedVehicle]} />
+              <h2 className="blog-post__related-title">Liknande fordon</h2>
+              <SimilarVehicles cars={similarVehicles} />
             </div>
           )}
 
