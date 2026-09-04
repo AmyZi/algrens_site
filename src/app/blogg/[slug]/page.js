@@ -60,7 +60,6 @@ export default async function BlogPostPage({ params }) {
   const meta = post.meta || {};
   const image = getFeaturedImageUrl(post);
   const faqItems = getFaqItems(post);
-  const categories = getPostCategories(post);
   const relatedVehicle = meta._related_vehicle_id
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
