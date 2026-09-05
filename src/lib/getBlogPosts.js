@@ -88,6 +88,34 @@ export async function getRelatedVehicle(vehicleId) {
     return null;
   }
 }
+const CAR_FIELDS = ['id', 'slug', 'date', 'title', 'meta'].join(',');
+ 
+export async function getSimilarVehicles(relatedVehicle, { limit = 4 } = {}) {
+  if (!relatedVehicle) return [];
+ 
+  const vehicleType = relatedVehicle.meta?._car_vehicle_type;
+  if (!vehicleType) return [];
+ 
+  try {
+    const res = await fetch(
+      `${WP_API}/car_listing?per_page=100&_fields=${CAR_FIELDS}`,
+      { cache: 'force-cache' }
+    );
+    if (!res.ok) return [];
+ 
+    const allCars = await res.json();
+    if (!Array.isArray(allCars)) return [];
+ 
+    return allCars
+      .filter(car => car.id !== relatedVehicle.id)
+      .filter(car => car.meta?._car_vehicle_type === vehicleType)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+ 
 
 export function getFeaturedImageUrl(post) {
   return (

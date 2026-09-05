@@ -10,6 +10,7 @@ import {
   getFaqItems,
   getHeroProps,
   blogPostUrl,
+  getSimilarVehicles,
 } from '@/lib/getBlogPosts';
 import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
 import '@/styles/blogPost.css';
