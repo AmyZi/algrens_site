@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
 
 if (!WP_API) {
@@ -23,17 +25,38 @@ const POST_FIELDS = [
 ].join(',');
 
 /**
- * Wraps fetch with retry-on-429 (exponential backoff). Deliberately does
- * NOT cache responses — some callers (getBlogPostBySlug) need a genuine
- * re-fetch on retry, not a cached empty result. Caching, where safe, is
- * handled separately at the call site (see getSimilarVehicles below).
+ * Throttles ALL WP requests to a fixed minimum spacing, regardless of
+ * caching or retries. This is prevention, not cleanup — a per-minute
+ * rate limit doesn't care how well-behaved retries are AFTER a request
+ * fires; it cares how many requests land in the window. Sequential
+ * single-worker build (per your log) means a simple last-request
+ * timestamp is enough — no queue library needed.
  */
-async function fetchWithRetry(url, options = {}, { retries = 3, baseDelayMs = 1000 } = {}) {
+let lastRequestAt = 0;
+const MIN_REQUEST_SPACING_MS = 300;
+
+async function throttle() {
+  const wait = lastRequestAt + MIN_REQUEST_SPACING_MS - Date.now();
+  if (wait > 0) {
+    await new Promise((resolve) => setTimeout(resolve, wait));
+  }
+  lastRequestAt = Date.now();
+}
+
+/**
+ * Wraps fetch with spacing + retry-on-429 (longer backoff than before —
+ * 2s/4s/8s/16s — since a 7s total window clearly wasn't surviving
+ * whatever cooldown the host's rate limiter enforces). Deliberately
+ * does NOT cache responses — some callers (getBlogPostBySlug) need a
+ * genuine re-fetch on retry, not a cached empty result.
+ */
+async function fetchWithRetry(url, options = {}, { retries = 4, baseDelayMs = 2000 } = {}) {
   for (let attempt = 0; attempt <= retries; attempt++) {
+    await throttle();
     const res = await fetch(url, options);
 
     if (res.status === 429 && attempt < retries) {
-      const delay = baseDelayMs * 2 ** attempt; // 1s, 2s, 4s
+      const delay = baseDelayMs * 2 ** attempt; // 2s, 4s, 8s, 16s
       await new Promise((resolve) => setTimeout(resolve, delay));
       continue;
     }
@@ -70,7 +93,7 @@ export async function getAllBlogPosts() {
   return posts;
 }
 
-export async function getBlogPostBySlug(slug, attempt = 1) {
+export const getBlogPostBySlug = cache(async function getBlogPostBySlug(slug, attempt = 1) {
   const res = await fetchWithRetry(
     `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
       `&_embed` +
@@ -93,7 +116,7 @@ export async function getBlogPostBySlug(slug, attempt = 1) {
   }
 
   return post;
-}
+});
 
 export async function getRelatedVehicle(vehicleId) {
   if (!vehicleId) return null;
