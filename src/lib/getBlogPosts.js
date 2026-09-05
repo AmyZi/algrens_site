@@ -67,8 +67,8 @@ export async function getBlogPostBySlug(slug, attempt = 1) {
   const data = await res.json();
   const post = data?.[0] ?? null;
 
-  if (!post && attempt < 4) {
-    await new Promise((r) => setTimeout(r, 2500 * attempt));
+  if (!post && attempt < 3) {
+    await new Promise((r) => setTimeout(r, 1500 * attempt));
     return getBlogPostBySlug(slug, attempt + 1);
   }
 
