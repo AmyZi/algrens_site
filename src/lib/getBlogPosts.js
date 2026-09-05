@@ -164,7 +164,7 @@ async function getAllCarListings() {
   return allCarsPromise;
 }
 
-export async function getSimilarVehicles(relatedVehicle, { limit = 4 } = {}) {
+export async function getSimilarVehicles(relatedVehicle, { limit = 3} = {}) {
   if (!relatedVehicle) return [];
 
   const vehicleType = relatedVehicle.meta?._car_vehicle_type;
