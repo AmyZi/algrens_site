@@ -23,6 +23,26 @@ const POST_FIELDS = [
 ].join(',');
 
 /**
+ * Wraps fetch with retry-on-429 (exponential backoff). Deliberately does
+ * NOT cache responses — some callers (getBlogPostBySlug) need a genuine
+ * re-fetch on retry, not a cached empty result. Caching, where safe, is
+ * handled separately at the call site (see getSimilarVehicles below).
+ */
+async function fetchWithRetry(url, options = {}, { retries = 3, baseDelayMs = 1000 } = {}) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const res = await fetch(url, options);
+
+    if (res.status === 429 && attempt < retries) {
+      const delay = baseDelayMs * 2 ** attempt; // 1s, 2s, 4s
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      continue;
+    }
+
+    return res;
+  }
+}
+
+/**
  * All published blog posts. No try/catch here on purpose: if this fetch
  * fails, generateStaticParams() should throw with the real error rather
  * than silently returning [] — an empty array from generateStaticParams
@@ -30,7 +50,7 @@ const POST_FIELDS = [
  * "missing generateStaticParams()" instead of showing the real cause.
  */
 export async function getAllBlogPosts() {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `${WP_API}/posts?per_page=100&_embed`,
     { cache: 'force-cache' }
   );
@@ -51,7 +71,7 @@ export async function getAllBlogPosts() {
 }
 
 export async function getBlogPostBySlug(slug, attempt = 1) {
-  const res = await fetch(
+  const res = await fetchWithRetry(
     `${WP_API}/posts?slug=${encodeURIComponent(slug)}` +
       `&_embed` +
       `&_fields=${POST_FIELDS}`,
@@ -78,7 +98,7 @@ export async function getBlogPostBySlug(slug, attempt = 1) {
 export async function getRelatedVehicle(vehicleId) {
   if (!vehicleId) return null;
   try {
-    const res = await fetch(
+    const res = await fetchWithRetry(
       `${WP_API}/car_listing/${vehicleId}`,
       { cache: 'force-cache' }
     );
@@ -88,24 +108,48 @@ export async function getRelatedVehicle(vehicleId) {
     return null;
   }
 }
+
 const CAR_FIELDS = ['id', 'slug', 'date', 'title', 'meta'].join(',');
- 
+
+/**
+ * Every post with a related vehicle triggers this — without caching,
+ * that's a full re-fetch of all 100 car_listing posts per post, which
+ * is the main volume driver behind the 429s. Safe to cache in full
+ * (unlike getBlogPostBySlug): there's no "might need a fresh look"
+ * requirement here, and the build runs in a single Node process
+ * ("Generating static pages using 1 worker"), so this module-level
+ * variable persists across every page built.
+ *
+ * allCarsPromise (not just the resolved value) is cached so that if
+ * two pages happen to call this before the first fetch resolves, they
+ * share the same in-flight request instead of firing two.
+ */
+let allCarsPromise = null;
+
+async function getAllCarListings() {
+  if (!allCarsPromise) {
+    allCarsPromise = (async () => {
+      const res = await fetchWithRetry(
+        `${WP_API}/car_listing?per_page=100&_fields=${CAR_FIELDS}`,
+        { cache: 'force-cache' }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    })();
+  }
+  return allCarsPromise;
+}
+
 export async function getSimilarVehicles(relatedVehicle, { limit = 4 } = {}) {
   if (!relatedVehicle) return [];
- 
+
   const vehicleType = relatedVehicle.meta?._car_vehicle_type;
   if (!vehicleType) return [];
- 
+
   try {
-    const res = await fetch(
-      `${WP_API}/car_listing?per_page=100&_fields=${CAR_FIELDS}`,
-      { cache: 'force-cache' }
-    );
-    if (!res.ok) return [];
- 
-    const allCars = await res.json();
-    if (!Array.isArray(allCars)) return [];
- 
+    const allCars = await getAllCarListings();
+
     return allCars
       .filter(car => car.id !== relatedVehicle.id)
       .filter(car => car.meta?._car_vehicle_type === vehicleType)
@@ -115,7 +159,6 @@ export async function getSimilarVehicles(relatedVehicle, { limit = 4 } = {}) {
     return [];
   }
 }
- 
 
 export function getFeaturedImageUrl(post) {
   return (
