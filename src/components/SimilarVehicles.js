@@ -5,7 +5,7 @@ import '@/styles/bilarPage.css';
 
 export default function SimilarVehicles({ cars }) {
   return (
-    <div className="similar-vehicles">
+    <div className="similar-vehicles-grid">
       {cars.map((car) => {
         const meta = car.meta || {};
         const isNew = meta._car_is_new === 'yes';
@@ -13,45 +13,47 @@ export default function SimilarVehicles({ cars }) {
         const img = meta._car_thumbnail || '/placeholder-car.jpg';
 
         return (
-          <Link
-            key={car.id}
-            href={`/bilar/${folder}/${car.slug}/`}
-            className="similar-vehicles__card"
-          >
-            <div className="similar-vehicles__image-wrap">
-              <img
-                src={img}
-                alt={car.title.rendered}
-                className="similar-vehicles__image"
-              />
-              <span
-                className={`similar-vehicles__badge ${
-                  isNew
-                    ? 'similar-vehicles__badge--new'
-                    : 'similar-vehicles__badge--used'
-                }`}
-              >
-                {isNew ? 'NYHET' : 'BEGAGNAD'}
-              </span>
-            </div>
+          <div key={car.id} className="vehicle-card">
+            <Link
+              href={`/bilar/${folder}/${car.slug}/`}
+              className="vehicle-card__link"
+            >
+              <div className="vehicle-card__image-wrap">
+                <img
+                  src={img}
+                  alt={car.title.rendered}
+                  className="vehicle-card__image"
+                />
+                <span
+                  className={`vehicle-card__badge ${
+                    isNew ? 'vehicle-card__badge--new' : 'vehicle-card__badge--used'
+                  }`}
+                >
+                  {isNew ? 'NYHET' : 'BEGAGNAD'}
+                </span>
+              </div>
 
-            <div className="similar-vehicles__body">
-              <small className="similar-vehicles__make">
-                {meta._car_make} {meta._car_year}
-              </small>
+              <div className="vehicle-card__body">
+                <p className="vehicle-card__meta">
+                  {meta._car_make} {meta._car_year}
+                </p>
 
-              <h3
-                className="similar-vehicles__title"
-                dangerouslySetInnerHTML={{ __html: car.title.rendered }}
-              />
+                <h3
+                  className="vehicle-card__title"
+                  dangerouslySetInnerHTML={{ __html: car.title.rendered }}
+                />
 
-              <p className="similar-vehicles__price">
-                {meta._car_price
-                  ? `${parseInt(meta._car_price, 10).toLocaleString('sv-SE')} kr`
-                  : 'Ring för pris'}
-              </p>
-            </div>
-          </Link>
+                <div className="vehicle-card__footer">
+                  <span className="vehicle-card__price">
+                    {meta._car_price
+                      ? `${parseInt(meta._car_price, 10).toLocaleString('sv-SE')} kr`
+                      : 'Ring för pris'}
+                  </span>
+                  <span className="vehicle-card__cta">Visa</span>
+                </div>
+              </div>
+            </Link>
+          </div>
         );
       })}
     </div>
