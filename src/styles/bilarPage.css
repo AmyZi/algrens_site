@@ -1117,7 +1117,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
- 
+
 .similar-vehicles__card {
   display: block;
   border: 0;
@@ -1128,25 +1128,25 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
- 
+
 .similar-vehicles__card:hover,
 .similar-vehicles__card:focus-visible {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
- 
+
 .similar-vehicles__image-wrap {
   position: relative;
-  height: 200px;
+  height: 220px;
 }
- 
+
 .similar-vehicles__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
- 
+
 .similar-vehicles__badge {
   position: absolute;
   top: 0.5rem;
@@ -1158,50 +1158,68 @@
   color: #fff;
   letter-spacing: 0.03em;
 }
- 
+
 .similar-vehicles__badge--new {
   background-color: var(--sage);
 }
- 
+
 .similar-vehicles__badge--used {
   background-color: var(--slate);
 }
- 
+
 .similar-vehicles__body {
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
- 
+
 .similar-vehicles__make {
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
   color: var(--sage);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
- 
+
 .similar-vehicles__title {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.6rem;
   color: var(--charcoal);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 900;
   line-height: 1.4;
 }
- 
+
 .similar-vehicles__price {
-  margin: 0.75rem 0 0;
+  margin: 0.85rem 0 0;
   color: var(--slate);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
- 
+
+@media (max-width: 480px) {
+  .similar-vehicles {
+    grid-template-columns: 1fr;
+  }
+
+  .similar-vehicles__image-wrap {
+    height: 260px;
+  }
+}
+
 @media (min-width: 768px) {
   .similar-vehicles {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1.75rem;
   }
-  
+
+  .similar-vehicles__image-wrap {
+    height: 240px;
+  }
+
+  .similar-vehicles__body {
+    padding: 1.5rem;
+  }
+
   .similar-vehicles:has(.similar-vehicles__card:only-child) {
     grid-template-columns: minmax(280px, 380px);
   }
