@@ -1,61 +1,101 @@
 'use client';
 
-import Link from 'next/link';
-import '@/styles/bilarPage.css';
+import { useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { EffectCoverflow, Pagination } from 'swiper/modules';
+import HomeCarCard from './HomeCarCard';
+import '@/styles/homePage.css';
 
-export default function SimilarVehicles({ cars }) {
+
+export default function SimilarVehicles({ cars = [], title = 'Liknande fordon' }) {
+  const desktopSwiperRef = useRef(null);
+  const mobileSwiperRef = useRef(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  if (cars.length === 0) return null;
+
   return (
-    <div className="similar-vehicles-grid">
-      {cars.map((car) => {
-        const meta = car.meta || {};
-        const isNew = meta._car_is_new === 'yes';
-        const folder = isNew ? 'nytt' : 'begagnat';
-        const img = meta._car_thumbnail || '/placeholder-car.jpg';
+    <section className="featured-section">
+      <div className="featured-header">
+        <div>
+          <h2 className="featured-title">{title}</h2>
+        </div>
+      </div>
 
-        return (
-          <div key={car.id} className="vehicle-card">
-            <Link
-              href={`/bilar/${folder}/${car.slug}/`}
-              className="vehicle-card__link"
-            >
-              <div className="vehicle-card__image-wrap">
-                <img
-                  src={img}
-                  alt={car.title.rendered}
-                  className="vehicle-card__image"
-                />
-                <span
-                  className={`vehicle-card__badge ${
-                    isNew ? 'vehicle-card__badge--new' : 'vehicle-card__badge--used'
-                  }`}
-                >
-                  {isNew ? 'NYHET' : 'BEGAGNAD'}
-                </span>
-              </div>
+      {/* ── DESKTOP: Arrow-nav Swiper ── */}
+      <div className="featured-desktop">
+        <div className="featured-slider-container">
+          <button
+            className="feat-side-btn feat-side-btn--prev"
+            aria-label="Föregående bil"
+            onClick={() => desktopSwiperRef.current?.slidePrev()}
+          >&#10216;</button>
+          <button
+            className="feat-side-btn feat-side-btn--next"
+            aria-label="Nästa bil"
+            onClick={() => desktopSwiperRef.current?.slideNext()}
+          >&#10217;</button>
 
-              <div className="vehicle-card__body">
-                <p className="vehicle-card__meta">
-                  {meta._car_make} {meta._car_year}
-                </p>
+          <Swiper
+            modules={[Pagination]}
+            onSwiper={swiper => { desktopSwiperRef.current = swiper; }}
+            slidesPerView={3}
+            spaceBetween={24}
+            grabCursor
+            loop={cars.length > 3}
+            pagination={{ clickable: true, type: 'bullets' }}
+            breakpoints={{
+              768: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
+            }}
+            className="featured-desktop__swiper"
+          >
+            {cars.map(car => (
+              <SwiperSlide key={car.id}>
+                <HomeCarCard car={car} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
 
-                <h3
-                  className="vehicle-card__title"
-                  dangerouslySetInnerHTML={{ __html: car.title.rendered }}
-                />
+      {/* ── MOBILE: Coverflow carousel ── */}
+      <div className="featured-mobile">
+        <div className="featured-mobile__swiper-clip">
+          <Swiper
+            modules={[EffectCoverflow]}
+            onSwiper={swiper => {
+              mobileSwiperRef.current = swiper;
+              setMobileIndex(swiper.realIndex);
+            }}
+            onSlideChange={swiper => setMobileIndex(swiper.realIndex)}
+            effect="coverflow"
+            coverflowEffect={{ rotate: 15, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
+            centeredSlides
+            grabCursor
+            slidesPerView={1.2}
+            spaceBetween={16}
+            loop={cars.length > 2}
+          >
+            {cars.map(car => (
+              <SwiperSlide key={car.id}>
+                <HomeCarCard car={car} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
 
-                <div className="vehicle-card__footer">
-                  <span className="vehicle-card__price">
-                    {meta._car_price
-                      ? `${parseInt(meta._car_price, 10).toLocaleString('sv-SE')} kr`
-                      : 'Ring för pris'}
-                  </span>
-                  <span className="vehicle-card__cta">Visa</span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        );
-      })}
-    </div>
+        <div className="featured-mobile__pagination">
+          {cars.map((_, i) => (
+            <button
+              key={i}
+              className={`mobile-dot${i === mobileIndex ? ' mobile-dot--active' : ''}`}
+              aria-label={`Gå till bil ${i + 1}`}
+              onClick={() => mobileSwiperRef.current?.slideToLoop(i)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
