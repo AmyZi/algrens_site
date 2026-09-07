@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import HomeCarCard from './HomeCarCard';
+import HomePage from '@/Homepage';
 import '@/styles/homePage.css';
 
 
@@ -52,7 +52,7 @@ export default function SimilarVehicles({ cars = [], title = 'Liknande fordon' }
           >
             {cars.map(car => (
               <SwiperSlide key={car.id}>
-                <HomeCarCard car={car} />
+                <HomePage car={car} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -79,7 +79,7 @@ export default function SimilarVehicles({ cars = [], title = 'Liknande fordon' }
           >
             {cars.map(car => (
               <SwiperSlide key={car.id}>
-                <HomeCarCard car={car} />
+                <HomePage car={car} />
               </SwiperSlide>
             ))}
           </Swiper>
