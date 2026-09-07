@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import '@/styles/HomePage.css';
+import '@/styles/homePage.css';
 
 export default function SimilarVehicles({ cars, title = 'Liknande fordon' }) {
   if (!cars || cars.length === 0) return null;
