@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import HomePage from './Homepage';
+import HomePage from './HomePage';
 import '@/styles/homePage.css';
 
 
