@@ -1114,16 +1114,13 @@
 
 
 /* ── Similar vehicles grid for blog posts ───────────────────────────────────── */
-.similar-vehicles-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+.hcard-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
  
-@media (min-width: 768px) {
-  .similar-vehicles-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-  }
+.hcard-row .hcard {
+  flex: 1 1 260px;
+  max-width: 320px;
 }
- 
