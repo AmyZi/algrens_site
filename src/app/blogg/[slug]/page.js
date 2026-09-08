@@ -121,12 +121,7 @@ export default async function BlogPostPage({ params }) {
             dangerouslySetInnerHTML={{ __html: post.content.rendered }}
           />
 
-          {similarVehicles.length > 0 && (
-            <div className="blog-post__related-vehicle">
-              <h2 className="blog-post__related-title">Liknande fordon</h2>
-              <SimilarVehicles cars={similarVehicles} />
-            </div>
-          )}
+          {similarVehicles.length > 0 && <SimilarVehicles cars={similarVehicles} />}
 
           {faqItems.length > 0 && (
             <section className="blog-post__faq">

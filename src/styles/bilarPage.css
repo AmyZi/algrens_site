@@ -1111,16 +1111,3 @@
 
 .cdv__desc-content p  { margin-bottom: 1.5rem; }
 .cdv__desc-content ul { margin-bottom: 1.5rem; }
-
-
-/* ── Similar vehicles grid for blog posts ───────────────────────────────────── */
-.hcard-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
- 
-.hcard-row .hcard {
-  flex: 1 1 260px;
-  max-width: 320px;
-}
