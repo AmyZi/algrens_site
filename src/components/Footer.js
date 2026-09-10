@@ -159,16 +159,37 @@ export default function Footer() {
             <div className="footer-dev-credit">
               <span className="footer-dev-label">Developed by</span>
               <motion.a
-                href="https://www.amicodes.com"
+                href="https://www.arboweb.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="footer-dev-link"
                 whileHover={{ scale: 1.05, filter: `drop-shadow(0 0 5px ${siteConfig.theme.yellow})` }}
                 transition={{ duration: 0.2 }}
               >
-                <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" height="1.2em" fill="none" aria-label="Amina">
-                  <text x="50%" y="80" textAnchor="middle" fontSize="70" fontFamily="Brush Script MT, Pacifico, cursive" fill="#e53935">Amina</text>
-                  <path d="M170 18 C170 8, 185 8, 185 18 C185 8, 200 8, 200 18 C200 30, 185 38, 185 38 C185 38, 170 30, 170 18 Z" fill="#1e40af" />
+                <svg 
+                  viewBox="0 0 320 90" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  height="1.2em" 
+                  fill="none" 
+                  aria-label="ARBO"
+                >
+                  <defs>
+                    <linearGradient id="arbo-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#FF5500" />
+                      <stop offset="50%" stopColor="#FF2A6D" />
+                      <stop offset="100%" stopColor="#E01171" />
+                    </linearGradient>
+                  </defs>
+                  <text 
+                    y="68" 
+                    fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Montserrat', 'Helvetica Neue', sans-serif" 
+                    fontWeight="900" 
+                    fontSize="72" 
+                    letterSpacing="-1"
+                  >
+                    <tspan x="10" fill="#f3e8e8">AR</tspan>
+                    <tspan fill="url(#arbo-gradient)">BO</tspan>
+                  </text>
                 </svg>
               </motion.a>
             </div>
