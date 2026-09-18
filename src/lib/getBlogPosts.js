@@ -240,3 +240,12 @@ export function getHeroProps(post) {
     linkLabel: post.meta?._hero_link_label || 'Läs mer',
   };
 }
+
+
+export async function getFeaturedBlogPosts(limit = 3) {
+  const posts = await getAllBlogPosts();
+  return [...posts]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, limit);
+}
+ 

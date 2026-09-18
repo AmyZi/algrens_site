@@ -12,10 +12,20 @@ import {
   blogPostUrl,
   getSimilarVehicles,
 } from '@/lib/getBlogPosts';
-import { stripHtml, truncateDescription, vehicleTitle, vehicleUrl } from '@/lib/seo';
-import '@/styles/blogPost.css';
+
+import { stripHtml,
+  truncateDescription,
+  vehicleTitle,
+  vehicleUrl,
+  addHeadingAnchors,
+  stripDuplicateFeaturedImage, } from '@/lib/seo';
+import '@/styles/blogPage.css';
 import SimilarVehicles from '@/components/SimilarVehicles';
+import FaqAccordion from '@/components/Faqaccordion';
+import Breadcrumb from '@/components/Breadcrumb';
 import BlogHero from '@/components/blog/BlogHero';
+import TocScrollNav from '@/components/TocScrollNav';
+
 
 export async function generateStaticParams() {
   const posts = await getAllBlogPosts();
@@ -65,8 +75,15 @@ export default async function BlogPostPage({ params }) {
     ? await getRelatedVehicle(meta._related_vehicle_id)
     : null;
   const similarVehicles = relatedVehicle
-  ? await getSimilarVehicles(relatedVehicle) 
-  : [];
+    ? await getSimilarVehicles(relatedVehicle)
+    : [];
+
+  // Injects ids into the post's <h2>s and returns the {id, label} list
+  // TocScrollNav needs — single pass, so the anchors and the nav's
+  // hrefs can never drift out of sync with each other.
+  const { html: contentHtml, headings } = addHeadingAnchors(
+    stripDuplicateFeaturedImage(post.content.rendered, image)
+  );
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -113,27 +130,26 @@ export default async function BlogPostPage({ params }) {
 
       <BlogHero {...getHeroProps(post)} />
 
+      <Breadcrumb
+        items={[
+          { label: 'Hem', href: '/' },
+          { label: 'Blogg', href: '/blogg/' },
+          { label: stripHtml(post.title.rendered) },
+        ]}
+        className="blog-post__breadcrumb"
+      />
+      <TocScrollNav headings={headings} />
+
       <div className="container">
         <article className="blog-post__article">
-
           <div
             className="blog-post__content"
-            dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
 
           {similarVehicles.length > 0 && <SimilarVehicles cars={similarVehicles} />}
 
-          {faqItems.length > 0 && (
-            <section className="blog-post__faq">
-              <h2 className="blog-post__faq-title">Vanliga frågor</h2>
-              {faqItems.map((item, i) => (
-                <div className="blog-post__faq-item" key={i}>
-                  <h3 className="blog-post__faq-question">{item.question}</h3>
-                  <p className="blog-post__faq-answer">{item.answer}</p>
-                </div>
-              ))}
-            </section>
-          )}
+          {faqItems.length > 0 && <FaqAccordion items={faqItems} />}
         </article>
 
         <div className="blog-post__back">

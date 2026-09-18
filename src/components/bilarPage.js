@@ -4,6 +4,7 @@ import Link from 'next/link';
 import VehicleGrid from '@/components/VehicleGrid';
 import Hero from '@/components/PageHero';
 import { siteConfig } from '@/config/site-config';
+import Breadcrumb from '@/components/Breadcrumb';
 
 // ── Icons ─────────────────────────────────────────────────────
 
@@ -199,10 +200,10 @@ export default function BilarPage({ cars, initialFilter = 'all' }) {
     <>
       <Hero
           breadcrumb={
-            <ol className="breadcrumb" style={{ fontSize: '0.85rem' }}>
-              <li className="breadcrumb-item"><Link href="/" className="link-subtle">Hem</Link></li>
-              <li className="breadcrumb-item active fw-bold">Lager</li>
-            </ol>
+            <Breadcrumb items={[
+              { label: 'Hem', href: '/' },
+              { label: 'Lager' },
+            ]} />
           }
           title="Husbilar, husvagnar & bilar"
           titleAccent="i Borås"

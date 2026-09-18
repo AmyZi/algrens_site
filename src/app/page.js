@@ -1,5 +1,6 @@
 import HomePage from '@/components/HomePage'; 
 import { getAllCars } from '@/lib/get-cars';
+import { getFeaturedBlogPosts } from '@/lib/getBlogPosts';
 
 export const metadata = {
   title: 'Husbilsmärken - Pilote, Bavaria, Hymer, Laika & Fler | Ahlgrens Husbilar',
@@ -13,5 +14,6 @@ export const metadata = {
 
 export default async function Page() {
   const cars = await getAllCars();
-  return <HomePage cars={cars} />;
+  const blogPosts = await getFeaturedBlogPosts(3);
+  return <HomePage cars={cars} blogPosts={blogPosts} />;
 }
