@@ -1,59 +1,155 @@
-import Link from 'next/link';
-import { stripHtml, truncateDescription, } from '@/lib/seo';
-import { getFeaturedImageUrl, getPostCategories, blogPostUrl } from '@/lib/getBlogPosts';
+'use client';
 
-export default function BlogPreviewCard({ post }) {
+import { useRef, useState } from 'react';
+import Link from 'next/link';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, EffectCoverflow } from 'swiper/modules';
+import { stripHtml } from '@/lib/seo';
+import { getFeaturedImageUrl, getPostCategories, getReadingTime, blogPostUrl } from '@/lib/getBlogPosts';
+
+/**
+ * Exact same structure as HomePage's "UTVALDA FORDON" section — arrow-nav
+ * Swiper on desktop, coverflow carousel on mobile — same classes
+ * (.featured-section, .hcard, etc.), so zero new CSS. Only difference:
+ * blog posts instead of cars, post.id instead of car.id.
+ */
+export default function BlogPreviewSection({ posts = [] }) {
+  const desktopSwiperRef = useRef(null);
+  const mobileSwiperRef = useRef(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  if (posts.length === 0) return null;
+
+  return (
+    <section className="featured-section">
+      <div className="featured-header">
+        <div>
+          <h6 className="featured-eyebrow">Från bloggen</h6>
+          <h2 className="featured-title">Senaste artiklarna</h2>
+        </div>
+        <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
+      </div>
+
+      {/* ── DESKTOP: Arrow-nav Swiper ── */}
+      <div className="featured-desktop">
+        <div className="featured-slider-container">
+          <button
+            className="feat-side-btn feat-side-btn--prev"
+            aria-label="Föregående inlägg"
+            onClick={() => desktopSwiperRef.current?.slidePrev()}
+          >&#10216;</button>
+          <button
+            className="feat-side-btn feat-side-btn--next"
+            aria-label="Nästa inlägg"
+            onClick={() => desktopSwiperRef.current?.slideNext()}
+          >&#10217;</button>
+
+          <Swiper
+            modules={[Pagination]}
+            onSwiper={swiper => { desktopSwiperRef.current = swiper; }}
+            slidesPerView={3}
+            spaceBetween={24}
+            grabCursor
+            loop={posts.length > 3}
+            pagination={{ clickable: true, type: 'bullets' }}
+            breakpoints={{
+              768: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
+            }}
+            className="featured-desktop__swiper"
+          >
+            {posts.map(post => (
+              <SwiperSlide key={post.id}>
+                <BlogPostCard post={post} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
+
+      {/* ── MOBILE: Coverflow carousel ── */}
+      <div className="featured-mobile">
+        <div className="featured-mobile__swiper-clip">
+          <Swiper
+            modules={[EffectCoverflow]}
+            onSwiper={swiper => {
+              mobileSwiperRef.current = swiper;
+              setMobileIndex(swiper.realIndex);
+            }}
+            onSlideChange={swiper => setMobileIndex(swiper.realIndex)}
+            effect="coverflow"
+            coverflowEffect={{ rotate: 15, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
+            centeredSlides
+            grabCursor
+            slidesPerView={1.2}
+            spaceBetween={16}
+            loop={posts.length > 2}
+          >
+            {posts.map(post => (
+              <SwiperSlide key={post.id}>
+                <BlogPostCard post={post} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <div className="featured-mobile__pagination">
+          {posts.map((_, i) => (
+            <button
+              key={i}
+              className={`mobile-dot${i === mobileIndex ? ' mobile-dot--active' : ''}`}
+              aria-label={`Gå till inlägg ${i + 1}`}
+              onClick={() => mobileSwiperRef.current?.slideToLoop(i)}
+            />
+          ))}
+        </div>
+
+        <div className="featured-mobile__link">
+          <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BlogPostCard({ post }) {
   const img = getFeaturedImageUrl(post);
   const categories = getPostCategories(post);
-  const eyebrow = categories[0] ?? null;
-  const excerpt = truncateDescription(post.excerpt?.rendered, 110);
-  const author = post._embedded?.author?.[0];
-  const authorName = author?.name ?? 'Ahlgrens Husbilar';
-  const authorAvatarUrl = author?.avatar_urls?.['48'] ?? null;
+  const category = categories[0] ?? null;
+  const readTime = getReadingTime(post.content?.rendered);
   const dateDisplay = new Date(post.date).toLocaleDateString('sv-SE', {
     day: 'numeric',
-    month: 'short',
+    month: 'long',
     year: 'numeric',
   });
 
   return (
-    <Link href={blogPostUrl(post)} className="blog-preview-card">
-      <div className="blog-preview-card__image-wrap">
+    <div className="hcard">
+      <div className="hcard__image-wrap">
         <img
           src={img}
           alt={stripHtml(post.title.rendered)}
-          className="blog-preview-card__image"
+          className="hcard__image"
+          loading="lazy"
         />
-      </div>
-
-      <div className="blog-preview-card__body">
-        {eyebrow && (
-          <span className="blog-preview-card__eyebrow">{eyebrow}</span>
+        {category && (
+          <span className="hcard__badge hcard__badge--new">{category}</span>
         )}
-
-        <h3
-          className="blog-preview-card__title"
-          dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-        />
-
-        <p className="blog-preview-card__excerpt">{excerpt}</p>
-
-        <div className="blog-preview-card__meta">
-          {authorAvatarUrl && (
-            <img
-              src={authorAvatarUrl}
-              alt=""
-              className="blog-preview-card__avatar"
-              width={24}
-              height={24}
-              loading="lazy"
-            />
-          )}
-          <span className="blog-preview-card__author">{authorName}</span>
-          <span className="blog-preview-card__dot">·</span>
-          <span className="blog-preview-card__date">{dateDisplay}</span>
-        </div>
       </div>
-    </Link>
+
+      <Link href={blogPostUrl(post)} className="hcard__body-link">
+        <div className="hcard__body">
+          <p className="hcard__meta">{dateDisplay}</p>
+          <h3
+            className="hcard__title"
+            dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+          />
+          <div className="hcard__footer">
+            <span className="hcard__price">{readTime}</span>
+            <span className="hcard__cta">LÄS MER</span>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }

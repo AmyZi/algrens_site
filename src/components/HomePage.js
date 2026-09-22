@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Pagination, Autoplay } from 'swiper/modules';
 import GaragePreview from './GaragePreview';
-import BlogPreviewCard from './blog/Blogpreviewcard';
+import BlogPreviewSection from './blog/Blogpreviewcard';
 
 const BRANDS = [
   "PILOTE", "BAVARIA", "HYMER", "LAIKA", "EURA MOBIL",
@@ -18,27 +18,7 @@ const BRANDS = [
 
 const WP_BASE = 'https://www.ahlgrens.eu';
 
-const BlogPreviewSection = ({ posts = [] }) => {
-  if (posts.length === 0) return null;
- 
-  return (
-    <section className="blog-preview-section">
-      <div className="featured-header">
-        <div>
-          <h6 className="featured-eyebrow">Från bloggen</h6>
-          <h2 className="featured-title">Senaste artiklarna</h2>
-        </div>
-        <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
-      </div>
- 
-      <div className="blog-preview-grid">
-        {posts.map((post) => (
-          <BlogPreviewCard key={post.id} post={post} />
-        ))}
-      </div>
-    </section>
-  );
-};
+
  
 function getImages(meta) {
   const gallery = meta._car_gallery_urls;

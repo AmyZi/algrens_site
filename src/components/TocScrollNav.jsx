@@ -1,10 +1,7 @@
 'use client';
+import '@/styles/HomePage.css';
 
 import { useRef } from 'react';
-
-/**
- * Horizontal scrollable pill nav.
- */
 
 export default function TocScrollNav({ headings }) {
   const trackRef = useRef(null);
@@ -16,34 +13,41 @@ export default function TocScrollNav({ headings }) {
   };
 
   return (
-    <nav aria-label="Innehåll" className="toc-nav">
-      <button
-        type="button"
-        className="toc-nav__arrow toc-nav__arrow--prev"
-        aria-label="Bläddra bakåt"
-        onClick={() => scrollBy(-200)}
-      >
-        &#8249;
-      </button>
+    <section className="featured-section" id="blog-toc">
+      <div className="featured-desktop">
+        <div className="featured-slider-container">
+          <button
+            type="button"
+            className="feat-side-btn feat-side-btn--prev"
+            aria-label="Bläddra bakåt"
+            onClick={() => scrollBy(-200)}
+          >&#10216;</button>
+          <button
+            type="button"
+            className="feat-side-btn feat-side-btn--next"
+            aria-label="Bläddra framåt"
+            onClick={() => scrollBy(200)}
+          >&#10217;</button>
 
-      <ul className="toc-nav__track" ref={trackRef}>
-        {headings.map((h) => (
-          <li key={h.id} className="toc-nav__item">
-            <a href={`#${h.id}`} className="toc-nav__link">
+          <div className="featured-desktop__swiper" ref={trackRef}>
+            {headings.map((h) => (
+              <a key={h.id} href={`#${h.id}`} className="featured-link">
+                {h.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="featured-mobile">
+        <div className="featured-mobile__swiper-clip">
+          {headings.map((h) => (
+            <a key={h.id} href={`#${h.id}`} className="featured-link">
               {h.label}
             </a>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        type="button"
-        className="toc-nav__arrow toc-nav__arrow--next"
-        aria-label="Bläddra framåt"
-        onClick={() => scrollBy(200)}
-      >
-        &#8250;
-      </button>
-    </nav>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
