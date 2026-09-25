@@ -1,6 +1,6 @@
 .psa-bar {
   width: 100%;
-  background-color: var(--pinky);
+  background-color: var(--charcoal);
   padding: 0.4rem 0.75rem;
   border-bottom: 1px solid #e5e5e5;
   text-transform: uppercase;
@@ -8,6 +8,7 @@
   letter-spacing: 1px;
   font-weight: 600;
   font-style: italic;
+  color: #fff;
 }
 
 .psa-bar__track {

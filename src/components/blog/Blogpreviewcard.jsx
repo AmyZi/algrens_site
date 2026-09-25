@@ -2,17 +2,13 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
+import { Container } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, EffectCoverflow } from 'swiper/modules';
 import { stripHtml } from '@/lib/seo';
 import { getFeaturedImageUrl, getPostCategories, getReadingTime, blogPostUrl } from '@/lib/getBlogPosts';
 
-/**
- * Exact same structure as HomePage's "UTVALDA FORDON" section — arrow-nav
- * Swiper on desktop, coverflow carousel on mobile — same classes
- * (.featured-section, .hcard, etc.), so zero new CSS. Only difference:
- * blog posts instead of cars, post.id instead of car.id.
- */
+
 export default function BlogPreviewSection({ posts = [] }) {
   const desktopSwiperRef = useRef(null);
   const mobileSwiperRef = useRef(null);
@@ -21,93 +17,95 @@ export default function BlogPreviewSection({ posts = [] }) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="featured-section">
-      <div className="featured-header">
-        <div>
-          <h6 className="featured-eyebrow">Från bloggen</h6>
-          <h2 className="featured-title">Senaste artiklarna</h2>
-        </div>
-        <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
-      </div>
-
-      {/* ── DESKTOP: Arrow-nav Swiper ── */}
-      <div className="featured-desktop">
-        <div className="featured-slider-container">
-          <button
-            className="feat-side-btn feat-side-btn--prev"
-            aria-label="Föregående inlägg"
-            onClick={() => desktopSwiperRef.current?.slidePrev()}
-          >&#10216;</button>
-          <button
-            className="feat-side-btn feat-side-btn--next"
-            aria-label="Nästa inlägg"
-            onClick={() => desktopSwiperRef.current?.slideNext()}
-          >&#10217;</button>
-
-          <Swiper
-            modules={[Pagination]}
-            onSwiper={swiper => { desktopSwiperRef.current = swiper; }}
-            slidesPerView={3}
-            spaceBetween={24}
-            grabCursor
-            loop={posts.length > 3}
-            pagination={{ clickable: true, type: 'bullets' }}
-            breakpoints={{
-              768: { slidesPerView: 2, spaceBetween: 20 },
-              1024: { slidesPerView: 3, spaceBetween: 24 },
-            }}
-            className="featured-desktop__swiper"
-          >
-            {posts.map(post => (
-              <SwiperSlide key={post.id}>
-                <BlogPostCard post={post} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      </div>
-
-      {/* ── MOBILE: Coverflow carousel ── */}
-      <div className="featured-mobile">
-        <div className="featured-mobile__swiper-clip">
-          <Swiper
-            modules={[EffectCoverflow]}
-            onSwiper={swiper => {
-              mobileSwiperRef.current = swiper;
-              setMobileIndex(swiper.realIndex);
-            }}
-            onSlideChange={swiper => setMobileIndex(swiper.realIndex)}
-            effect="coverflow"
-            coverflowEffect={{ rotate: 15, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
-            centeredSlides
-            grabCursor
-            slidesPerView={1.2}
-            spaceBetween={16}
-            loop={posts.length > 2}
-          >
-            {posts.map(post => (
-              <SwiperSlide key={post.id}>
-                <BlogPostCard post={post} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-        <div className="featured-mobile__pagination">
-          {posts.map((_, i) => (
-            <button
-              key={i}
-              className={`mobile-dot${i === mobileIndex ? ' mobile-dot--active' : ''}`}
-              aria-label={`Gå till inlägg ${i + 1}`}
-              onClick={() => mobileSwiperRef.current?.slideToLoop(i)}
-            />
-          ))}
-        </div>
-
-        <div className="featured-mobile__link">
+    <section className="featured-section" style={{ backgroundColor: '#fff' }}>
+      <Container>
+        <div className="featured-header">
+          <div>
+            <h6 className="featured-eyebrow">Från bloggen</h6>
+            <h2 className="featured-title">Senaste artiklarna</h2>
+          </div>
           <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
         </div>
-      </div>
+
+        {/* ── DESKTOP: Arrow-nav Swiper ── */}
+        <div className="featured-desktop">
+          <div className="featured-slider-container">
+            <button
+              className="feat-side-btn feat-side-btn--prev"
+              aria-label="Föregående inlägg"
+              onClick={() => desktopSwiperRef.current?.slidePrev()}
+            >&#10216;</button>
+            <button
+              className="feat-side-btn feat-side-btn--next"
+              aria-label="Nästa inlägg"
+              onClick={() => desktopSwiperRef.current?.slideNext()}
+            >&#10217;</button>
+
+            <Swiper
+              modules={[Pagination]}
+              onSwiper={swiper => { desktopSwiperRef.current = swiper; }}
+              slidesPerView={3}
+              spaceBetween={24}
+              grabCursor
+              loop={posts.length > 3}
+              pagination={{ clickable: true, type: 'bullets' }}
+              breakpoints={{
+                768: { slidesPerView: 2, spaceBetween: 20 },
+                1024: { slidesPerView: 3, spaceBetween: 24 },
+              }}
+              className="featured-desktop__swiper"
+            >
+              {posts.map(post => (
+                <SwiperSlide key={post.id}>
+                  <BlogPostCard post={post} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+
+        {/* ── MOBILE: Coverflow carousel ── */}
+        <div className="featured-mobile">
+          <div className="featured-mobile__swiper-clip">
+            <Swiper
+              modules={[EffectCoverflow]}
+              onSwiper={swiper => {
+                mobileSwiperRef.current = swiper;
+                setMobileIndex(swiper.realIndex);
+              }}
+              onSlideChange={swiper => setMobileIndex(swiper.realIndex)}
+              effect="coverflow"
+              coverflowEffect={{ rotate: 15, stretch: 0, depth: 100, modifier: 1, slideShadows: false }}
+              centeredSlides
+              grabCursor
+              slidesPerView={1.2}
+              spaceBetween={16}
+              loop={posts.length > 2}
+            >
+              {posts.map(post => (
+                <SwiperSlide key={post.id}>
+                  <BlogPostCard post={post} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          <div className="featured-mobile__pagination">
+            {posts.map((_, i) => (
+              <button
+                key={i}
+                className={`mobile-dot${i === mobileIndex ? ' mobile-dot--active' : ''}`}
+                aria-label={`Gå till inlägg ${i + 1}`}
+                onClick={() => mobileSwiperRef.current?.slideToLoop(i)}
+              />
+            ))}
+          </div>
+
+          <div className="featured-mobile__link">
+            <Link href="/blogg/" className="featured-link">Se alla inlägg</Link>
+          </div>
+        </div>
+      </Container>
     </section>
   );
 }
