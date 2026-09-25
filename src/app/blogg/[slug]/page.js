@@ -146,11 +146,9 @@ export default async function BlogPostPage({ params }) {
             className="blog-post__content"
             dangerouslySetInnerHTML={{ __html: contentHtml }}
           />
-
-          {similarVehicles.length > 0 && <SimilarVehicles cars={similarVehicles} />}
-
           {faqItems.length > 0 && <FaqAccordion items={faqItems} />}
         </article>
+        {similarVehicles.length > 0 && <SimilarVehicles cars={similarVehicles} />}
 
         <div className="blog-post__back">
           <Link href="/blogg/">← Tillbaka till bloggen</Link>
