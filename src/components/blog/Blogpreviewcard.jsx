@@ -17,7 +17,7 @@ export default function BlogPreviewSection({ posts = [] }) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="featured-section" style={{ backgroundColor: '#fff' }}>
+    <section className="featured-section" style={{ backgroundColor: 'var(--blush)' }}>
       <Container>
         <div className="featured-header">
           <div>

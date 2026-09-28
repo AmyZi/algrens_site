@@ -98,7 +98,7 @@
 
 .featured-section {
   padding: 60px 0;
-  background-color: var(--blush);
+  background-color: #fff;
 }
 
 .featured-header {
@@ -488,7 +488,7 @@
 
 .about-section {
   padding: 60px 0;
-  background-color: var(--blush);
+  background-color: #fff;
 }
 
 .about-image-wrap {
