@@ -55,12 +55,12 @@ export default function Navigation({ announcements = [] }) {
 
   return (
   <>
+    <PsaBar announcements={announcements} />
     <Navbar
       expand="lg"
-      fixed="top"
+      
       className={`site-nav flex-column w-100 p-0${scrolled ? ' site-nav--scrolled' : ''}`}
     >
-      <PsaBar announcements={announcements} />
       <Container className="nav-top-row">
 
         <Navbar.Brand as={Link} href="/" className="nav-brand">

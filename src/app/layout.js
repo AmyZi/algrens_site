@@ -12,6 +12,7 @@ import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { autoDealerJsonLd, siteUrl } from '@/lib/seo';
 import { getPsaAnnouncements } from '@/lib/getPsaAnnouncements';
+import PsaBar from '@/components/PsaBar';
 import '@/styles/psaBar.css';
 import MajblommanAnimation from '@/components/MajblommanAnimation';
 
@@ -73,7 +74,8 @@ export default async function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <MajblommanAnimation />
-        <Navigation announcements={announcements} />
+        <PsaBar announcements={announcements} />
+        <Navigation />
         <main className="flex-grow-1">
           {children}
         </main>

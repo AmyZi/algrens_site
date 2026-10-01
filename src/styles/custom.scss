@@ -236,17 +236,19 @@ html {
 // ============================================================
 // Site Navigation
 // ============================================================
+
 .site-nav {
-  background-color: transparent;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background-color: transparent !important;
   backdrop-filter: none;
-  padding: 20px 0;
   transition: background-color 0.3s ease, padding 0.3s ease, border-bottom 0.3s ease;
 
   &--scrolled {
     background-color: var(--blush);
     backdrop-filter: blur(10px);
-    padding: 10px 0;
-    border-bottom: 1px solid #E2E8F0;
+    border-bottom: 1px #fff;
   }
 }
 
