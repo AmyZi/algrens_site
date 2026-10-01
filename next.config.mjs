@@ -21,6 +21,10 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    staticGenerationMaxConcurrency: 2,   // default is higher
+    staticGenerationRetryCount: 3,       // retries a failed page before failing the build
+  },
 };
 
 export default nextConfig;
