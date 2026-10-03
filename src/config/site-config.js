@@ -7,7 +7,7 @@ export const siteConfig = {
   contact: {
     phone: "+46 33 1030 11",
     email: "jonas@ahlgrens.eu",
-    address: "Borås, Sweden",
+    address: "Gånghestersvägen 129, 507 62 Borås",
   },
   links: {
     blocketShop: "https://www.blocket.se/butik/ahlgrens-husbilar",

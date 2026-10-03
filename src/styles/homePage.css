@@ -8,7 +8,7 @@
 /* ── Page shell ──────────────────────────────────────────────── */
 
 .home-page {
-  background-color: #fff;
+  background-color: var(--surface-raised);
 }
 
 
@@ -26,7 +26,7 @@
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 900;
   margin-bottom: 1rem;
-  line-height: 1.15;
+  line-height: var(--lh-tight);
 }
 
 .hero-subtitle {
@@ -39,22 +39,22 @@
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .hero-btn {
   display: inline-block;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-size: 0.9rem;
   letter-spacing: 0.05em;
-  padding: 12px 32px;
+  padding: var(--space-3) var(--space-6);
   border-radius: 0;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur);
 }
 
 .hero-btn--primary {
-  background-color: var(--yellow);
+  background-color: var(--accent);
   color: #000;
   border: 2px solid var(--yellow);
 }
@@ -73,7 +73,7 @@
 /* ── 2. Brand ticker ─────────────────────────────────────────── */
 
 .brand-ticker {
-  background-color: var(--yellow);
+  background-color: var(--accent);
   padding: 20px 0;
   overflow: hidden;
   white-space: nowrap;
@@ -98,7 +98,7 @@
 
 .featured-section {
   padding: 60px 0;
-  background-color: #fff;
+  background-color: var(--surface-raised);
 }
 
 .featured-header {
@@ -107,15 +107,15 @@
   align-items: flex-end;
   margin-bottom: 2rem;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .featured-eyebrow {
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--slate);
+  color: var(--text-muted);
   margin-bottom: 0.25rem;
 }
 
@@ -123,21 +123,21 @@
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 900;
   margin: 0;
-  color: var(--charcoal);
+  color: var(--text);
 }
 
 .featured-link {
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   color: #000;
   text-decoration: none;
   border-bottom: 2px solid #000;
   padding-bottom: 2px;
   font-size: 0.9rem;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color var(--dur), color var(--dur);
 }
 
 .featured-link:hover {
-  color: var(--charcoal);
+  color: var(--text);
   border-color: var(--yellow);
 }
 
@@ -171,7 +171,7 @@
 
 /* Swiper: pagination dots sit below the cards */
 .featured-desktop__swiper {
-  padding-bottom: 48px !important;
+  padding-bottom: var(--space-7) !important;
 }
 
 .featured-desktop__swiper .swiper-pagination {
@@ -185,14 +185,14 @@
   height: 8px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 0 4px !important;
+  transition: all 0.3s var(--ease);
+  margin: 0 var(--space-1) !important;
 }
 
 .featured-desktop__swiper .swiper-pagination-bullet-active {
-  background: var(--yellow);
+  background: var(--accent);
   width: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 
@@ -221,7 +221,7 @@
 */
 .featured-mobile__swiper-clip {
   overflow: hidden;
-  padding-bottom: 8px;  /* small breathing room under last card */
+  padding-bottom: var(--space-2);  /* small breathing room under last card */
 }
 
 /* Coverflow Swiper overrides */
@@ -240,7 +240,7 @@
   justify-content: center;
   align-items: center;
   gap: 6px;
-  margin: 16px 0 12px;
+  margin: var(--space-4) 0 var(--space-3);
 }
 
 .mobile-dot {
@@ -255,9 +255,9 @@
 }
 
 .mobile-dot--active {
-  background: var(--yellow);
+  background: var(--accent);
   width: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 
@@ -278,21 +278,21 @@
   height: 44px;
   border-radius: 50%;
   border: 1.5px solid var(--charcoal);
-  background: #fff;
-  color: var(--charcoal);
+  background: var(--surface-raised);
+  color: var(--text);
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .feat-side-btn:hover {
-  background: var(--yellow);
+  background: var(--accent);
   border-color: var(--yellow);
-  color: var(--charcoal);
+  color: var(--text);
 }
 
 /*
@@ -345,7 +345,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.4s var(--ease);
 }
 
 .hcard:hover .hcard__image {
@@ -357,49 +357,49 @@
   top: 12px;
   left: 12px;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 4px 12px;
+  padding: var(--space-1) var(--space-3);
   z-index: 10;    /* high enough to clear coverflow stacking contexts */
   pointer-events: none;
 }
 
 .hcard__badge--new {
-  background-color: var(--yellow);
+  background-color: var(--accent);
   color: #000;
 }
 
 .hcard__badge--used {
-  background-color: var(--charcoal);
+  background-color: var(--surface-inverse);
   color: #fff;
 }
 
 .hcard__body {
-  padding: 20px 24px 24px;
+  padding: 20px var(--space-5) var(--space-5);
 }
 
 .hcard__meta {
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #6c757d;
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-1);
 }
 
 .hcard__title {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-2);
   line-height: 1.3;
-  color: var(--charcoal);
+  color: var(--text);
 }
 
 .hcard__specs {
   font-size: 0.85rem;
   color: #6c757d;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .hcard__footer {
@@ -410,26 +410,26 @@
 
 .hcard__price {
   font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--charcoal);
+  font-weight: var(--fw-bold);
+  color: var(--text);
 }
 
 .hcard__cta {
   display: inline-block;
-  background-color: var(--charcoal);
+  background-color: var(--surface-inverse);
   color: #fff;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   letter-spacing: 0.06em;
-  padding: 8px 20px;
+  padding: var(--space-2) 20px;
   border-radius: 0;
   text-decoration: none;
-  transition: background-color 0.15s;
+  transition: background-color var(--dur-fast);
 }
 
 .hcard__cta:hover {
-  background-color: var(--yellow);
-  color: var(--charcoal);
+  background-color: var(--accent);
+  color: var(--text);
 }
 
 
@@ -457,16 +457,16 @@
 }
 
 .hcard__swiper .swiper-pagination-bullet {
-  background: #fff;
+  background: var(--surface-raised);
   opacity: 0.6;
   width: 6px;
   height: 6px;
   margin: 0 3px !important;
-  transition: all 0.3s ease;
+  transition: all 0.3s var(--ease);
 }
 
 .hcard__swiper .swiper-pagination-bullet-active {
-  background: var(--yellow);
+  background: var(--accent);
   opacity: 1;
   width: 18px;
   border-radius: 3px;
@@ -488,7 +488,7 @@
 
 .about-section {
   padding: 60px 0;
-  background-color: #fff;
+  background-color: var(--surface-raised);
 }
 
 .about-image-wrap {
@@ -509,7 +509,7 @@
   position: relative;
   z-index: 1;
   min-height: 400px;
-  background-color: var(--charcoal);
+  background-color: var(--surface-inverse);
 }
 
 .about-image {
@@ -522,13 +522,13 @@
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 900;
   margin-bottom: 1rem;
-  color: var(--charcoal);
+  color: var(--text);
 }
 
 .about-lead {
   font-size: 1.1rem;
   margin-bottom: 1.5rem;
-  color: var(--slate);
+  color: var(--text-muted);
   line-height: 1.7;
 }
 
@@ -542,7 +542,7 @@
   font-size: 2rem;
   font-weight: 900;
   margin-bottom: 0;
-  color: var(--charcoal);
+  color: var(--text);
 }
 
 .about-stat__label {
@@ -558,20 +558,20 @@
 
 .about-cta {
   display: inline-block;
-  background-color: var(--charcoal);
+  background-color: var(--surface-inverse);
   color: #fff;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-size: 0.85rem;
   letter-spacing: 0.15em;
-  padding: 12px 40px;
+  padding: var(--space-3) 40px;
   border-radius: 0;
   text-decoration: none;
-  transition: background-color 0.15s;
+  transition: background-color var(--dur-fast);
 }
 
 .about-cta:hover {
-  background-color: var(--yellow);
-  color: var(--charcoal);
+  background-color: var(--accent);
+  color: var(--text);
 }
 
 
@@ -591,7 +591,7 @@
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 900;
   margin-bottom: 1rem;
-  line-height: 1.15;
+  line-height: var(--lh-tight);
 }
 
 .contact-sub {
@@ -602,15 +602,15 @@
 
 .contact-cta {
   display: inline-block;
-  background-color: var(--yellow);
+  background-color: var(--accent);
   color: #000;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   font-size: 0.9rem;
   letter-spacing: 0.1em;
-  padding: 16px 40px;
+  padding: var(--space-4) 40px;
   border-radius: 0;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur);
 }
 
 .contact-cta:hover {
@@ -620,7 +620,7 @@
    breadcrumb
    ============================================================= */
 .breadcrumb{
-  font-size: .875rem;
+  font-size: var(--fs-sm);
   align-items: center;
   display: flex;
   justify-content: center;

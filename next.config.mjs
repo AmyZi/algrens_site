@@ -22,8 +22,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    staticGenerationMaxConcurrency: 2,   // default is higher
-    staticGenerationRetryCount: 3,       // retries a failed page before failing the build
+    staticGenerationMaxConcurrency: 2,
+    staticGenerationRetryCount: 3,
   },
 };
 

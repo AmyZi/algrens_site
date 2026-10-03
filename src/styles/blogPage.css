@@ -17,7 +17,7 @@
 .blog-page__eyebrow {
   display: block;
   font-size: 0.85rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-primary, #c0392b);
@@ -52,11 +52,11 @@
   flex-direction: column;
   border-radius: 0.75rem;
   overflow: hidden;
-  background: #fff;
+  background: var(--surface-raised);
   border: 1px solid var(--color-border, #e5e7eb);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 
 .blog-card:hover {
@@ -91,14 +91,14 @@
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.15rem 0.6rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--color-primary-soft, #fdecea);
   color: var(--color-primary, #c0392b);
 }
 
 .blog-card__title {
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   line-height: 1.35;
   margin-bottom: 0.5rem;
 }
@@ -140,7 +140,7 @@
   text-align: left;
   cursor: pointer;
   font: inherit;
-  font-weight: 700;
+  font-weight: var(--fw-bold);
   color: var(--color-ink);
 }
 
@@ -154,7 +154,7 @@
 .blog-post__faq-answer-wrap {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.25s ease;
+  transition: grid-template-rows 0.25s var(--ease);
 }
 
 .blog-post__faq-answer-wrap--open {
@@ -191,7 +191,7 @@
   margin: 0;
   padding: 0.6rem 0.9rem;
   background: var(--color-cream, #f7f3ea);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   scrollbar-width: none;
 }
 
@@ -206,13 +206,13 @@
 .toc-nav__link {
   display: inline-block;
   padding: 0.4rem 1rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--color-ink, #1b1e1a);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s;
+  transition: background var(--dur-fast);
 }
 
 .toc-nav__link:hover {
@@ -225,7 +225,7 @@
   height: 32px;
   border-radius: 50%;
   border: 1px solid color-mix(in srgb, var(--color-ink, #1b1e1a) 15%, transparent);
-  background: #fff;
+  background: var(--surface-raised);
   color: var(--color-ink, #1b1e1a);
   font-size: 1.1rem;
   line-height: 1;
@@ -233,7 +233,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  transition: background var(--dur-fast);
 }
 
 .toc-nav__arrow:hover {

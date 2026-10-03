@@ -1,6 +1,6 @@
 .psa-bar {
   width: 100%;
-  background-color: var(--charcoal);
+  background-color: var(--surface-inverse);
   padding: 0.4rem 0.75rem;
   border-bottom: 1px solid #e5e5e5;
   text-transform: uppercase;
