@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Container, Row, Col, Form } from 'react-bootstrap';
+import {siteConfig} from '@/config/site-config';
 
 const BRANDS = [
   { name: 'Ligier', text: 'Mopedbil service och reparation för Ligier, med fokus på säkerhet och driftsäkerhet.' },
@@ -25,6 +26,9 @@ const REASONS = [
 ];
 
 const BADGES = ['Ligier', 'Aixam', 'Casalini', 'Oljeservice', 'Bromsservice'];
+
+const { phone, email, address } = siteConfig.contact;
+const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 const EMPTY_FORM = { name: '', phone: '', model: '', message: '' };
 
@@ -169,36 +173,38 @@ export default function MopedbilPage() {
               <div className="contact-card">
                 <h3 className="contact-card__title">Hitta hit</h3>
                 <p className="contact-card__lead">Välkommen till vår bilverkstad.</p>
-                <div className="contact-item">
+                <a
+                  className="contact-item"
+                  href={mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${address} – visa på karta (öppnas i ny flik)`}
+                >
                   <div>
                     <div className="contact-item__label">Adress</div>
-                    <div className="contact-item__value">[GATUADRESS], [POSTNUMMER] [ORT]</div>
-                  </div>
-                </div>
-                <a className="contact-item" href="tel:[TELEFONNUMMER]">
-                  <div>
-                    <div className="contact-item__label">Telefon</div>
-                    <div className="contact-item__value">[TELEFONNUMMER]</div>
-                  </div>
-                </a>
-                <a className="contact-item" href="mailto:[E-POSTADRESS]">
-                  <div>
-                    <div className="contact-item__label">E-post</div>
-                    <div className="contact-item__value">[E-POSTADRESS]</div>
+                    <div className="contact-item__value">{address}</div>
                   </div>
                 </a>
                 <div className="contact-item">
                   <div>
                     <div className="contact-item__label">Öppettider</div>
                     <div className="contact-item__value">
-                      Måndag–fredag: [TID]<br />
-                      Lördag–söndag: [TID]
+                      Måndag–fredag: 9 - 17<br />
+                      Lördag: 10 - 15
                     </div>
                   </div>
                 </div>
-                <Link className="contact-btn contact-btn--outline" href="/garage">
-                  Besök vår bilverkstad
-                </Link>
+                <div className="d-grid gap-2">
+                  <a className="contact-btn contact-btn--primary" href={`tel:${phone.replace(/\s/g, '')}`}>
+                    Ring oss {phone}
+                  </a>
+                  <a className="contact-btn contact-btn--outline" href={`mailto:${email}`}>
+                    Mejla {email}
+                  </a>
+                  <Link className="contact-btn contact-btn--outline" href="/garage">
+                    Besök vår bilverkstad
+                  </Link>
+                </div>
               </div>
             </Col>
 
