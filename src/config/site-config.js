@@ -20,5 +20,6 @@ export const siteConfig = {
     charcoal: "#2C2C2C",
     slate: "#4A5759",
     yellow: "#FFD700",
-  }
+  },
+  OPENING_HOURS: 'Mån – Fre: 09:00 – 17:00',
 };

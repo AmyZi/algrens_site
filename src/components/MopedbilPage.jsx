@@ -5,17 +5,21 @@ import Link from 'next/link';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import {siteConfig} from '@/config/site-config';
 
+const CF7_FORM_ID = '172';
+const CF7_ENDPOINT = `https://www.ahlgrens.eu/web/index.php?rest_route=/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`;
+
 const BRANDS = [
-  { name: 'Ligier', text: 'Mopedbil service och reparation för Ligier, med fokus på säkerhet och driftsäkerhet.' },
-  { name: 'Aixam', text: 'Allt från löpande underhåll till felsökning på din Aixam, utfört av erfarna händer.' },
-  { name: 'Casalini', text: 'Pålitlig service för Casalini, så att din moppe bil är redo för vardagen.' },
+  { name: 'Ligier', text: 'Ligier verkstad i Borås: service och reparation med fokus på säkerhet och driftsäkerhet.' },
+  { name: 'Aixam', text: 'Aixam service i Borås, från löpande underhåll till felsökning, utfört av erfarna händer.' },
+  { name: 'Casalini', text: 'Casalini service i Borås, så att din moppe bil är redo för vardagen.' },
 ];
 
 const SERVICES = [
-  { title: 'Oljeservice', text: 'Regelbunden oljeservice förlänger motorns livslängd och håller din mopedbil pigg år efter år.' },
+  { title: 'Oljeservice', text: 'Oljeservice för mopedbil i Borås. Regelbunden service förlänger motorns livslängd och håller din mopedbil pigg år efter år.' },
   { title: 'Bromsservice', text: 'Trygga bromsar är avgörande. Vi kontrollerar, byter och justerar så att du kan lita på stoppet.' },
+  { title: 'Variatorrem', text: 'Tappar din mopedbil kraft eller slirar den? Vi byter variatorrem och går igenom drivlinan.' },
   { title: 'Felsökning', text: 'Konstiga ljud, varningslampor eller svårstartad? Vi hittar orsaken och förklarar vad som behöver göras.' },
-  { title: 'Allmän reparation', text: 'Allmän reparation av din moppe bil, från slitdelar till större åtgärder, hos en bilverkstad som kan mopedbilar.' },
+  { title: 'Laga moppebil', text: 'Vi lagar din moppebil i Borås, från slitdelar till större åtgärder, hos en bilverkstad som kan mopedbilar.' },
 ];
 
 const REASONS = [
@@ -25,12 +29,10 @@ const REASONS = [
   { title: 'Säkerhet först', text: 'Vi prioriterar bromsar, däck och styrning, så att du kan känna dig trygg på vägen.' },
 ];
 
-const BADGES = ['Ligier', 'Aixam', 'Casalini', 'Oljeservice', 'Bromsservice'];
+const BADGES = ['Ligier verkstad Borås', 'Aixam service Borås', 'Casalini service Borås', 'Oljeservice', 'Variatorrem'];
 
 const { phone, email, address } = siteConfig.contact;
 const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-
-const EMPTY_FORM = { name: '', phone: '', model: '', message: '' };
 
 function SectionHeading({ title, sub }) {
   return (
@@ -43,23 +45,32 @@ function SectionHeading({ title, sub }) {
 }
 
 export default function MopedbilPage() {
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [status, setStatus] = useState('idle'); // idle | sending | sent | error
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const [status, setStatus] = useState('idle'); // idle | loading | success | error
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus('sending');
+    setStatus('loading');
+
+    const form = e.target;
+    const formData = new FormData(form);
+    formData.append('_wpcf7', CF7_FORM_ID);
+    formData.append('_wpcf7_unit_tag', `wpcf7-f${CF7_FORM_ID}-p1-o1`);
+    formData.append('_wpcf7_locale', 'sv_SE');
+
     try {
-      // TODO: connect to your booking / contact endpoint
-      setStatus('sent');
-      setForm(EMPTY_FORM);
-    } catch {
+      const response = await fetch(CF7_ENDPOINT, { method: 'POST', body: formData });
+      const data = await response.json();
+
+      if (data.status === 'mail_sent') {
+        setStatus('success');
+        form.reset();
+      } else {
+        setStatus('error');
+        console.error('Validation failed:', data);
+      }
+    } catch (error) {
       setStatus('error');
+      console.error('Submission error:', error);
     }
   };
 
@@ -68,13 +79,13 @@ export default function MopedbilPage() {
       {/* Hero */}
       <section className="page-hero">
         <Container>
-          <p className="page-hero__eyebrow">Bilverkstad för mopedbil</p>
-          <h1 className="page-hero__title">Mopedbil service du kan lita på.</h1>
+          <p className="page-hero__eyebrow">Mopedbil verkstad i Borås</p>
+          <h1 className="page-hero__title">Mopedbil service i Borås du kan lita på.</h1>
           <p className="page-hero__subtitle">
-            Vi servar och reparerar Ligier, Aixam och Casalini. Från oljeservice till felsökning.
+            Din bilverkstad för Ligier, Aixam och Casalini. Oljeservice, variatorrem, bromsar och felsökning.
           </p>
           <p className="page-hero__description">
-            Trygg service för din moppe bil, så att du och din tonåring kommer säkert fram.
+            Vi hjälper dig med din moppe bil i Borås, Ulricehamn, Kinna, Bollebygd och hela Sjuhärad.
           </p>
           <div className="hero-actions mt-4">
             <a className="hero-btn hero-btn--primary" href="#kontakt">Boka service nu</a>
@@ -96,8 +107,8 @@ export default function MopedbilPage() {
       <section className="py-5" id="marken">
         <Container>
           <SectionHeading
-            title="Specialister på mopedbilar"
-            sub="Inte bara en vanlig bilverkstad. Vi kan märkena som rullar på svenska vägar."
+            title="Mopedbil verkstad i Borås"
+            sub="Specialister på Ligier, Aixam och Casalini. Inte bara en vanlig bilverkstad, utan en verkstad som kan märkena som rullar i Sjuhärad."
           />
           <Row className="g-4">
             {BRANDS.map((brand, i) => (
@@ -121,12 +132,12 @@ export default function MopedbilPage() {
       <section className="boras-reasons py-5" id="tjanster">
         <Container>
           <SectionHeading
-            title="Mopedbil service från A till Ö"
+            title="Mopedbil service i Borås, från A till Ö"
             sub="Oavsett om det är rutinunderhåll eller ett oväntat fel hjälper vi dig snabbt och tydligt."
           />
-          <Row className="g-4">
+          <Row className="g-4 justify-content-center">
             {SERVICES.map((service, i) => (
-              <Col key={service.title} sm={6} lg={3}>
+              <Col key={service.title} md={6} lg={4}>
                 <article className="brand-category-card">
                   <span className="brand-category-card__number">{String(i + 1).padStart(2, '0')}</span>
                   <h3 className="brand-category-card__type">{service.title}</h3>
@@ -144,7 +155,7 @@ export default function MopedbilPage() {
         <Container>
           <SectionHeading
             title="Varför välja oss"
-            sub="Trygghet för dig som förare – och för dig som förälder."
+            sub="Trygghet för dig som förare och för dig som förälder. En mopedbil är ofta en tonårings första fordon, och det ska kännas tryggt från första besöket."
           />
           <Row className="g-4">
             {REASONS.map((reason, i) => (
@@ -161,18 +172,33 @@ export default function MopedbilPage() {
         </Container>
       </section>
 
+      {/* Service area */}
+      <section className="boras-reasons py-5" id="omrade">
+        <Container>
+          <SectionHeading
+            title="Mopedbil verkstad i Borås och Sjuhärad"
+            sub="Vår verkstad ligger i Borås, och hit kommer mopedbilsägare från hela närområdet."
+          />
+          <p className="text-center mb-0">
+            Vi servar och lagar mopedbilar för kunder i Borås, Ulricehamn, Kinna och Bollebygd. Bor du i
+            närheten och letar efter en mopedbil verkstad i Sjuhärad? Hör av dig, så hjälper vi dig med
+            oljeservice, variatorrem eller felsökning av din Ligier, Aixam eller Casalini.
+          </p>
+        </Container>
+      </section>
+
       {/* Contact */}
       <section className="contact-page" id="kontakt">
         <Container>
           <SectionHeading
-            title="Boka din mopedbil service idag"
+            title="Boka din mopedbil service i Borås idag"
             sub="Fyll i formuläret eller ring oss. Vi återkommer så snart vi kan."
           />
           <Row className="g-4">
             <Col lg={5}>
               <div className="contact-card">
                 <h3 className="contact-card__title">Hitta hit</h3>
-                <p className="contact-card__lead">Välkommen till vår bilverkstad.</p>
+                <p className="contact-card__lead">Välkommen till vår bilverkstad i Borås.</p>
                 <a
                   className="contact-item"
                   href={mapUrl}
@@ -189,8 +215,8 @@ export default function MopedbilPage() {
                   <div>
                     <div className="contact-item__label">Öppettider</div>
                     <div className="contact-item__value">
-                      Måndag–fredag: 9 - 17<br />
-                      Lördag: 10 - 15
+                      Måndag–fredag: 9 - 17 <br />
+                      Lördag–söndag: 10 - 16
                     </div>
                   </div>
                 </div>
@@ -210,7 +236,7 @@ export default function MopedbilPage() {
 
             <Col lg={7}>
               <div className="contact-card">
-                {status === 'sent' ? (
+                {status === 'success' ? (
                   <div className="contact-success" role="status">
                     <h3 className="contact-success__title">Tack för din förfrågan!</h3>
                     <p className="contact-success__text">Vi återkommer så snart vi kan.</p>
@@ -220,22 +246,48 @@ export default function MopedbilPage() {
                     <h3 className="contact-card__title">Skicka en förfrågan</h3>
                     <Form.Group className="mb-3" controlId="mopedbil-name">
                       <Form.Label className="contact-form__label">Namn</Form.Label>
-                      <Form.Control className="contact-form__input" name="name" value={form.name} onChange={handleChange} required />
+                      <Form.Control
+                        className="contact-form__input"
+                        name="your-name"
+                        type="text"
+                        placeholder="Ditt namn"
+                        autoComplete="name"
+                        required
+                      />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="mopedbil-phone">
-                      <Form.Label className="contact-form__label">Telefonnummer</Form.Label>
-                      <Form.Control className="contact-form__input" type="tel" name="phone" value={form.phone} onChange={handleChange} required />
+                    <Form.Group className="mb-3" controlId="mopedbil-email">
+                      <Form.Label className="contact-form__label">E-post</Form.Label>
+                      <Form.Control
+                        className="contact-form__input"
+                        name="your-email"
+                        type="email"
+                        placeholder="namn@exempel.se"
+                        autoComplete="email"
+                        required
+                      />                   
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="mopedbil-model">
-                      <Form.Label className="contact-form__label">Märke och modell</Form.Label>
-                      <Form.Control className="contact-form__input" name="model" placeholder="t.ex. Ligier, Aixam, Casalini" value={form.model} onChange={handleChange} />
+                      <Form.Label className="contact-form__label">Ämne</Form.Label>
+                      <Form.Control
+                        className="contact-form__input"
+                        name="your-subject"
+                        type="text"
+                        placeholder="Vilket märke och modell har du?"
+                        required
+                      />
                     </Form.Group>
                     <Form.Group className="mb-4" controlId="mopedbil-message">
-                      <Form.Label className="contact-form__label">Vad behöver du hjälp med?</Form.Label>
-                      <Form.Control className="contact-form__input" as="textarea" rows={4} name="message" value={form.message} onChange={handleChange} />
+                      <Form.Label className="contact-form__label">Meddelande</Form.Label>
+                      <Form.Control
+                        className="contact-form__input"
+                        name="your-message"
+                        as="textarea"
+                        rows={4}
+                        required
+                      />
                     </Form.Group>
-                    <button className="contact-btn contact-btn--primary" type="submit" disabled={status === 'sending'}>
-                      {status === 'sending' ? 'Skickar…' : 'Skicka förfrågan'}
+                    <button className="contact-btn contact-btn--primary" type="submit" disabled={status === 'loading'}>
+                      {status === 'loading' ? 'Skickar…' : 'Skicka förfrågan'}
                     </button>
                     {status === 'error' && (
                       <p className="contact-form__error" role="alert">Något gick fel. Försök igen eller ring oss.</p>

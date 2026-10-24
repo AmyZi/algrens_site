@@ -1,10 +1,20 @@
 import MopedbilPage from '../../components/MopedbilPage';
 
 export const metadata = {
-  title: 'Mopedbil service i Borås | Ligier, Aixam & Casalini | Ahlgrens',
+  title: 'Mopedbil verkstad Borås | Mopedbil service för Ligier, Aixam & Casalini',
   description:
-    'Bilverkstad för mopedbil. Oljeservice, bromsservice och felsökning för Ligier, Aixam och Casalini. Boka service för din moppe bil idag.',
-  keywords: ['mopedbil service', 'oljeservice', 'bilverkstad', 'moppe bil', 'Ligier', 'Aixam', 'Casalini'],
+    'Mopedbil verkstad i Borås för Ligier, Aixam och Casalini. Oljeservice, variatorrem och reparation. Vi hjälper även Ulricehamn, Kinna och Bollebygd.',
+  keywords: [
+    'mopedbil verkstad Borås',
+    'mopedbil service Borås',
+    'Ligier verkstad Borås',
+    'Aixam service Borås',
+    'Casalini service Borås',
+    'oljeservice mopedbil Borås',
+    'laga moppebil Borås',
+    'variatorrem mopedbil',
+    'mopedbil verkstad Sjuhärad',
+  ],
 };
 
 export default function Page() {

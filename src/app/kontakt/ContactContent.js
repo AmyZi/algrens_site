@@ -6,15 +6,14 @@ import PageHero from '@/components/PageHero';
 import { siteConfig } from '@/config/site-config';
 import '@/styles/custom.scss';
 
-// TODO: move to siteConfig.contact.hours so the footer can reuse it
 const OPENING_HOURS = 'Mån – Fre: 09:00 – 17:00';
 
 const CF7_FORM_ID = '172';
 const CF7_ENDPOINT = `https://www.ahlgrens.eu/web/index.php?rest_route=/contact-form-7/v1/contact-forms/${CF7_FORM_ID}/feedback`;
 
 const ContactContent = () => {
-  const { contact, links } = siteConfig;
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const { contact, links, OPENING_HOURS } = siteConfig;
+  const [status, setStatus] = useState('idle');
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const q = encodeURIComponent(contact.address);
