@@ -84,6 +84,8 @@ export default async function sitemap() {
     { url: `${BASE_URL}/kontakt/`,                  lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE_URL}/marken/`,                   lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${BASE_URL}/garage/`,                   lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${BASE_URL}/blogg/`,                    lastModified: now, changeFrequency: 'weekly',  priority: 0.5 },
+    { url: `${BASE_URL}/mopedbil/`,                 lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ];
 
   let vehiclePages = [];
