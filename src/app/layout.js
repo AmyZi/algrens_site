@@ -15,6 +15,7 @@ import { getPsaAnnouncements } from '@/lib/getPsaAnnouncements';
 import PsaBar from '@/components/PsaBar';
 import '@/styles/psaBar.css';
 import MajblommanAnimation from '@/components/MajblommanAnimation';
+import CookieBanner from "@/components/CookieConsent/cookieBanner";
 
 export const metadata = {
   title: {
@@ -73,6 +74,7 @@ export default async function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <CookieBanner />
         <MajblommanAnimation />
         <PsaBar announcements={announcements} />
         <Navigation />
